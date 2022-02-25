@@ -9,11 +9,12 @@ x-logging: &logging
 
 services:
   node0:
-    container_name: charon_node0
+    container_name: node0
     image: docker.pkg.github.com/obolnetwork/charon/charon:97d766ed
     hostname: charon
     command: charon run --data-dir="./charon-simnet/node0" --manifest-file="./charon-simnet/manifest.json" --monitoring-address="127.0.0.1:15003" --validator-api-address="127.0.0.1:15004" --p2p-tcp-address=127.0.0.1:15001 --p2p-udp-address=127.0.0.1:15002
     user: root
+    network_mode: "host"
     volumes:
       - ./charon-simnet:/charon-simnet
     ports:
@@ -22,11 +23,12 @@ services:
     <<: *logging
 
   node1:
-    container_name: charon_node1
+    container_name: node1
     image: docker.pkg.github.com/obolnetwork/charon/charon:97d766ed
     hostname: charon
     command: charon run --data-dir="./charon-simnet/node1" --manifest-file="./charon-simnet/manifest.json" --monitoring-address="127.0.0.1:15007" --validator-api-address="127.0.0.1:15008" --p2p-tcp-address=127.0.0.1:15005 --p2p-udp-address=127.0.0.1:15006
     user: root
+    network_mode: "host"
     volumes:
       - ./charon-simnet:/charon-simnet
     ports:
@@ -35,11 +37,12 @@ services:
     <<: *logging
 
   node2:
-    container_name: charon_node2
+    container_name: node2
     image: docker.pkg.github.com/obolnetwork/charon/charon:97d766ed
     hostname: charon
     command: charon run --data-dir="./charon-simnet/node2" --manifest-file="./charon-simnet/manifest.json" --monitoring-address="127.0.0.1:15011" --validator-api-address="127.0.0.1:15012" --p2p-tcp-address=127.0.0.1:15009 --p2p-udp-address=127.0.0.1:15010
     user: root
+    network_mode: "host"
     volumes:
       - ./charon-simnet:/charon-simnet
     ports:
@@ -48,11 +51,12 @@ services:
     <<: *logging
 
   node3:
-    container_name: charon_node3
+    container_name: node3
     image: docker.pkg.github.com/obolnetwork/charon/charon:97d766ed
     hostname: charon
     command: charon run --data-dir="./charon-simnet/node3" --manifest-file="./charon-simnet/manifest.json" --monitoring-address="127.0.0.1:15015" --validator-api-address="127.0.0.1:15016" --p2p-tcp-address=127.0.0.1:15013 --p2p-udp-address=127.0.0.1:15014
     user: root
+    network_mode: "host"
     volumes:
       - ./charon-simnet:/charon-simnet
     ports:
