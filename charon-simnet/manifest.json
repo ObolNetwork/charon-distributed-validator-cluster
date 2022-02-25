@@ -1,0 +1,20 @@
+{
+ "version": "obol/charon/manifest/0.0.1",
+ "description": "dv/1/threshold/3/peer/4",
+ "distributed_validators": [
+  {
+   "root_pubkey": "0x96ceac5d02af11685ad07f082dc9ccff794df6f16859583e1546a8238a241e6cbe9c97f059289751ea0f03563f83110b",
+   "threshold_verifiers": [
+    "ls6sXQKvEWha0H8ILcnM/3lN9vFoWVg+FUaoI4okHmy+nJfwWSiXUeoPA1Y/gxEL",
+    "ky0yxx0TEtLQ1V6FSyHOC6Zd+C3nATiKwuQsen9ht+LS5X9ZdNcn4AgFCosua2cs",
+    "j2yEchLoSVYOAsIiljtwEP/IsNt/C89V2KlSMd6qecGRdwXTiv/IqN4HOU+mGu/H"
+   ]
+  }
+ ],
+ "peers": [
+  "enr:-Iu4QPXsY9cYPxw7iayNEx3OkivZU_BV_7LeKq5CJTkqtYWjFii3mCorKyI1ejEep461uFySF2u1lTjZsuIczZwNW2SAgmlkgnY0gmlwhH8AAAGJc2VjcDI1NmsxoQOcmfHlLG4Bg5hKvhp5i4dV6CfiPDnJK6ZqjaKIHaXUWoN0Y3CCOpmDdWRwgjqa",
+  "enr:-Iu4QDliHPr-jlh5-14muBoq2tKyYIoF1jLHGjy2w0hSqwM7bve1nrsAeCsrozy1FeHktSWVjNhdMj57AJ-eONr3ym-AgmlkgnY0gmlwhH8AAAGJc2VjcDI1NmsxoQMRf9x8wLOeiXnEENvZ5C4sD6mWQU3f9lE8l7BwxUAjGYN0Y3CCOp2DdWRwgjqe",
+  "enr:-Iu4QB5u25iIPpIPwA69RgN8cCyyO0Aa46zk8caNgy5KJ3r6emVwjHjiCjOLaII0kIt93GYHd2vroV1KheKMa-PayOmAgmlkgnY0gmlwhH8AAAGJc2VjcDI1NmsxoQJMgHqqSbBwthkHlIKnV3FeZ4NYtcy_n7fifp_YKZgU64N0Y3CCOqGDdWRwgjqi",
+  "enr:-Iu4QELJMqfoKLfNSBrL72Sb5TAZ-n9tOPdSztvbwcbOsHgSVQGs5OaK6z92-Pz2N359qSrhFXe7dt6-TBdUCVGLrtaAgmlkgnY0gmlwhH8AAAGJc2VjcDI1NmsxoQKUPH342xnR-MIjHqVyYHjUWV12hoR75qkL8jpypGBvp4N0Y3CCOqWDdWRwgjqm"
+ ]
+}
