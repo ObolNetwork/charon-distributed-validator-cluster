@@ -16,10 +16,11 @@ EOF
 
 # If BOOTNODE env var present, resolve ENR via curl/wget
 if [ -n "${BOOTNODE}" ]; then
-  while ! ENR=$(wget -qO- http://${BOOTNODE}:16001/enr); do
+  while ! ENR=$(wget -qO- http://${BOOTNODE}:16001/enr 2>/dev/null); do
+    echo "waiting for http://${BOOTNODE}:16001/enr to become available..."
     sleep 1
   done
-  echo "p2p-udp-bootnodes: '${ENR}'" >> charon.yml
+  echo "p2p-bootnodes: '${ENR}'" >> charon.yml
 fi
 
-charon run
+exec charon run
