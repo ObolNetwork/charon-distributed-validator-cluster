@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   node0:
-    image: docker.pkg.github.com/obolnetwork/charon/charon:latest
+    image: ghcr.io/obolnetwork/charon/charon:latest
     entrypoint: /charon/run.sh
     networks: [cluster]
     user: root
