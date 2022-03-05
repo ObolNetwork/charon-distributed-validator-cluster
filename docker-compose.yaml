@@ -6,8 +6,6 @@ services:
     entrypoint: /charon/run.sh
     networks: [cluster]
     user: root
-    expose:
-      - 16001
     volumes:
       - .:/charon
     working_dir: /charon/node0
@@ -40,11 +38,10 @@ services:
     command: --config.file=/etc/prometheus/prometheus.yaml
     ports:
       - 9090:9090
-    networks:
-      - cluster
+    networks: [cluster]
     volumes:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-      - ./prometheus:/prometheus
+      - ./prometheus/data:/prometheus/data
 
 networks:
   cluster:
