@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Build a local charon binary to run in the docker container (instead of official release).
-# This is useful for local development and debugging.
+# This is useful for local testing and debugging.
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
@@ -14,3 +14,4 @@ else
 fi
 
 GOOS=linux GOARCH=amd64 go build -o "${SCRIPT_DIR}/charon"
+cd -
