@@ -44,6 +44,22 @@ services:
     networks: [cluster]
     volumes:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    hostname: grafana
+    user: root
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    networks: [cluster]
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
 
 networks:
   cluster:
