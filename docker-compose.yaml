@@ -41,7 +41,6 @@ services:
     networks: [cluster]
     volumes:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-      - ./prometheus/data:/prometheus/data
 
 networks:
   cluster:
