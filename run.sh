@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 
+# Support locally built charon binaries
+PATH="/charon:${PATH}"
+if [ "$(which charon)" == "/charon/charon" ]; then
+  echo "Running locally built charon binary"
+fi
+
 # Get container IP (https://stackoverflow.com/questions/13322485/how-to-get-the-primary-ip-address-of-the-local-machine-on-linux-and-os-x)
 BIND=`ip route get 1 | awk '{print $NF;exit}'`
 
