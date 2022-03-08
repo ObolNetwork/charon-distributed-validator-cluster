@@ -25,3 +25,18 @@ docker-compose up
 It is still early days for the Obol Network and everything is under active development. 
 It is NOT ready for mainnet or testnet for that matter. 
 Keep checking in for updates.
+
+## Running locally built charon binary 
+
+Testing and debugging charon-docker-compose by running a locally built charon binary in the containers is supported: 
+```
+# Checkout charon repo next to charon-docker-compose
+cd ..
+git clone git@github.com:ObolNetwork/charon.git
+
+# If charon repo is in a different path.
+# export CHARON_REPO=<path to charon repo>  
+
+./build_local.sh
+docker-compose up
+```
