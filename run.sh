@@ -13,7 +13,7 @@ if [ "${CLEAN}" = "true" ]; then
   rm /charon/node*/p2pkey 2>/dev/null || true
 fi
 
-# If GENERATE env var true, generate a simnet cluster
+# If GENERATE env var true and manifest doesn't exist, generate a simnet cluster
 if [ "${GENERATE}" = "true" ] && [ ! -f "/charon/manifest.json" ]; then
   echo "Generating simnet cluster"
   charon gen-simnet -t=3 -n=4 --cluster-dir=/tmp/charon-simnet/ 1>/dev/null
@@ -45,4 +45,5 @@ if [ -n "${BOOTNODE}" ]; then
   echo "p2p-bootnodes: '${ENR}'" >> charon.yml
 fi
 
+# Run charon
 exec charon run
