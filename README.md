@@ -20,6 +20,12 @@ docker-compose up
 # See the logs for simulated duties.
 ```
 
+Note that by default, when node0 starts, it generates a new simnet cluster (manifest and p2pkeys).
+To continue with a previously generated cluster, set the `CLEAN=false` env var.
+```sh
+CLEAN=false docker-compose up
+```
+
 ## Project Status
 
 It is still early days for the Obol Network and everything is under active development. 
@@ -29,7 +35,7 @@ Keep checking in for updates.
 ## Running locally built charon binary 
 
 Testing and debugging charon-docker-compose by running a locally built charon binary in the containers is supported: 
-```
+```sh
 # Checkout charon repo next to charon-docker-compose
 cd ..
 git clone git@github.com:ObolNetwork/charon.git

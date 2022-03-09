@@ -1,35 +1,38 @@
 version: "3.8"
 
+x-node-base: &node-base
+  image: ghcr.io/obolnetwork/charon/charon:latest
+  entrypoint: /charon/run.sh
+  networks: [ cluster ]
+  user: root
+  volumes:
+    - .:/charon
+
 services:
   node0:
-    image: ghcr.io/obolnetwork/charon/charon:latest
-    entrypoint: /charon/run.sh
-    networks: [cluster]
-    user: root
-    volumes:
-      - .:/charon
+    <<: *node-base
     working_dir: /charon/node0
+    environment:
+      GENERATE: true
+      CLEAN: "${CLEAN:-true}"
 
   node1:
-    extends:
-      service: node0
+    <<: *node-base
     working_dir: /charon/node1
     environment:
-      - BOOTNODE=node0
+      BOOTNODE: node0
 
   node2:
-    extends:
-      service: node0
+    <<: *node-base
     working_dir: /charon/node2
     environment:
-      - BOOTNODE=node0
+      BOOTNODE: node0
 
   node3:
-    extends:
-      service: node0
+    <<: *node-base
     working_dir: /charon/node3
     environment:
-      - BOOTNODE=node0
+      BOOTNODE: node0
 
   prometheus:
     image: prom/prometheus:latest
