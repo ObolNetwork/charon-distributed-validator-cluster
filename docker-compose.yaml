@@ -13,7 +13,7 @@ services:
     <<: *node-base
     working_dir: /charon/node0
     environment:
-      GENERATE: true
+      GENERATE: "true"
       CLEAN: "${CLEAN:-true}"
 
   node1:
