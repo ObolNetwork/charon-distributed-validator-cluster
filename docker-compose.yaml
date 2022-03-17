@@ -4,7 +4,6 @@ x-node-base: &node-base
   image: ghcr.io/obolnetwork/charon/charon:latest
   entrypoint: /charon/run.sh
   networks: [ cluster ]
-  user: root
   volumes:
     - .:/charon
 
@@ -13,7 +12,7 @@ services:
     <<: *node-base
     working_dir: /charon/node0
     environment:
-      GENERATE: true
+      GENERATE: "true"
       CLEAN: "${CLEAN:-true}"
 
   node1:
