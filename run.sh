@@ -2,7 +2,6 @@
 
 # Support locally built charon binaries
 PATH="/charon:${PATH}"
-
 if [ "$(which charon)" = "/charon/charon" ]; then
   echo "Running locally built charon binary"
 fi

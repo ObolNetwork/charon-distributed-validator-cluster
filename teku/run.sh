@@ -13,4 +13,3 @@ exec /opt/teku/bin/teku validator-client \
   --network=auto \
   --beacon-node-api-endpoint="http://${NODE}:16002" \
   --validator-keys="/charon/${NODE}:/charon/${NODE}"
-

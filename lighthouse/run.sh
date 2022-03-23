@@ -15,4 +15,3 @@ echo "Starting lighthouse validator client for ${NODE}"
 exec lighthouse validator \
   --network prater \
   --beacon-node "http://${NODE}:16002"
-
