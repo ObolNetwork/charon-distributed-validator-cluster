@@ -2,4 +2,5 @@ charon.yml
 charon
 manifest.json
 p2pkey
-simnet_keys.json
+keystore*
+prater

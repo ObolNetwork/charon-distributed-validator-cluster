@@ -2,7 +2,7 @@
 
 # Support locally built charon binaries
 PATH="/charon:${PATH}"
-if [ "$(which charon)" == "/charon/charon" ]; then
+if [ "$(which charon)" = "/charon/charon" ]; then
   echo "Running locally built charon binary"
 fi
 
@@ -15,7 +15,7 @@ fi
 
 # If GENERATE env var true and manifest doesn't exist, generate a simnet cluster
 if [ "${GENERATE}" = "true" ] && [ ! -f "/charon/manifest.json" ]; then
-  echo "Generating simnet cluster"
+  echo "Generating simnet cluster (this can be slow...)"
   charon gen-simnet -t=3 -n=4 --cluster-dir=/tmp/charon-simnet/ 1>/dev/null
   cp /tmp/charon-simnet/manifest.json /charon/manifest.json
   cp -r /tmp/charon-simnet/node* /charon/
@@ -34,13 +34,14 @@ monitoring-address: ${BIND}:16001
 validator-api-address: ${BIND}:16002
 p2p-tcp-address: ${BIND}:16003
 p2p-udp-address: ${BIND}:16004
+simnet-validator-mock: ${SIMNET_VMOCK:-true}
 EOF
 
 # If BOOTNODE env var present, resolve ENR via curl/wget
 if [ -n "${BOOTNODE}" ]; then
   while ! ENR=$(wget -qO- "http://${BOOTNODE}:16001/enr" 2>/dev/null); do
-    echo "waiting for http://${BOOTNODE}:16001/enr to become available..."
-    sleep 1
+    echo "Waiting for http://${BOOTNODE}:16001/enr to become available..."
+    sleep 5
   done
   echo "p2p-bootnodes: '${ENR}'" >> charon.yml
 fi

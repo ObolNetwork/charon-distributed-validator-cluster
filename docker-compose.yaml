@@ -14,12 +14,16 @@ services:
     environment:
       GENERATE: "true"
       CLEAN: "${CLEAN:-true}"
+      SIMNET_VMOCK: "false" # Uses Lighthouse VC
+    ports:
+      - "16002:16002"
 
   node1:
     <<: *node-base
     working_dir: /charon/node1
     environment:
       BOOTNODE: node0
+      SIMNET_VMOCK: "false" # Uses Teku VC
 
   node2:
     <<: *node-base
@@ -33,13 +37,30 @@ services:
     environment:
       BOOTNODE: node0
 
+  vc0-lh:
+    build: lighthouse
+    networks: [cluster]
+    environment:
+      NODE: node0
+    volumes:
+     - .:/charon
+
+  vc1-teku:
+    image: consensys/teku:latest
+    networks: [cluster]
+    entrypoint: [/charon/teku/run.sh]
+    environment:
+      NODE: node1
+    volumes:
+     - .:/charon
+
   prometheus:
     image: prom/prometheus:latest
     user: root
     restart: unless-stopped
     command: --config.file=/etc/prometheus/prometheus.yaml
     ports:
-      - 9090:9090
+      - "9090:9090"
     networks: [cluster]
     volumes:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
