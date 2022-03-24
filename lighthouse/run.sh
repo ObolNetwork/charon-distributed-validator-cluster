@@ -8,9 +8,8 @@ done
 echo "Creating simnet config"
 rm -rf /tmp/simnet || true
 mkdir /tmp/simnet/
-curl "http://${NODE}:16002/eth/v1/config/spec" | jq -r .data | yq -P >> /tmp/simnet/config.yaml
+curl "http://${NODE}:16002/eth/v1/config/spec" | jq -r .data | yq -P > /tmp/simnet/config.yaml
 echo "0" > /tmp/simnet/deploy_block.txt
-echo "[]" > /tmp/simnet/boot_enr.yaml
 
 echo "Importing simnet keys /charon/${NODE}/keystore-simnet-0.json"
 echo "simnet" | lighthouse account validator import \
