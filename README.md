@@ -33,8 +33,8 @@ CLEAN=false docker-compose up
 ## Mocked Beacon Node
 
 The simnet uses a mocked beacon node to avoid the complexities of depositing stake and waiting for validator activation.
-It uses [prater](https://prater.beaconcha.in/) configuration for slots and epoch timing. It assigns attestation duties to the simnet 
-distributed validator on the first slot of every epoch (every 6.4 minutes).
+It uses custom configuration for slots and epoch timing (1s per slot, 16 slots per epoch). It assigns attestation duties to the simnet 
+distributed validator on the first slot of every epoch.
 
 The cluster of 4 charon nodes uses a mixture of validator clients:
 - node0: [Lighthouse](https://github.com/sigp/lighthouse)
