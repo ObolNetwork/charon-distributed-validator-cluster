@@ -8,9 +8,9 @@ fi
 
 # If CLEAN env var true, clean existing manifest and p2pkeys.
 if [ "${CLEAN}" = "true" ]; then
-  echo "Cleaning cluster manifest and p2pkeys"
+  echo "Cleaning cluster manifest and node config and keys"
   rm /charon/manifest.json 2>/dev/null || true
-  rm /charon/node*/p2pkey 2>/dev/null || true
+  rm /charon/node*/* 2>/dev/null || true
 fi
 
 # If GENERATE env var true and manifest doesn't exist, generate a simnet cluster
