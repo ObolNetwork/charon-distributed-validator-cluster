@@ -57,8 +57,7 @@ services:
       - 3000:3000
     networks: [cluster]
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana:/var/lib/grafana
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
 
 networks:
