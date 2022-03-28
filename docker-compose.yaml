@@ -56,7 +56,6 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
-    user: root
     restart: unless-stopped
     command: --config.file=/etc/prometheus/prometheus.yaml
     ports:
@@ -66,19 +65,16 @@ services:
       - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
   
   grafana:
-    container_name: grafana
     image: grafana/grafana:latest
     restart: unless-stopped
-    hostname: grafana
-    user: root
-    depends_on:
-      - prometheus
     ports:
-      - 3000:3000
+      - "3000:3000"
     networks: [cluster]
     volumes:
       - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/datasource.yml
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./grafana/simnet_dash.json:/etc/dashboards/simnet_dash.json
 
 networks:
   cluster:
