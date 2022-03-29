@@ -18,7 +18,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 git clone git@github.com:ObolNetwork/charon-docker-compose.git
 cd charon-docker-compose
 docker-compose up
-# See the logs for simulated duties.
+open http://localhost:3000/d/B2zGKKs7k # Open Grafana simnet dashboard
 ```
 
 Note that by default, when `node0` starts, it generates a new simnet cluster.

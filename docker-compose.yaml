@@ -56,17 +56,14 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
-    restart: unless-stopped
-    command: --config.file=/etc/prometheus/prometheus.yaml
     ports:
       - "9090:9090"
     networks: [cluster]
     volumes:
-      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
   
   grafana:
     image: grafana/grafana:latest
-    restart: unless-stopped
     ports:
       - "3000:3000"
     networks: [cluster]
