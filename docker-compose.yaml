@@ -73,5 +73,11 @@ services:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - ./grafana/simnet_dash.json:/etc/dashboards/simnet_dash.json
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    networks: [cluster]
+    ports:
+      - "16686:16686"
+
 networks:
   cluster:

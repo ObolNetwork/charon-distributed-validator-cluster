@@ -11,6 +11,7 @@ if [ "${CLEAN}" = "true" ]; then
   echo "Cleaning cluster manifest and node config and keys"
   rm /charon/manifest.json 2>/dev/null || true
   rm /charon/node*/* 2>/dev/null || true
+  rm -rf /lighthouse/prater 2>/dev/null || true
 fi
 
 # If GENERATE env var true and manifest doesn't exist, generate a simnet cluster
@@ -33,6 +34,8 @@ fi
 
 # Get container IP (https://stackoverflow.com/questions/13322485/how-to-get-the-primary-ip-address-of-the-local-machine-on-linux-and-os-x)
 BIND=$(ip route get 1 | awk '{print $NF;exit}')
+NODE=$(basename "$(pwd)")
+
 
 # Write a config file: charon.yml
 cat <<EOF > charon.yml
@@ -43,8 +46,10 @@ validator-api-address: ${BIND}:16002
 p2p-bootnodes: ${ENR}
 p2p-tcp-address: ${BIND}:16003
 p2p-udp-address: ${BIND}:16004
-simnet: true
+simnet-beacon-mock: true
 simnet-validator-mock: ${SIMNET_VMOCK:-true}
+jaeger-address: jaeger:6831
+jaeger-service: ${NODE}
 EOF
 
 

@@ -19,6 +19,7 @@ git clone git@github.com:ObolNetwork/charon-docker-compose.git
 cd charon-docker-compose
 docker-compose up
 open http://localhost:3000/d/B2zGKKs7k # Open Grafana simnet dashboard
+open http://localhost:16686            # Open Jaeger dashboard
 ```
 
 Note that by default, when `node0` starts, it generates a new simnet cluster.
