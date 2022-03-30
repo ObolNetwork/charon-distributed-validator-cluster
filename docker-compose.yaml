@@ -22,20 +22,21 @@ services:
     <<: *node-base
     working_dir: /charon/node1
     environment:
-      BOOTNODE: node0
       SIMNET_VMOCK: "false" # Uses Teku VC
 
   node2:
     <<: *node-base
     working_dir: /charon/node2
-    environment:
-      BOOTNODE: node0
 
   node3:
     <<: *node-base
     working_dir: /charon/node3
-    environment:
-      BOOTNODE: node0
+
+  bootnode:
+    <<: *node-base
+    image: ghcr.io/obolnetwork/charon/charon:latest # TODO(corver): Remove this once version above supports bootnode.
+    working_dir: /charon/bootnode
+    entrypoint: /charon/bootnode/run.sh
 
   vc0-lh:
     build: lighthouse
