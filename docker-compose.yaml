@@ -1,7 +1,7 @@
 version: "3.8"
 
 x-node-base: &node-base
-  image: ghcr.io/obolnetwork/charon/charon:latest
+  image: ghcr.io/obolnetwork/charon/charon:v0.2.0
   entrypoint: /charon/run.sh
   networks: [ cluster ]
   volumes:
