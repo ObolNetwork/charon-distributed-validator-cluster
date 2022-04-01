@@ -27,12 +27,10 @@ down:
 .PHONY: gen-cluster
 gen-cluster:
 	@echo "Generating simnet cluster (may take a moment...)"
-	$(charon_cmd) gen-cluster --simnet -t=3 -n=4 --cluster-dir=/charon/tmp 1>/dev/null
-	@cp tmp/manifest.json manifest.json
-	@cp -r tmp/node* .
-	@rm node*/run.sh
-	@rm -rf tmp
+	$(charon_cmd) gen-cluster --clean=false --simnet -t=3 -n=4 --cluster-dir=/charon 1>/dev/null
+	@rm node*/run.sh run_cluster.sh teamocil.yml || true
 	@echo ""
+	@echo "Generating bootnode p2pkey"
 	$(charon_cmd) gen-p2pkey --data-dir=/charon/bootnode 1>/dev/null
 
 .PHONY: clean
