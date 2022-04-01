@@ -1,42 +1,55 @@
 version: "3.8"
 
 x-node-base: &node-base
-  image: ghcr.io/obolnetwork/charon/charon:v0.2.0
-  entrypoint: /charon/run.sh
-  networks: [ cluster ]
+  image: ghcr.io/obolnetwork/charon/charon:latest # TODO(corver): Use pegged version
+  entrypoint: "${COMPOSE_ENTRYPOINT:-}"
+  command: run
+  env_file: [ charon.env ]
+  networks: [cluster]
   volumes:
     - .:/charon
 
 services:
   node0:
     <<: *node-base
-    working_dir: /charon/node0
     environment:
-      GENERATE: "true"
-      CLEAN: "${CLEAN:-true}"
-      SIMNET_VMOCK: "false" # Uses Lighthouse VC
+      CHARON_DATA_DIR: /charon/node0
+      CHARON_JAEGER_SERVICE: node0
+      CHARON_P2P_EXTERNAL_HOST: node0
+      CHARON_SIMNET_VALIDATOR_MOCK: "false" # Uses Lighthouse VC
     ports:
       - "16002:16002"
 
   node1:
     <<: *node-base
-    working_dir: /charon/node1
     environment:
-      SIMNET_VMOCK: "false" # Uses Teku VC
+      CHARON_DATA_DIR: /charon/node1
+      CHARON_JAEGER_SERVICE: node1
+      CHARON_P2P_EXTERNAL_HOST: node1
+      CHARON_SIMNET_VALIDATOR_MOCK: "false" # Uses Teku VC
 
   node2:
     <<: *node-base
-    working_dir: /charon/node2
+    environment:
+      CHARON_DATA_DIR: /charon/node2
+      CHARON_JAEGER_SERVICE: node2
+      CHARON_P2P_EXTERNAL_HOST: node2
 
   node3:
     <<: *node-base
-    working_dir: /charon/node3
+    environment:
+      CHARON_DATA_DIR: /charon/node3
+      CHARON_JAEGER_SERVICE: node3
+      CHARON_P2P_EXTERNAL_HOST: node3
 
   bootnode:
     <<: *node-base
-    image: ghcr.io/obolnetwork/charon/charon:latest # TODO(corver): Remove this once version above supports bootnode.
-    working_dir: /charon/bootnode
-    entrypoint: /charon/bootnode/run.sh
+    command: bootnode
+    environment:
+      CHARON_BOOTNODE_HTTP_ADDRESS: 0.0.0.0:16000
+      CHARON_DATA_DIR: /charon/bootnode
+      CHARON_P2P_BOOTNODES: ""
+      CHARON_P2P_EXTERNAL_HOST: bootnode
 
   vc0-lh:
     build: lighthouse

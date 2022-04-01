@@ -17,18 +17,12 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 ```sh
 git clone git@github.com:ObolNetwork/charon-docker-compose.git
 cd charon-docker-compose
+make                                   # Shows available make targets
+make clean                             # Deletes previously generated cluster
+make gen-cluster                       # Generates simnet cluster
 docker-compose up
 open http://localhost:3000/d/B2zGKKs7k # Open Grafana simnet dashboard
 open http://localhost:16686            # Open Jaeger dashboard
-```
-
-Note that by default, when `node0` starts, it generates a new simnet cluster.
-It does so by calling the `charon gen-simnet` command that generates files for a new charon cluster: `manifest.json` (cluster definition), 
-`keystore-*.json` (BLS threshold private key shares) and `p2pkey` (networking) . 
-Generating the keystore files is slow and takes up to 1 minute.
-To continue with a previously generated cluster, set the `CLEAN=false` env var.
-```sh
-CLEAN=false docker-compose up
 ```
 
 ## Mocked Beacon Node
@@ -63,6 +57,6 @@ git clone git@github.com:ObolNetwork/charon.git
 # If charon repo is in a different path.
 # export CHARON_REPO=<path to charon repo>  
 
-./build_local.sh
+make build-local
 docker-compose up
 ```
