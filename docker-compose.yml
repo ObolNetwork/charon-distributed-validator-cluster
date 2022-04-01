@@ -6,8 +6,8 @@ x-node-base: &node-base
   command: run
   env_file: [ charon.env ]
   networks: [cluster]
-  volumes:
-    - .:/charon
+  depends_on: [ bootnode ]
+  volumes: [ .:/charon ]
 
 services:
   node0:
@@ -45,6 +45,7 @@ services:
   bootnode:
     <<: *node-base
     command: bootnode
+    depends_on: []
     environment:
       CHARON_BOOTNODE_HTTP_ADDRESS: 0.0.0.0:16000
       CHARON_DATA_DIR: /charon/bootnode
