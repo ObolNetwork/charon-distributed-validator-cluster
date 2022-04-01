@@ -4,10 +4,10 @@ x-node-base: &node-base
   image: ghcr.io/obolnetwork/charon/charon:latest # TODO(corver): Use pegged version
   entrypoint: "${COMPOSE_ENTRYPOINT:-}"
   command: run
-  env_file: [ charon.env ]
+  env_file: [charon.env]
   networks: [cluster]
-  depends_on: [ bootnode ]
-  volumes: [ .:/charon ]
+  depends_on: [bootnode]
+  volumes: [.:/charon]
 
 services:
   node0:
@@ -63,9 +63,12 @@ services:
   vc1-teku:
     image: consensys/teku:latest
     networks: [cluster]
-    entrypoint: [/charon/teku/run.sh]
-    environment:
-      NODE: node1
+    depends_on: [node1]
+    command: |
+      validator-client
+      --network=auto
+      --beacon-node-api-endpoint="http://node1:16002" 
+      --validator-keys="/charon/node1:/charon/node1"
     volumes:
      - .:/charon
 
