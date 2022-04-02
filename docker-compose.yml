@@ -2,9 +2,9 @@ version: "3.8"
 
 x-node-base: &node-base
   image: ghcr.io/obolnetwork/charon/charon:latest # TODO(corver): Use pegged version
-  entrypoint: "${COMPOSE_ENTRYPOINT:-}"
+  entrypoint: "${COMPOSE_ENTRYPOINT:-/usr/local/bin/charon}"
   command: run
-  env_file: [charon.env]
+  env_file: [charon.env,beaconnode.env]
   networks: [cluster]
   depends_on: [bootnode]
   volumes: [.:/charon]
@@ -55,6 +55,7 @@ services:
   vc0-lh:
     build: lighthouse
     networks: [cluster]
+    depends_on: [node0]
     environment:
       NODE: node0
     volumes:
