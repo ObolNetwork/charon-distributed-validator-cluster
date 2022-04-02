@@ -4,3 +4,4 @@ manifest.json
 p2pkey
 keystore*
 prater
+.env

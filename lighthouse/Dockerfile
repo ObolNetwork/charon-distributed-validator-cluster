@@ -1,7 +1,6 @@
 FROM sigp/lighthouse:latest
 
-RUN apt-get update && apt-get install -y curl
-RUN apt-get install -y jq wget
+RUN apt-get update && apt-get install -y curl jq wget
 
 ENV YQ_VERSION=v4.23.1
 ENV YQ_BINARY=yq_linux_amd64

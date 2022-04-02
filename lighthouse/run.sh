@@ -5,19 +5,22 @@ while ! curl "http://${NODE}:16002/up" 2>/dev/null; do
   sleep 5
 done
 
-echo "Creating simnet config"
-rm -rf /tmp/simnet || true
-mkdir /tmp/simnet/
-curl "http://${NODE}:16002/eth/v1/config/spec" | jq -r .data | yq -P > /tmp/simnet/config.yaml
-echo "0" > /tmp/simnet/deploy_block.txt
+echo "Creating testnet config"
+rm -rf /tmp/testnet || true
+mkdir /tmp/testnet/
+curl "http://${NODE}:16002/eth/v1/config/spec" | jq -r .data | yq -P > /tmp/testnet/config.yaml
+echo "0" > /tmp/testnet/deploy_block.txt
 
-echo "Importing simnet keys /charon/${NODE}/keystore-simnet-0.json"
-echo "simnet" | lighthouse account validator import \
-  --testnet-dir "/tmp/simnet" \
-  --stdin-inputs \
-  --keystore "/charon/${NODE}/keystore-simnet-0.json"
+for f in /charon/"${NODE}"/keystore-*.json; do
+  echo "Importing key ${f}"
+  cat "$(echo "${f}" | sed 's/json/txt/')" | lighthouse account validator import \
+    --testnet-dir "/tmp/testnet" \
+    --stdin-inputs \
+    --keystore "${f}"
+done
+
 
 echo "Starting lighthouse validator client for ${NODE}"
 exec lighthouse validator \
-  --testnet-dir "/tmp/simnet" \
+  --testnet-dir "/tmp/testnet" \
   --beacon-node "http://${NODE}:16002"
