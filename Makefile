@@ -19,7 +19,7 @@ help:
 	@echo " clean            Cleans previously generated cluster"
 	@echo ""
 	@echo "Targets only for the brave ⚔️ 🐉:"
-	@echo " disable-simnet         Disable simnet and connects to real beacon node endpoint"
+	@echo " disable-simnet         Disables simnet mock beacon node and configures real beacon node endpoint"
 	@echo " split-existing-keys    Create a cluster by splitting existing non-dvt validator keys"
 
 .PHONY: up
