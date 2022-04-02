@@ -5,3 +5,5 @@ p2pkey
 keystore*
 prater
 .env
+beaconnode.env.old
+split_keys/
