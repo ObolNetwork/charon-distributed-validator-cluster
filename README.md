@@ -31,7 +31,7 @@ The simnet uses a mocked beacon node to avoid the complexities of depositing sta
 It uses custom configuration for slots and epoch timing (1s per slot, 16 slots per epoch). It assigns attestation duties to the simnet 
 distributed validator on the first slot of every epoch.
 
-The cluster of 4 charon nodes uses a mixture of validator clients:
+The default cluster consists of 4 charon nodes uses a mixture of validator clients:
 - node0: [Lighthouse](https://github.com/sigp/lighthouse)
 - node1: [Teku](https://github.com/ConsenSys/teku)
 - node2: [mock validator client](https://github.com/ObolNetwork/charon/tree/main/testutil/validatormock)
@@ -46,7 +46,27 @@ Keep checking in for updates.
 > Charon only support attestation duties at this point, so validator client errors relating to 
 > other duties than attestation is expected (including attestation aggregation). 
 
-## Running locally built charon binary 
+## Makefile features
+
+### `make clean`: Clean and reset cluster
+
+`make clean` performs the following actions:
+- Stops and removes all running containers, `docker-compose down` 
+- Deletes generated cluster artifacts
+- Enables simnet (if previously disabled)
+- Pulls latest container.
+- Deletes locally built binary if present
+
+### `make gen-cluster`: Generate simnet cluster
+
+Generates a simnet cluster with 4 nodes (n=4) and threshold of 3 (t=3) for signature reconstruction.
+
+```
+# Override n and/or t
+make n=5 t=4 gen-cluster
+```
+
+### `make build-local`: Running locally built charon binary 
 
 Testing and debugging charon-docker-compose by running a locally built charon binary in the containers is supported: 
 ```sh
@@ -60,3 +80,34 @@ git clone git@github.com:ObolNetwork/charon.git
 make build-local
 docker-compose up
 ```
+
+>  **WARNING**: The features below are only for the brave who know what they are doing ⚔️ 🐉
+
+### `make disable-simnet`: Disable simnet mock beacon node
+
+Disables the simnet mock beacon node and configures a real beacon node endpoint.
+
+```
+make beacon_node_endpoint=<url> disable-simnet
+```
+
+
+> Remember: Do not connect to main net! 
+
+### `make split-existing-keys`: Create a cluster by splitting existing non-dvt validator keys
+
+This uses the same command as `gen-cluster` command but doesn't create new random keys. 
+Rather existing non-dvt validator keys stored in `./split_keys/` folder are split into threshold BLS partial shares.
+
+```
+mkdir split_keys
+cp path/to/existing/keys/keystore-*.json split_keys/
+cp path/to/passwords/keystore-*.txt split_keys/
+# Each keystore-*.json requires a keystore-*.txt file containing the password.
+make split-existing-keys
+make up
+```
+
+> Remember: Please make sure any existing validator has been shut down for
+> at least 2 finalised epochs before starting the charon cluster,
+> otherwise slashing could occur.
