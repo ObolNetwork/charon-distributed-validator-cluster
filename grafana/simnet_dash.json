@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1649337692036,
+  "iteration": 1649349193420,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -43,7 +43,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-BlPu"
           },
           "mappings": [],
           "thresholds": {
@@ -60,16 +60,16 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 5,
+        "w": 4,
         "x": 0,
         "y": 1
       },
       "id": 3,
       "options": {
-        "colorMode": "value",
+        "colorMode": "background",
         "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "horizontal",
+        "orientation": "vertical",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -86,8 +86,9 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "exemplar": true,
+          "exemplar": false,
           "expr": "core_scheduler_current_slot{job=\"$node\"}",
+          "instant": true,
           "interval": "",
           "legendFormat": "Slot",
           "refId": "A"
@@ -97,9 +98,10 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "exemplar": true,
+          "exemplar": false,
           "expr": "core_scheduler_current_epoch{job=\"$node\"}",
           "hide": false,
+          "instant": true,
           "interval": "",
           "legendFormat": "Epoch",
           "refId": "B"
@@ -107,6 +109,73 @@
       ],
       "title": "Slot/Epoch",
       "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 19,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 0,
+        "showHeader": false
+      },
+      "pluginVersion": "8.4.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "(\n  sum(app_git_commit{job=\"$node\"}) by (hash)\n)\n   + on(job) group_left(version)\n(\n   0 * sum(app_version{job=\"$node\"}) by (version)\n)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        }
+      ],
+      "title": "Version Info",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "rows"
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "fieldConfig": {
@@ -161,8 +230,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 9,
-        "x": 5,
+        "w": 8,
+        "x": 8,
         "y": 1
       },
       "id": 13,
@@ -246,8 +315,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 9,
-        "x": 14,
+        "w": 8,
+        "x": 16,
         "y": 1
       },
       "id": 14,
