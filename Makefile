@@ -1,12 +1,15 @@
 # Use locally built charon if present
-entrypoint := $(if $(wildcard charon),/charon/charon,/usr/local/bin/charon)
+entrypoint := $(if $(wildcard charon),/charon-docker-compose/charon,/usr/local/bin/charon)
 
 # TODO(corverr): Replace with static version 0.3.0
-charon_cmd := docker run --rm --entrypoint=$(entrypoint) -v $(shell pwd):/charon ghcr.io/obolnetwork/charon/charon:latest
+charon_cmd := docker run --rm --entrypoint=$(entrypoint) -v $(shell pwd):/charon-docker-compose ghcr.io/obolnetwork/charon/charon:latest
 
-# Default cluster. Override example: make t=4 n=5 gen-cluster
+# Default cluster. Override example: make t=4 n=5 create-cluster
 n := 4
 t := 3
+
+# Default split keys dir (must be subdirectory of this repo).
+split_keys_dir := split_keys
 
 .DEFAULT_GOAL := help
 .PHONY: help
@@ -14,9 +17,9 @@ help:
 	@echo "The following *make* targets are available:"
 	@echo " up               Create and start docker-compose containers"
 	@echo " down             Stop and remove docker-compose resources"
-	@echo " gen-cluster      Generates a simnet cluster"
+	@echo " create-cluster   Creates a simnet cluster"
 	@echo " build-local      Build local charon binary from source (instead of using binary in container)"
-	@echo " clean            Cleans previously generated cluster"
+	@echo " clean            Cleans previously created cluster"
 	@echo ""
 	@echo "Targets only for the brave ⚔️ 🐉:"
 	@echo " disable-simnet         Disables simnet mock beacon node and configures real beacon node endpoint"
@@ -49,30 +52,16 @@ clean:
 build-local:
 	@./build_local.sh
 
-.PHONY: gen-cluster
-gen-cluster:
-	@echo "Generating simnet cluster (may take a moment...)"
-	$(charon_cmd) gen-cluster --clean=false -t=$(t) -n=$(n) --cluster-dir=/charon 1>/dev/null
-	@make post-gen-cluster
+.PHONY: create-cluster
+create-cluster:
+	@echo "Creating simnet cluster"
+	$(charon_cmd) create-cluster -t=$(t) -n=$(n) --cluster-dir=/charon-docker-compose
 
 .PHONY: split-existing-keys
 split-existing-keys:
-	@if [ ! -f split_keys/keystore*.json ]; then echo "No keys in split_keys/ directory" && exit 1; fi
-	@echo "Generating cluster by splitting existing validator keys (may take a moment...)"
-	$(charon_cmd) gen-cluster --split-existing-keys --keys-dir=/charon/split_keys --clean=false -t=$(t) -n=$(n) --cluster-dir=/charon 1>/dev/null
-	@echo "***************** WARNING: Splitting keys **********************"
-	@echo " Please make sure any existing validator has been shut down for"
-	@echo " at least 2 finalised epochs before starting the charon cluster,"
-	@echo " otherwise slashing could occur."
-	@echo "****************************************************************"
-	@make post-gen-cluster
-
-.PHONY: post-gen-cluster
-post-gen-cluster:
-	@rm node*/run.sh run_cluster.sh teamocil.yml 2>/dev/null || true
-	@echo ""
-	@echo "Generating bootnode p2pkey"
-	$(charon_cmd) gen-p2pkey --data-dir=/charon/bootnode 1>/dev/null
+	@if [ ! -f $(split_keys_dir)/keystore*.json ]; then echo "No keys in $(split_keys_dir)/ directory" && exit 1; fi
+	@echo "Creating cluster by splitting existing validator keys"
+	$(charon_cmd) create-cluster --split-existing-keys --split-keys-dir=/charon-docker-compose/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=/charon-docker-compose
 
 .PHONY: disable-simnet
 disable-simnet:

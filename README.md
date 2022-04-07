@@ -18,8 +18,8 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 git clone git@github.com:ObolNetwork/charon-docker-compose.git
 cd charon-docker-compose
 make                                   # Shows available make targets
-make clean                             # Deletes previously generated cluster
-make gen-cluster                       # Generates simnet cluster
+make clean                             # Deletes previously created cluster
+make create-cluster                    # Creates simnet cluster
 docker-compose up
 open http://localhost:3000/d/B2zGKKs7k # Open Grafana simnet dashboard
 open http://localhost:16686            # Open Jaeger dashboard
@@ -52,18 +52,18 @@ Keep checking in for updates.
 
 `make clean` performs the following actions:
 - Stops and removes all running containers, `docker-compose down` 
-- Deletes generated cluster artifacts
+- Deletes created cluster artifacts
 - Enables simnet (if previously disabled)
 - Pulls latest container.
 - Deletes locally built binary if present
 
-### `make gen-cluster`: Generate simnet cluster
+### `make create-cluster`: Create simnet cluster
 
-Generates a simnet cluster with 4 nodes (n=4) and threshold of 3 (t=3) for signature reconstruction.
+Creates a **simnet** cluster with 4 nodes (n=4) and threshold of 3 (t=3) for signature reconstruction.
 
 ```
 # Override n and/or t
-make n=5 t=4 gen-cluster
+make n=5 t=4 create-cluster
 ```
 
 ### `make build-local`: Running locally built charon binary 
@@ -81,7 +81,8 @@ make build-local
 docker-compose up
 ```
 
->  **WARNING**: The features below are only for the brave who know what they are doing ⚔️ 🐉
+| ⚠️ The features below are only for the brave ⚔️ 🐉 |
+|----------------------------------------------------|
 
 ### `make disable-simnet`: Disable simnet mock beacon node
 
@@ -96,7 +97,7 @@ make beacon_node_endpoint=<url> disable-simnet
 
 ### `make split-existing-keys`: Create a cluster by splitting existing non-dvt validator keys
 
-This uses the same command as `gen-cluster` command but doesn't create new random keys. 
+This uses the same command as `create-cluster` command but doesn't create new random keys. 
 Rather existing non-dvt validator keys stored in `./split_keys/` folder are split into threshold BLS partial shares.
 
 ```

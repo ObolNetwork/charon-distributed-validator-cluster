@@ -15,7 +15,7 @@ services:
     environment:
       CHARON_DATA_DIR: /charon/node0
       CHARON_JAEGER_SERVICE: node0
-      CHARON_P2P_EXTERNAL_HOST: node0
+      CHARON_P2P_EXTERNAL_HOSTNAME: node0
       CHARON_SIMNET_VALIDATOR_MOCK: "false" # Uses Lighthouse VC
     ports:
       - "16002:16002"
@@ -25,7 +25,7 @@ services:
     environment:
       CHARON_DATA_DIR: /charon/node1
       CHARON_JAEGER_SERVICE: node1
-      CHARON_P2P_EXTERNAL_HOST: node1
+      CHARON_P2P_EXTERNAL_HOSTNAME: node1
       CHARON_SIMNET_VALIDATOR_MOCK: "false" # Uses Teku VC
 
   node2:
@@ -33,14 +33,14 @@ services:
     environment:
       CHARON_DATA_DIR: /charon/node2
       CHARON_JAEGER_SERVICE: node2
-      CHARON_P2P_EXTERNAL_HOST: node2
+      CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
   node3:
     <<: *node-base
     environment:
       CHARON_DATA_DIR: /charon/node3
       CHARON_JAEGER_SERVICE: node3
-      CHARON_P2P_EXTERNAL_HOST: node3
+      CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
   bootnode:
     <<: *node-base
@@ -50,7 +50,7 @@ services:
       CHARON_BOOTNODE_HTTP_ADDRESS: 0.0.0.0:16000
       CHARON_DATA_DIR: /charon/bootnode
       CHARON_P2P_BOOTNODES: ""
-      CHARON_P2P_EXTERNAL_HOST: bootnode
+      CHARON_P2P_EXTERNAL_HOSTNAME: bootnode
 
   vc0-lh:
     build: lighthouse
@@ -70,6 +70,7 @@ services:
       --network=auto
       --beacon-node-api-endpoint="http://node1:16002" 
       --validator-keys="/charon/node1:/charon/node1"
+      --validators-proposer-default-fee-recipient="0x0000000000000000000000000000000000000000"
     volumes:
      - .:/charon
 
