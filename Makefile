@@ -1,8 +1,10 @@
 # Use locally built charon if present
 entrypoint := $(if $(wildcard charon),/charon-docker-compose/charon,/usr/local/bin/charon)
 
-# TODO(corverr): Replace with static version 0.3.0
-charon_cmd := docker run --rm --entrypoint=$(entrypoint) -v $(shell pwd):/charon-docker-compose ghcr.io/obolnetwork/charon/charon:latest
+# Pegged charon version (update this for each release).
+version := v0.3.0
+
+charon_cmd := docker run --rm --entrypoint=$(entrypoint) -v $(shell pwd):/charon-docker-compose ghcr.io/obolnetwork/charon:$(version)
 
 # Default cluster. Override example: make t=4 n=5 create-cluster
 n := 4
@@ -46,7 +48,6 @@ clean:
 	@rm charon 2>/dev/null || true
 	@rm .env 2>/dev/null || true
 	@[ -f beaconnode.env.old ] && echo "Enabling simnet" && mv beaconnode.env.old beaconnode.env || true
-	@echo "Pulling latest container" && docker pull ghcr.io/obolnetwork/charon/charon:latest 1>/dev/null
 
 .PHONY: build-local
 build-local:
