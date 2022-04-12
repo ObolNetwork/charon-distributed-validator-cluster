@@ -48,7 +48,6 @@ clean:
 	@rm charon 2>/dev/null || true
 	@rm .env 2>/dev/null || true
 	@[ -f beaconnode.env.old ] && echo "Enabling simnet" && mv beaconnode.env.old beaconnode.env || true
-	@echo "Pulling latest container" && docker pull ghcr.io/obolnetwork/charon:latest 1>/dev/null
 
 .PHONY: build-local
 build-local:
