@@ -1,7 +1,8 @@
 version: "3.8"
 
 x-node-base: &node-base
-  image: ghcr.io/obolnetwork/charon/charon:latest # TODO(corver): Use pegged version
+  # Pegged charon version (update this for each release).
+  image: ghcr.io/obolnetwork/charon:v0.3.0
   entrypoint: "${COMPOSE_ENTRYPOINT:-/usr/local/bin/charon}"
   command: run
   env_file: [charon.env,beaconnode.env]
