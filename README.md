@@ -6,7 +6,7 @@ This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed
 
 ## Usage
 
-Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](https://git-scm.com/downloads) installed. Also, make sure `docker` is running before running the commands below.
+Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](https://git-scm.com/downloads) installed. Also, make sure `docker` is running before executing the commands below.
 
 ```sh
 git clone git@github.com:ObolNetwork/charon-docker-compose.git
