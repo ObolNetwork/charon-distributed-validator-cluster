@@ -35,6 +35,7 @@ services:
       CHARON_DATA_DIR: /charon/node2
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
+      CHARON_SIMNET_VALIDATOR_MOCK: "false" # Uses Teku VC
 
   node3:
     <<: *node-base
@@ -42,6 +43,7 @@ services:
       CHARON_DATA_DIR: /charon/node3
       CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
+      CHARON_SIMNET_VALIDATOR_MOCK: "false" # Uses Teku VC
 
   bootnode:
     <<: *node-base
@@ -60,7 +62,7 @@ services:
     environment:
       NODE: node0
     volumes:
-     - .:/charon
+      - .:/charon
 
   vc1-teku:
     image: consensys/teku:latest
@@ -73,7 +75,33 @@ services:
       --validator-keys="/charon/node1:/charon/node1"
       --validators-proposer-default-fee-recipient="0x0000000000000000000000000000000000000000"
     volumes:
-     - .:/charon
+      - .:/charon
+
+  vc2-teku:
+    image: consensys/teku:latest
+    networks: [ cluster ]
+    depends_on: [ node2 ]
+    command: |
+      validator-client
+      --network=auto
+      --beacon-node-api-endpoint="http://node2:16002"
+      --validator-keys="/charon/node2:/charon/node2"
+      --validators-proposer-default-fee-recipient="0x0000000000000000000000000000000000000000"
+    volumes:
+      - .:/charon
+
+  vc3-teku:
+    image: consensys/teku:latest
+    networks: [ cluster ]
+    depends_on: [ node3 ]
+    command: |
+      validator-client
+      --network=auto
+      --beacon-node-api-endpoint="http://node3:16002" 
+      --validator-keys="/charon/node3:/charon/node3"
+      --validators-proposer-default-fee-recipient="0x0000000000000000000000000000000000000000"
+    volumes:
+      - .:/charon
 
   prometheus:
     image: prom/prometheus:latest
