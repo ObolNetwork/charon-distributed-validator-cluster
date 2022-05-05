@@ -41,6 +41,7 @@ clean:
 	@echo "docker-compose down" && docker-compose down 1>/dev/null
 	@echo "Cleaning cluster manifest, node config and node keys"
 	@rm -f manifest.json 2>/dev/null || true
+	@rm -f cluster_definition.json 2>/dev/null || true
 	@rm -f node*/* 2>/dev/null || true
 	@rm -f bootnode/* 2>/dev/null || true
 	@rm -rf lighthouse/*/ 2>/dev/null || true
@@ -70,3 +71,9 @@ disable-simnet:
 	@if [ "$(beacon_node_endpoint)" == "" ]; then echo "Please provide beacon_node_endpoint variable: make beacon_node_endpoint=<value> disable-simnet" && exit 1; fi
 	@if [ ! -f beaconnode.env.old ]; then mv beaconnode.env beaconnode.env.old; fi
 	@echo "CHARON_BEACON_NODE_ENDPOINT=$(beacon_node_endpoint)" > beaconnode.env
+
+.PHONY: dkg
+dkg:
+	@./configure_dkg.sh "$(charon_cmd)" $(n) $(t)
+	@echo "Press Ctrl-C to exit docker-compose when all nodes have exited"
+	@docker-compose up bootnode node0 node1 node2 node3

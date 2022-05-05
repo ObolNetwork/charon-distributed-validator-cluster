@@ -4,7 +4,7 @@ x-node-base: &node-base
   # Pegged charon version (update this for each release).
   image: ghcr.io/obolnetwork/charon:v0.3.0
   entrypoint: "${COMPOSE_ENTRYPOINT:-/usr/local/bin/charon}"
-  command: run
+  command: "${COMPOSE_COMMAND:-run}"
   env_file: [charon.env,beaconnode.env]
   networks: [cluster]
   depends_on: [bootnode]
