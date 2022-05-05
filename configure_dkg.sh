@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-# Runs a DKG ceremony using docker-compose.
+# Generates the inputs required for the DKG ceremony.
 # Call via make: make dkg
 
 CMD=${1}
 N=${2}
 T=${3}
 
-echo "Creating p2pkeys for ${N} nodes"
-
+echo "Creating enrs (p2pkeys) for ${N} nodes"
 ENRS=""
 for i in $( eval echo {0..$N} ); do
   [ "${i}" == "$N" ] && break
