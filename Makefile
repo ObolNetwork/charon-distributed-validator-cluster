@@ -74,6 +74,7 @@ disable-simnet:
 
 .PHONY: dkg
 dkg:
+	@make build-local # Remove this once pegged version supports DKG.
 	@./configure_dkg.sh "$(charon_cmd)" $(n) $(t)
 	@echo "Press Ctrl-C to exit docker-compose when all nodes have exited"
 	@docker-compose up bootnode node0 node1 node2 node3
