@@ -12,7 +12,7 @@ ENRS=""
 for i in $( eval echo {0..$N} ); do
   [ "${i}" == "$N" ] && break
 
-  ENR=$($CMD gen-p2pkey --data-dir=/charon-docker-compose/node${i} | grep enr)
+  ENR=$($CMD create enr --data-dir=/charon-docker-compose/node${i} | grep enr)
   [ "${i}" != "0" ] && ENRS+=","
   ENRS+=$ENR
 done
