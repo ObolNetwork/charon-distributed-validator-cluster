@@ -57,13 +57,13 @@ build-local:
 .PHONY: create-cluster
 create-cluster:
 	@echo "Creating simnet cluster"
-	$(charon_cmd) create-cluster -t=$(t) -n=$(n) --cluster-dir=/charon-docker-compose
+	$(charon_cmd) create cluster -t=$(t) -n=$(n) --cluster-dir=/charon-docker-compose
 
 .PHONY: split-existing-keys
 split-existing-keys:
 	@if [ ! -f $(split_keys_dir)/keystore*.json ]; then echo "No keys in $(split_keys_dir)/ directory" && exit 1; fi
 	@echo "Creating cluster by splitting existing validator keys"
-	$(charon_cmd) create-cluster --split-existing-keys --split-keys-dir=/charon-docker-compose/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=/charon-docker-compose
+	$(charon_cmd) create cluster --split-existing-keys --split-keys-dir=/charon-docker-compose/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=/charon-docker-compose
 
 .PHONY: disable-simnet
 disable-simnet:
