@@ -13,8 +13,7 @@ git clone git@github.com:ObolNetwork/charon-docker-compose.git
 cd charon-docker-compose
 make                                   # Shows available make targets
 make clean                             # Deletes previously created cluster
-make create-cluster                    # Creates simnet cluster
-docker-compose up
+make up
 open http://localhost:3000/d/B2zGKKs7k # Open Grafana simnet dashboard
 open http://localhost:16686            # Open Jaeger dashboard
 ```
@@ -31,6 +30,53 @@ The default cluster consists of 4 charon nodes using a mixture of validator clie
 - node2: [mock validator client](https://github.com/ObolNetwork/charon/tree/main/testutil/validatormock)
 - node3: [mock validator client](https://github.com/ObolNetwork/charon/tree/main/testutil/validatormock)
 
+## Creating Validator Keys
+
+Create some testnet private keys and their associated data with the command:
+
+```
+docker run --rm -v "$(pwd)/.charon:/opt/charon" ghcr.io/obolnetwork/charon:v0.4.0 create cluster --cluster-dir="cluster"
+```
+
+
+### Creating keys with ethdo
+In `charon v0.4.0`, local key creation and distributed key creation will be possible with the `charon create cluster` and `charon create dkg` commands. Until then, you can create keys with [ethdo](https://github.com/wealdtech/ethdo) and split them, like so:
+
+```sh
+# Create Ethdo Wallet in this directory
+docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" wallet create --wallet="test" 
+--walletpassphrase="test"
+
+# Create an account in this wallet
+docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" account create --walletpassphrase="test" --account="test/1" --passphrase="test"
+
+# Verify the wallet looks right
+docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" wallet info --wallet="test" 
+
+# Verify an account was created
+docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" account info --account="test/1" 
+
+# Create a deposit data file
+docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" validator depositdata --validatoraccount="test/1" --withdrawalaccount="test/1" --depositvalue="32 ether" --forkversion="0x00001020" --passphrase="test" --raw
+
+```
+
+### Creating keys with the Staking-Deposit-CLI
+
+You can also create keys with the [staking deposit CLI](https://github.com/ethereum/staking-deposit-cli#option-4-use-docker-image) by running the following commands:
+
+```sh
+# Checkout the repo
+git clone https://github.com/ethereum/staking-deposit-cli
+cd staking-deposit-cli
+
+# Build the docker image
+make build_docker
+
+# Run the image
+docker run -it --rm -v $(pwd)/split_keys:/app/validator_keys ethereum/staking-deposit-cli new-mnemonic --num_validators=1 --mnemonic_language=english --chain=prater
+```
+
 ## Project Status
 
 It is still early days for the Obol Network and everything is under active development. 
@@ -44,52 +90,15 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 `make clean` performs the following actions:
 - Stops and removes all running containers, `docker-compose down` 
 - Deletes created cluster artifacts
-- Enables simnet (if previously disabled)
-- Pulls latest container.
-- Deletes locally built binary if present
 
-### `make create-cluster`: Create simnet cluster
-
-Creates a **simnet** cluster with 4 nodes (n=4) and threshold of 3 (t=3) for signature reconstruction.
-
-```
-# Override n and/or t
-make n=5 t=4 create-cluster
-```
-
-### `make build-local`: Running locally built charon binary 
-
-Testing and debugging charon-docker-compose by running a locally built charon binary in the containers is supported: 
-```sh
-# Checkout charon repo next to charon-docker-compose
-cd ..
-git clone git@github.com:ObolNetwork/charon.git
-
-# If charon repo is in a different path.
-# export CHARON_REPO=<path to charon repo>  
-
-make build-local
-docker-compose up
-```
 
 | ⚠️ The features below are only for the brave ⚔️ 🐉 |
 |----------------------------------------------------|
 
-### `make disable-simnet`: Disable simnet mock beacon node
-
-Disables the simnet mock beacon node and configures a real beacon node endpoint.
-
-```
-make beacon_node_endpoint=<url> disable-simnet
-```
-
-
-> Remember: Do not connect to main net! 
-
 ### `make split-existing-keys`: Create a cluster by splitting existing non-dvt validator keys
 
-This uses the same command as `create-cluster` command but doesn't create new random keys. 
-Rather existing non-dvt validator keys stored in `./split_keys/` folder are split into threshold BLS partial shares.
+
+Existing non-dvt validator keys stored in `./split_keys/` folder will be split into threshold BLS partial shares.
 
 ```
 mkdir split_keys
