@@ -3,15 +3,27 @@ global:
   evaluation_interval: 12s # Evaluate rules every 12 seconds. The default is every 1 minute.
   
 scrape_configs:
-  - job_name: 'node0'
+  - job_name: 'charon-0'
     static_configs:
       - targets: ['node0:16001']
-  - job_name: 'node1'
+  - job_name: 'charon-1'
     static_configs:
       - targets: ['node1:16001']
-  - job_name: 'node2'
+  - job_name: 'charon-2'
     static_configs:
       - targets: ['node2:16001']
-  - job_name: 'node3'
+  - job_name: 'charon-3'
     static_configs:
       - targets: ['node3:16001']
+  - job_name: 'vc0'
+    static_configs:
+      - targets: ['vc0:5064']
+  - job_name: 'vc1'
+    static_configs:
+      - targets: ['vc1:8008']
+  - job_name: 'vc2'
+    static_configs:
+      - targets: ['vc2:8008']
+  - job_name: 'vc3'
+    static_configs:
+      - targets: ['vc3:8008']   

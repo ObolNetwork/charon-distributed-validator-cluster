@@ -26,7 +26,7 @@ help:
 
 .PHONY: up
 up:
-	if [ ! -f ".charon/manifest.json" ]; then echo "Cluster not created yet. Create a test one with `charon create cluster`." && exit 1; fi
+	if [ ! -f ".charon/cluster/manifest.json" ]; then echo "Cluster not created yet. Create a test one with `charon create cluster`." && exit 1; fi
 	docker-compose up --build
 
 .PHONY: down
