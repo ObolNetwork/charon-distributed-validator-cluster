@@ -1,5 +1,6 @@
 charon.yml
 charon
+.charon
 manifest.json
 cluster_definition.json
 cluster_lock.json
@@ -7,5 +8,6 @@ p2pkey
 keystore*
 prater
 .env
+.data
 beaconnode.env.old
 split_keys/
