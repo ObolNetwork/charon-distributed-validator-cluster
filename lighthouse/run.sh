@@ -14,7 +14,7 @@ echo "Starting lighthouse validator client for ${NODE}"
 exec lighthouse validator \
   --network "${ETH2_NETWORK}" \
   --beacon-nodes "http://${NODE}:16002" \
-  --suggested-fee-recipient "0xC62188bDB24d2685AEd8fa491E33eFBa47Db63C2" \
+  --suggested-fee-recipient "0x0000000000000000000000000000000000000000" \
   --metrics \
   --metrics-address "0.0.0.0" \
   --metrics-allow-origin "*" \

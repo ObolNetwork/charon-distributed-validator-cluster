@@ -17,13 +17,13 @@ scrape_configs:
       - targets: ['node3:16001']
   - job_name: 'vc0'
     static_configs:
-      - targets: ['vc0:5064']
+      - targets: ['vc0-lighthouse:5064']
   - job_name: 'vc1'
     static_configs:
-      - targets: ['vc1:8008']
+      - targets: ['vc1-teku:8008']
   - job_name: 'vc2'
     static_configs:
-      - targets: ['vc2:8008']
+      - targets: ['vc2-teku:8008']
   - job_name: 'vc3'
     static_configs:
-      - targets: ['vc3:8008']   
+      - targets: ['vc3-teku:8008']   

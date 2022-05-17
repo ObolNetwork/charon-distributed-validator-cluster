@@ -1,43 +1,90 @@
 ![Obol Logo](https://obol.tech/obolnetwork.png)
 
-<h1 align="center">Charon in a Docker Compose</h1>
+<h1 align="center">Distributed Validator Cluster with Docker Compose</h1>
 
-This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster running with docker-compose.
+This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster running using [docker-compose](https://docs.docker.com/compose/).
 
-## Usage
+This repo aims to give users a feel for what a [Distributed Validator Cluster](https://docs.obol.tech/docs/int/key-concepts#distributed-validator-cluster) means in practice, and what the future of high-availability, fault-tolerant proof of stake validating deployments will look like. 
+
+## Quickstart
 
 Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](https://git-scm.com/downloads) installed. Also, make sure `docker` is running before executing the commands below.
 
 ```sh
+# Clone this repo
 git clone git@github.com:ObolNetwork/charon-docker-compose.git
+
+# Change directory
 cd charon-docker-compose
-make                                   # Shows available make targets
-make clean                             # Deletes previously created cluster
+
+# Prepare an environment variable file (requires at minimum an Infura API endpoint for your chosen chain)
+cp .env.sample .env
+
+# Shows available make targets
+make
+
+# Deletes previously created cluster
+make clean
+
+# Create the artifacts for a new test cluster
+make create
+
+# Start the cluster
 make up
-open http://localhost:3000/d/B2zGKKs7k # Open Grafana simnet dashboard
-open http://localhost:16686            # Open Jaeger dashboard
+
+# Open Grafana dashboard
+open http://localhost:3000/d/laEp8vupp
+
+# Open Jaeger dashboard
+open http://localhost:16686
 ```
 
-## Mocked Beacon Node
+If all the above went correctly, you can activate your validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit/`. 
 
-By default this repo uses a `simulated network`, or `simnet`, which uses a mocked beacon node to avoid the complexities of depositing stake and waiting for validator activation.
-It uses custom configuration for slots and epoch timing (1s per slot, 16 slots per epoch). It assigns attestation duties to the simnet 
-distributed validator on the first slot of every epoch.
+
+## Remote Beacon Node
+
+This repo assumes the use of a remote Ethereum Consensus Layer API, offered through a product like [Infura](https://infura.io/).
+
+This only makes sense for a demo validator, and should not be done in a production scenarion. Similarly, a remote beacon node drastically impacts the latency of the system, and is likely to produce sub par validator inclusion distance relative to one with a local consensus client. 
 
 The default cluster consists of 4 charon nodes using a mixture of validator clients:
-- node0: [Lighthouse](https://github.com/sigp/lighthouse)
-- node1: [Teku](https://github.com/ConsenSys/teku)
-- node2: [mock validator client](https://github.com/ObolNetwork/charon/tree/main/testutil/validatormock)
-- node3: [mock validator client](https://github.com/ObolNetwork/charon/tree/main/testutil/validatormock)
+- vc0: [Lighthouse](https://github.com/sigp/lighthouse)
+- vc1: [Teku](https://github.com/ConsenSys/teku)
+- vc2: [Teku](https://github.com/ConsenSys/teku)
+- vc3: [Teku](https://github.com/ConsenSys/teku)
 
-## Creating Validator Keys
+The intention is to support all validator clients, and work is underway to add support for vouch and lodestar to this repo, with nimbus and prysm support to follow in future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients). 
 
-Create some testnet private keys and their associated data with the command:
+## Creating Test Private Keys
 
+Create some testnet private keys for a 4 node distributed validator cluster with the command:
+
+```sh
+docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.4.0 create cluster --cluster-dir=".charon/cluster"
 ```
-docker run --rm -v "$(pwd)/.charon:/opt/charon" ghcr.io/obolnetwork/charon:v0.4.0 create cluster --cluster-dir="cluster"
+
+You can also run `make create` if that is easier. 
+
+## Import Existing Validator Keys
+
+You might already have keys to an active validator, or are more comfortable creating keys with existing tooling like the [staking deposit CLI](https://github.com/ethereum/staking-deposit-cli) and [ethdo](https://github.com/wealdtech/ethdo). 
+
+To import existing EIP-2335 validator key stores:
+
+```sh
+# Create a folder within this checked out repo
+mkdir split_keys
+
+# Put the validator keystore.json files in this folder. 
+# Alongside them, with a matching filename but ending with `.txt` should be the password to the keystore.
+# E.g. keystore-0.json keystore-0.txt
+
+# Split these keystores into key shares for a distributed validator
+make split-existing-keys
 ```
 
+The following are instructions on how to create validator keys with ethdo and the staking-deposit-cli.
 
 ### Creating keys with ethdo
 In `charon v0.4.0`, local key creation and distributed key creation will be possible with the `charon create cluster` and `charon create dkg` commands. Until then, you can create keys with [ethdo](https://github.com/wealdtech/ethdo) and split them, like so:
@@ -85,6 +132,12 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 
 ## Makefile features
 
+### `make create`: Create required artifacts for a testnet cluster
+
+`make create` performs the following actions:
+- Call `charon create cluster` to produce ENRs, cluster manifests, distributed validator private keys, and deposit and exit data for the created validator.
+- These artifacts are only suitable for test uses cases and should not be distributed to others. Clusters with groups of operators should perform a DKG ceremony using `charon dkg`. This functionality is scheduled for `v0.5.0`. 
+
 ### `make clean`: Clean and reset cluster
 
 `make clean` performs the following actions:
@@ -95,20 +148,52 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 | ⚠️ The features below are only for the brave ⚔️ 🐉 |
 |----------------------------------------------------|
 
-### `make split-existing-keys`: Create a cluster by splitting existing non-dvt validator keys
+### `make split-existing-keys`: Create a cluster by splitting existing validator private keys
 
 
-Existing non-dvt validator keys stored in `./split_keys/` folder will be split into threshold BLS partial shares.
+Existing validator keys stored in `./split_keys/` folder can be split into threshold private keys suitable for operating in a distributed validator.
 
-```
+```sh
+# Create the folder that holds the original keystores
 mkdir split_keys
+
+# Copy in the keystores
 cp path/to/existing/keys/keystore-*.json split_keys/
+
+# Copy in the password files
 cp path/to/passwords/keystore-*.txt split_keys/
+
 # Each keystore-*.json requires a keystore-*.txt file containing the password.
 make split-existing-keys
+
+# Bring up the cluster
 make up
 ```
 
 > Remember: Please make sure any existing validator has been shut down for
-> at least 2 finalised epochs before starting the charon cluster,
-> otherwise slashing could occur.
+> at least 3 finalised epochs before starting the charon cluster,
+> otherwise your validator could be slashed.
+
+# Troubleshooting
+
+Here are some common errors and how to decipher how to fix them:
+
+## Beacon Nodes
+
+## Charon Nodes
+
+## Validator Clients
+
+### Teku
+
+```
+Keystore file /opt/charon/keys/keystore-0.json.lock already in use.
+```
+
+This can happen when you recreate a docker cluster with the same cluster files. Delete all `.charon/cluster/node<teku-vc-index-here>/keystore-*.json.lock` files to fix this. 
+
+```
+java.util.concurrent.CompletionException: java.lang.RuntimeException: Unexpected response from Beacon Node API (url = http://node1:16002/eth/v1/beacon/states/head/validators?id=0x8c4758687121c3b35203c69925e8056799369e0dac2c31c9984946436f3041821080a58e6c1a813b4de1007333552347, status = 404)
+```
+
+This indicates your validator is probably not activated yet.

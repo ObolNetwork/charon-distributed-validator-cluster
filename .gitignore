@@ -1,5 +1,6 @@
 charon.yml
 charon
+.charon
 manifest.json
 cluster_definition.json
 cluster_lock.json

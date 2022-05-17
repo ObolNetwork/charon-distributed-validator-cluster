@@ -1,10 +1,7 @@
-# Use locally built charon if present
-entrypoint := $(if $(wildcard charon),/charon-docker-compose/charon,/usr/local/bin/charon)
-
 # Pegged charon version (update this for each release).
 version := v0.4.0
 
-charon_cmd := docker run --rm --entrypoint=$(entrypoint) -v $(shell pwd):/charon-docker-compose ghcr.io/obolnetwork/charon:$(version)
+charon_cmd := docker run --rm  -v $(shell pwd):/opt/charon ghcr.io/obolnetwork/charon:$(version)
 
 # Default cluster. Override example: make t=4 n=5 create-cluster
 n := 4
@@ -42,13 +39,14 @@ clean:
 	@rm -rf lighthouse/*/ 2>/dev/null || true
 	@[ -f charon ] && echo "Deleting locally built charon binary" || true
 	@rm charon 2>/dev/null || true
-	@rm .env 2>/dev/null || true
-	@[ -f .env.sample ] && echo "Overwriting .env file" && mv env.sample .env || true
-
 
 .PHONY: split-existing-keys
 split-existing-keys:
 	@if [ ! -f $(split_keys_dir)/keystore*.json ]; then echo "No keys in $(split_keys_dir)/ directory" && exit 1; fi
 	@echo "Creating cluster by splitting existing validator keys"
-	$(charon_cmd) create-cluster --split-existing-keys --split-keys-dir=/charon-docker-compose/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=/charon-docker-compose
+	$(charon_cmd) create-cluster --split-existing-keys --split-keys-dir=/opt/charon/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=".charon/cluster"
 
+
+.PHONY: create
+create: 
+	$(charon_cmd) create cluster --cluster-dir="./charon/cluster"
