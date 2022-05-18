@@ -51,7 +51,7 @@ This only makes sense for a demo validator, and should not be done in a producti
 The default cluster consists of 4 charon nodes using a mixture of validator clients:
 - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
 - vc1: [Teku](https://github.com/ConsenSys/teku)
-- vc2: [Teku](https://github.com/ConsenSys/teku)
+- vc2: [Vouch](https://github.com/attestantio/vouch)
 - vc3: [Teku](https://github.com/ConsenSys/teku)
 
 The intention is to support all validator clients, and work is underway to add support for vouch and lodestar to this repo, with nimbus and prysm support to follow in future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients). 

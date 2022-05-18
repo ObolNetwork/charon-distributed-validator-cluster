@@ -84,7 +84,6 @@ services:
     image: consensys/teku:22.5.0
     networks: [cluster]
     depends_on: [node1]
-    restart: on-failure
     command: |
       validator-client
       --beacon-node-api-endpoint="http://node1:16002"
@@ -93,17 +92,14 @@ services:
       - .charon/cluster/node1:/opt/charon/keys
       - ./teku/:/opt/charon/teku
 
-  vc2-teku:
-    image: consensys/teku:22.5.0
+  vc2-vouch:
+    build: vouch
     networks: [cluster]
     depends_on: [node2]
-    command: |
-      validator-client
-      --beacon-node-api-endpoint="http://node2:16002"
-      --config-file "/opt/charon/teku/teku-config.yaml"
+    restart: on-failure
     volumes:
       - .charon/cluster/node2:/opt/charon/keys
-      - ./teku/:/opt/charon/teku
+      - ./vouch/:/opt/charon/vouch
 
   vc3-teku:
     image: consensys/teku:22.5.0
