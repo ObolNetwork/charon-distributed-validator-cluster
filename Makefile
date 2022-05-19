@@ -1,5 +1,7 @@
 # Pegged charon version (update this for each release).
-version := v0.4.0
+version := 111fd0b
+ethdo_version := 1.21.0
+charon_cmd := docker run --rm  -v $(shell pwd):/opt/charon ghcr.io/obolnetwork/charon:$(version)
 
 charon_cmd := docker run --rm  -v $(shell pwd):/opt/charon ghcr.io/obolnetwork/charon:$(version)
 
