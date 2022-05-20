@@ -196,6 +196,13 @@ Here are some common errors and how to decipher how to fix them:
 
 ## Charon Nodes
 
+
+-   ```
+    Fatal run error: read lock: open .charon/cluster-lock.json: permission denied
+    Error: read lock: open .charon/cluster-lock.json: permission denied
+    ```
+    This error was received when I called `charon create cluster` on a local dev machine, and then copied and pasted the generated files in `.charon` to my remote eth2 server. The fix was to run `sudo chmod -R o+r .charon/`
+
 ## Validator Clients
 
 ### Teku
@@ -211,3 +218,12 @@ java.util.concurrent.CompletionException: java.lang.RuntimeException: Unexpected
 ```
 
 This indicates your validator is probably not activated yet.
+
+### Lighthouse
+
+```
+May 20 12:48:43.046 WARN Unable to connect to a beacon node      available: 0, total: 1, retry in: 2 seconds
+May 20 12:48:45.048 WARN Offline beacon node                     endpoint: http://node0:16002/, error: Reqwest(reqwest::Error { kind: Request, url: Url { scheme: "http", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("node0")), port: Some(16002), path: "/eth/v1/node/version", query: None, fragment: None }, source: hyper::Error(Connect, ConnectError("dns error", Custom { kind: Uncategorized, error: "failed to lookup address information: Temporary failure in name resolution" })) })
+```
+
+The above error was caused when the upstream charon client for this validator had died and not restarted.
