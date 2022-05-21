@@ -1,9 +1,8 @@
-# Pegged charon version (update this for each release).
-version := 111fd0b
-ethdo_version := 1.21.0
-charon_cmd := docker run --rm  -v $(shell pwd):/opt/charon ghcr.io/obolnetwork/charon:$(version)
-
-charon_cmd := docker run --rm  -v $(shell pwd):/opt/charon ghcr.io/obolnetwork/charon:$(version)
+# Pull charon version from env file
+include .env
+export
+charon_version := ${CHARON_VERSION}
+charon_cmd := docker run --rm  -v $(shell pwd):/opt/charon ghcr.io/obolnetwork/charon:$(charon_version)
 
 # Default cluster. Override example: make t=4 n=5 create-cluster
 n := 4
@@ -51,4 +50,4 @@ split-existing-keys:
 
 .PHONY: create
 create: 
-	$(charon_cmd) create cluster --cluster-dir="./charon/cluster"
+	$(charon_cmd) create cluster --cluster-dir=".charon/cluster"
