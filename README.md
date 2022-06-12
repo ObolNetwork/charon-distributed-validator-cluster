@@ -39,7 +39,7 @@ open http://localhost:3000/d/laEp8vupp
 open http://localhost:16686
 ```
 
-If all the above went correctly, you can activate your validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit/`.
+If all the above went correctly, you can activate your validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit-data.json`.
 
 ## Remote Beacon Node
 
@@ -56,12 +56,12 @@ The default cluster consists of 4 charon nodes using a mixture of validator clie
 
 The intention is to support all validator clients, and work is underway to add support for vouch and lodestar to this repo, with nimbus and prysm support to follow in future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
-## Creating Test Private Keys
+## Creating Test Distributed Validator Private Keys
 
 Create some testnet private keys for a 4 node distributed validator cluster with the command:
 
 ```sh
-docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:latest create cluster --cluster-dir=".charon/cluster" --withdrawal-address="0x000000000000000000000000000000000000dead"
+docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:latest create cluster --cluster-dir=".charon" --withdrawal-address="0x000000000000000000000000000000000000dead"
 ```
 
 You can also run `make create` if you prefer to use [Make](https://www.gnu.org/software/make/).
@@ -70,10 +70,9 @@ This command will create a subdirectory `.charon`. In it are four folders, each 
 
 ### Activating your validator
 
-Along with the private keys and cluster lock file is a validator deposit data file located at `.charon/deposit-data.json`. FYou can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
+Along with the private keys and cluster lock file is a validator deposit data file located at `.charon/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
 
 Your deposit will take at minimum 8 hours to process, near to the time you can run this new cluster with the command:
-̦
 
 ```
 docker-compose up --build
@@ -97,47 +96,6 @@ mkdir split_keys
 make split-existing-keys
 ```
 
-The following are instructions on how to create validator keys with ethdo and the staking-deposit-cli.
-
-### Creating keys with ethdo
-
-In `charon v0.4.0`, local key creation and distributed key creation will be possible with the `charon create cluster` and `charon create dkg` commands. Until then, you can create keys with [ethdo](https://github.com/wealdtech/ethdo) and split them, like so:
-
-```sh
-# Create Ethdo Wallet in this directory
-docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" wallet create --wallet="test"
---walletpassphrase="test"
-
-# Create an account in this wallet
-docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" account create --walletpassphrase="test" --account="test/1" --passphrase="test"
-
-# Verify the wallet looks right
-docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" wallet info --wallet="test"
-
-# Verify an account was created
-docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" account info --account="test/1"
-
-# Create a deposit data file
-docker run -v "$(pwd)/.data:/data" wealdtech/ethdo:latest --basedir="/data" validator depositdata --validatoraccount="test/1" --withdrawalaccount="test/1" --depositvalue="32 ether" --forkversion="0x00001020" --passphrase="test" --raw
-
-```
-
-### Creating keys with the Staking-Deposit-CLI
-
-You can also create keys with the [staking deposit CLI](https://github.com/ethereum/staking-deposit-cli#option-4-use-docker-image) by running the following commands:
-
-```sh
-# Checkout the repo
-git clone https://github.com/ethereum/staking-deposit-cli
-cd staking-deposit-cli
-
-# Build the docker image
-make build_docker
-
-# Run the image
-docker run -it --rm -v $(pwd)/split_keys:/app/validator_keys ethereum/staking-deposit-cli new-mnemonic --num_validators=1 --mnemonic_language=english --chain=prater
-```
-
 ## Project Status
 
 It is still early days for the Obol Network and everything is under active development.
@@ -151,7 +109,7 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 `make create` performs the following actions:
 
 - Call `charon create cluster` to produce ENRs, cluster lock files, distributed validator private keys, and deposit and exit data for the created validator.
-- These artifacts are only suitable for test uses cases and should not be distributed to others. Clusters with groups of operators should perform a DKG ceremony using `charon dkg`. This functionality is scheduled for `v0.5.0`.
+- These artifacts are only suitable for test uses cases and should not be distributed to others. Clusters with groups of operators should perform a DKG ceremony using `charon dkg`.
 
 ### `make clean`: Clean and reset cluster
 
@@ -211,7 +169,7 @@ Here are some common errors and how to decipher how to fix them:
 Keystore file /opt/charon/keys/keystore-0.json.lock already in use.
 ```
 
-This can happen when you recreate a docker cluster with the same cluster files. Delete all `.charon/cluster/node<teku-vc-index-here>/keystore-*.json.lock` files to fix this.
+This can happen when you recreate a docker cluster with the same cluster files. Delete all `.charon/node<teku-vc-index-here>/keystore-*.json.lock` files to fix this.
 
 ```
 java.util.concurrent.CompletionException: java.lang.RuntimeException: Unexpected response from Beacon Node API (url = http://node1:16002/eth/v1/beacon/states/head/validators?id=0x8c4758687121c3b35203c69925e8056799369e0dac2c31c9984946436f3041821080a58e6c1a813b4de1007333552347, status = 404)
