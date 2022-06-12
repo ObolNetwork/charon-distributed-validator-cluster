@@ -45,9 +45,9 @@ clean:
 split-existing-keys:
 	@if [ ! -f $(split_keys_dir)/keystore*.json ]; then echo "No keys in $(split_keys_dir)/ directory" && exit 1; fi
 	@echo "Creating cluster by splitting existing validator keys"
-	$(charon_cmd) create-cluster --split-existing-keys --split-keys-dir=/opt/charon/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=".charon/cluster"
+	$(charon_cmd) create-cluster --split-existing-keys --split-keys-dir=/opt/charon/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=".charon"
 
 
 .PHONY: create
 create: 
-	$(charon_cmd) create cluster --cluster-dir=".charon/cluster"
+	$(charon_cmd) create cluster --cluster-dir=".charon"
