@@ -6,6 +6,16 @@ This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed
 
 This repo aims to give users a feel for what a [Distributed Validator Cluster](https://docs.obol.tech/docs/int/key-concepts#distributed-validator-cluster) means in practice, and what the future of high-availability, fault-tolerant proof of stake validating deployments will look like.
 
+A distributed validator cluster is a docker-compose file with the following containers running:
+- Four Charon Distributed Validator clients
+- One Lighthouse Validator client
+- Three Teku Validator Clients
+- Prometheus, Grafana and Jaeger clients for monitoring this cluster.
+
+![Distributed Validator Cluster](DVCluster.png)
+
+In future this repo aims to contain compose files for every possible Execution, Beacon, and Validator client combination that is possible with DVT.
+
 ## Quickstart
 
 Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](https://git-scm.com/downloads) installed. Also, make sure `docker` is running before executing the commands below.
