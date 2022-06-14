@@ -24,7 +24,7 @@ help:
 
 .PHONY: up
 up:
-	if [ ! -f ".charon/cluster/manifest.json" ]; then echo "Cluster not created yet. Create a test one with `charon create cluster`." && exit 1; fi
+	if [ ! -f ".charon/cluster-lock.json" ]; then echo "Cluster not created yet. Create a test one with `charon create cluster`." && exit 1; fi
 	docker-compose up --build
 
 .PHONY: down
@@ -34,7 +34,7 @@ down:
 .PHONY: clean
 clean:
 	@echo "docker-compose down" && docker-compose down 1>/dev/null
-	@echo "Cleaning cluster manifest, node config and node keys"
+	@echo "Cleaning cluster lock, node config and node keys"
 	@rm -rf .charon 2>/dev/null || true
 	@rm -f bootnode/* 2>/dev/null || true
 	@rm -rf lighthouse/*/ 2>/dev/null || true
@@ -45,7 +45,7 @@ clean:
 split-existing-keys:
 	@if [ ! -f $(split_keys_dir)/keystore*.json ]; then echo "No keys in $(split_keys_dir)/ directory" && exit 1; fi
 	@echo "Creating cluster by splitting existing validator keys"
-	$(charon_cmd) create-cluster --split-existing-keys --split-keys-dir=/opt/charon/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=".charon"
+	$(charon_cmd) create cluster --split-existing-keys --split-keys-dir=/opt/charon/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=".charon"
 
 
 .PHONY: create

@@ -11,3 +11,4 @@ prater
 .data
 beaconnode.env.old
 split_keys/
+bootnode/
