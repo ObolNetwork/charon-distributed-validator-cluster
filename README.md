@@ -182,7 +182,7 @@ Keystore file /opt/charon/keys/keystore-0.json.lock already in use.
 This can happen when you recreate a docker cluster with the same cluster files. Delete all `.charon/node<teku-vc-index-here>/keystore-*.json.lock` files to fix this.
 
 ```
-java.util.concurrent.CompletionException: java.lang.RuntimeException: Unexpected response from Beacon Node API (url = http://node1:16002/eth/v1/beacon/states/head/validators?id=0x8c4758687121c3b35203c69925e8056799369e0dac2c31c9984946436f3041821080a58e6c1a813b4de1007333552347, status = 404)
+java.util.concurrent.CompletionException: java.lang.RuntimeException: Unexpected response from Beacon Node API (url = http://node1:3610/eth/v1/beacon/states/head/validators?id=0x8c4758687121c3b35203c69925e8056799369e0dac2c31c9984946436f3041821080a58e6c1a813b4de1007333552347, status = 404)
 ```
 
 This indicates your validator is probably not activated yet.
@@ -191,7 +191,7 @@ This indicates your validator is probably not activated yet.
 
 ```
 May 20 12:48:43.046 WARN Unable to connect to a beacon node      available: 0, total: 1, retry in: 2 seconds
-May 20 12:48:45.048 WARN Offline beacon node                     endpoint: http://node0:16002/, error: Reqwest(reqwest::Error { kind: Request, url: Url { scheme: "http", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("node0")), port: Some(16002), path: "/eth/v1/node/version", query: None, fragment: None }, source: hyper::Error(Connect, ConnectError("dns error", Custom { kind: Uncategorized, error: "failed to lookup address information: Temporary failure in name resolution" })) })
+May 20 12:48:45.048 WARN Offline beacon node                     endpoint: http://node0:3610/, error: Reqwest(reqwest::Error { kind: Request, url: Url { scheme: "http", cannot_be_a_base: false, username: "", password: None, host: Some(Domain("node0")), port: Some(3610), path: "/eth/v1/node/version", query: None, fragment: None }, source: hyper::Error(Connect, ConnectError("dns error", Custom { kind: Uncategorized, error: "failed to lookup address information: Temporary failure in name resolution" })) })
 ```
 
 The above error was caused when the upstream charon client for this validator had died and not restarted.
