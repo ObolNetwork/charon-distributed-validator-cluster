@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+while ! curl "http://${NODE}:3600/eth/v1/node/health" 2>/dev/null; do
+  echo "Waiting for http://${NODE}:3600 to become available..."
+  sleep 5
+done
+
 echo "Creating testnet config"
 rm -rf /tmp/testnet || true
 mkdir /tmp/testnet/
