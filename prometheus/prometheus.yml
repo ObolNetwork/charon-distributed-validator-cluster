@@ -5,16 +5,16 @@ global:
 scrape_configs:
   - job_name: 'charon-0'
     static_configs:
-      - targets: ['node0:16001']
+      - targets: ['node0:3620']
   - job_name: 'charon-1'
     static_configs:
-      - targets: ['node1:16001']
+      - targets: ['node1:3620']
   - job_name: 'charon-2'
     static_configs:
-      - targets: ['node2:16001']
+      - targets: ['node2:3620']
   - job_name: 'charon-3'
     static_configs:
-      - targets: ['node3:16001']
+      - targets: ['node3:3620']
   - job_name: 'vc0'
     static_configs:
       - targets: ['vc0-lighthouse:5064']
