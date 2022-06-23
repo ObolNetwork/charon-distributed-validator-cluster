@@ -49,7 +49,11 @@ open http://localhost:3000/d/laEp8vupp
 open http://localhost:16686
 ```
 
-If all the above went correctly, you can activate your validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit-data.json`.
+If all the above went correctly, it's natural to see logs like:
+
+`INFO sched      No active DVs for slot {"slot": 3288627}`
+
+This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit-data.json`.
 
 ## Remote Beacon Node
 
