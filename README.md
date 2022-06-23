@@ -14,7 +14,7 @@ A distributed validator cluster is a docker-compose file with the following cont
 
 ![Distributed Validator Cluster](DVCluster.png)
 
-In future this repo aims to contain compose files for every possible Execution, Beacon, and Validator client combination that is possible with DVT.
+In the future, this repo aims to contain compose files for every possible Execution, Beacon, and Validator client combination that is possible with DVT.
 
 ## Quickstart
 
@@ -22,10 +22,10 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 
 ```sh
 # Clone this repo
-git clone git@github.com:ObolNetwork/charon-docker-compose.git
+git clone https://github.com/ObolNetwork/charon-distributed-validator-cluster.git
 
 # Change directory
-cd charon-docker-compose
+cd charon-distributed-validator-cluster
 
 # Prepare an environment variable file (requires at minimum an Infura API endpoint for your chosen chain)
 cp .env.sample .env
@@ -49,7 +49,11 @@ open http://localhost:3000/d/laEp8vupp
 open http://localhost:16686
 ```
 
-If all the above went correctly, you can activate your validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit-data.json`.
+If all the above went correctly, it's natural to see logs like:
+
+`INFO sched      No active DVs for slot {"slot": 3288627}`
+
+This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit-data.json`.
 
 ## Remote Beacon Node
 
