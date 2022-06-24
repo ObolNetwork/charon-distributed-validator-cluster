@@ -24,8 +24,6 @@ services:
       CHARON_DATA_DIR: /opt/charon/.charon/node0
       CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
-    ports:
-      - "3600:3600"
 
   node1:
     <<: *node-base

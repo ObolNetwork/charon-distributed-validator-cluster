@@ -47,7 +47,6 @@ split-existing-keys:
 	@echo "Creating cluster by splitting existing validator keys"
 	$(charon_cmd) create cluster --split-existing-keys --split-keys-dir=/opt/charon/$(split_keys_dir) -t=$(t) -n=$(n) --cluster-dir=".charon"
 
-
 .PHONY: create
 create: 
 	$(charon_cmd) create cluster --cluster-dir=".charon"
