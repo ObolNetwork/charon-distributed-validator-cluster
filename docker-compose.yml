@@ -1,10 +1,7 @@
 version: "3.8"
 
-x-node-base: &node-base
-  # Pegged charon version (update this for each release).
+x-node-base: &node-base # Pegged charon version (update this for each release).
   image: ghcr.io/obolnetwork/charon:${CHARON_VERSION}
-  entrypoint: "${COMPOSE_ENTRYPOINT:-/usr/local/bin/charon}"
-  command: "${COMPOSE_COMMAND:-run}"
   env_file: .env
   restart: unless-stopped
   networks: [cluster]
@@ -13,36 +10,36 @@ x-node-base: &node-base
     - ./.charon:/opt/charon/.charon/
 
 services:
-  #       _                                  _ _            _       
-  #   ___| |__   __ _ _ __ ___  _ __     ___| (_) ___ _ __ | |_ ___ 
+  #       _                                  _ _            _
+  #   ___| |__   __ _ _ __ ___  _ __     ___| (_) ___ _ __ | |_ ___
   #  / __| '_ \ / _` | '__/ _ \| '_ \   / __| | |/ _ \ '_ \| __/ __|
   # | (__| | | | (_| | | | (_) | | | | | (__| | |  __/ | | | |_\__ \
   #  \___|_| |_|\__,_|_|  \___/|_| |_|  \___|_|_|\___|_| |_|\__|___/
   node0:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node0
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node0
       CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
 
   node1:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node1
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node1
       CHARON_JAEGER_SERVICE: node1
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
 
   node2:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node2
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node2
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
   node3:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node3
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node3
       CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
@@ -58,8 +55,8 @@ services:
     volumes:
       - ./bootnode:/opt/charon/bootnode:rw
 
-  #             _ _     _       _                 
-  # __   ____ _| (_) __| | __ _| |_ ___  _ __ ___ 
+  #             _ _     _       _
+  # __   ____ _| (_) __| | __ _| |_ ___  _ __ ___
   # \ \ / / _` | | |/ _` |/ _` | __/ _ \| '__/ __|
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
@@ -83,18 +80,20 @@ services:
       validator-client
       --beacon-node-api-endpoint="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
+      --network ${ETH2_NETWORK}
     volumes:
       - .charon/node1/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
 
   vc2-teku:
-    image: consensys/teku:22.5.0
+    image: consensys/teku:${TEKU_VERSION}
     networks: [cluster]
     depends_on: [node2]
     command: |
       validator-client
       --beacon-node-api-endpoint="http://node2:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
+      --network ${ETH2_NETWORK}
     volumes:
       - .charon/node2/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
@@ -105,18 +104,19 @@ services:
     depends_on: [node3]
     command: |
       validator-client
-      --config-file "/opt/charon/teku/teku-config.yaml"
       --beacon-node-api-endpoint="http://node3:3600"
+      --config-file "/opt/charon/teku/teku-config.yaml"
+      --network ${ETH2_NETWORK}
     volumes:
       - .charon/node3/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
-      
-  #                        _ _             _             
-  #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _ 
+
+  #                        _ _             _
+  #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _
   # | '_ ` _ \ / _ \| '_ \| | __/ _ \| '__| | '_ \ / _` |
   # | | | | | | (_) | | | | | || (_) | |  | | | | | (_| |
   # |_| |_| |_|\___/|_| |_|_|\__\___/|_|  |_|_| |_|\__, |
-  #                                                |___/ 
+  #                                                |___/
   prometheus:
     image: prom/prometheus:latest
     ports:
@@ -124,7 +124,7 @@ services:
     networks: [cluster]
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-  
+
   grafana:
     image: grafana/grafana:latest
     ports:
