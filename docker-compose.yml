@@ -88,7 +88,7 @@ services:
       - ./teku/:/opt/charon/teku
 
   vc2-teku:
-    image: consensys/teku:22.5.0
+    image: consensys/teku:${TEKU_VERSION}
     networks: [cluster]
     depends_on: [node2]
     command: |
@@ -105,8 +105,8 @@ services:
     depends_on: [node3]
     command: |
       validator-client
-      --config-file "/opt/charon/teku/teku-config.yaml"
       --beacon-node-api-endpoint="http://node3:3600"
+      --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
       - .charon/node3/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
