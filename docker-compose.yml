@@ -3,8 +3,6 @@ version: "3.8"
 x-node-base: &node-base
   # Pegged charon version (update this for each release).
   image: ghcr.io/obolnetwork/charon:${CHARON_VERSION}
-  entrypoint: "${COMPOSE_ENTRYPOINT:-/usr/local/bin/charon}"
-  command: "${COMPOSE_COMMAND:-run}"
   env_file: .env
   restart: unless-stopped
   networks: [cluster]
@@ -21,28 +19,28 @@ services:
   node0:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node0
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node0
       CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
 
   node1:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node1
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node1
       CHARON_JAEGER_SERVICE: node1
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
 
   node2:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node2
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node2
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
   node3:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/node3
+      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node3
       CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
