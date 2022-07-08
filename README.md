@@ -37,9 +37,9 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    cp .env.sample .env
    ```
 
-   For simplicity's sake, this repo is configured to work with a remote Beacon node such as one from [Infura](https://infura.io/).
+   For simplicities sake, this repo is configured to work with a remote Beacon node such as one from [Infura](https://infura.io/).
 
-   Create an Eth2 project and copy the `https` URL:
+   Create an Eth2 project and copy the `https` URL, make sure **Prater** is selected in dropdown of ENDPOINTS:
 
    ![Example Infura API Endpoint](example-infura-details.png)
 
@@ -49,7 +49,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 
    ```sh
    # Create a testnet distributed validator cluster
-   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:latest create cluster --cluster-dir=".charon" --withdrawal-address="0x000000000000000000000000000000000000dead"
+   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.8.0 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead"
    ```
 
 1. Start the cluster
@@ -90,7 +90,7 @@ The intention is to support all validator clients, and work is underway to add s
 Create some testnet private keys for a 4 node distributed validator cluster with the command:
 
 ```sh
-docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:latest create cluster --cluster-dir=".charon" --withdrawal-address="0x000000000000000000000000000000000000dead"
+docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.8.0 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead"
 ```
 
 You can also run `make create` if you prefer to use [Make](https://www.gnu.org/software/make/).
