@@ -53,7 +53,7 @@ If all the above went correctly, it's natural to see logs like:
 
 `INFO sched      No active DVs for slot {"slot": 3288627}`
 
-This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/deposit-data.json`.
+This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/cluster/deposit-data.json`.
 
 ## Remote Beacon Node
 
@@ -80,11 +80,11 @@ docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:latest create
 
 You can also run `make create` if you prefer to use [Make](https://www.gnu.org/software/make/).
 
-This command will create a subdirectory `.charon`. In it are four folders, each with different private keys that together make up the distributed validator described in `.charon/cluster-lock.json`
+This command will create a subdirectory `.charon`. In it are four folders, each with different private keys that together make up the distributed validator described in `.charon/cluster/cluster-lock.json`
 
 ### Activating your validator
 
-Along with the private keys and cluster lock file is a validator deposit data file located at `.charon/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
+Along with the private keys and cluster lock file is a validator deposit data file located at `.charon/cluster/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
 
 Your deposit will take at minimum 8 hours to process, near to the time you can run this new cluster with the command:
 
@@ -170,8 +170,8 @@ Here are some common errors and how to decipher how to fix them:
 
 
 -   ```
-    Fatal run error: read lock: open .charon/cluster-lock.json: permission denied
-    Error: read lock: open .charon/cluster-lock.json: permission denied
+    Fatal run error: read lock: open .charon/cluster/cluster-lock.json: permission denied
+    Error: read lock: open .charon/cluster/cluster-lock.json: permission denied
     ```
     This error was received when I called `charon create cluster` on a local dev machine, and then copied and pasted the generated files in `.charon` to my remote eth2 server. The fix was to run `sudo chmod -R o+r .charon/`
 
@@ -183,7 +183,7 @@ Here are some common errors and how to decipher how to fix them:
 Keystore file /opt/charon/keys/keystore-0.json.lock already in use.
 ```
 
-This can happen when you recreate a docker cluster with the same cluster files. Delete all `.charon/node<teku-vc-index-here>/keystore-*.json.lock` files to fix this.
+This can happen when you recreate a docker cluster with the same cluster files. Delete all `.charon/cluster/node<teku-vc-index-here>/keystore-*.json.lock` files to fix this.
 
 ```
 java.util.concurrent.CompletionException: java.lang.RuntimeException: Unexpected response from Beacon Node API (url = http://node1:3600/eth/v1/beacon/states/head/validators?id=0x8c4758687121c3b35203c69925e8056799369e0dac2c31c9984946436f3041821080a58e6c1a813b4de1007333552347, status = 404)
