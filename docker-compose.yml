@@ -69,7 +69,7 @@ services:
       NODE: node0
     volumes:
       - ./lighthouse:/opt/charon/lighthouse
-      - .charon/node0/validator_keys:/opt/charon/keys
+      - .charon/cluster/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION}
@@ -82,7 +82,7 @@ services:
       --config-file "/opt/charon/teku/teku-config.yaml"
       --network ${ETH2_NETWORK}
     volumes:
-      - .charon/node1/validator_keys:/opt/charon/keys
+      - .charon/cluster/node1/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
 
   vc2-teku:
@@ -95,7 +95,7 @@ services:
       --config-file "/opt/charon/teku/teku-config.yaml"
       --network ${ETH2_NETWORK}
     volumes:
-      - .charon/node2/validator_keys:/opt/charon/keys
+      - .charon/cluster/node2/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
 
   vc3-teku:
@@ -108,7 +108,7 @@ services:
       --config-file "/opt/charon/teku/teku-config.yaml"
       --network ${ETH2_NETWORK}
     volumes:
-      - .charon/node3/validator_keys:/opt/charon/keys
+      - .charon/cluster/node3/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
 
   #                        _ _             _
