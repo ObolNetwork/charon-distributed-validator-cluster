@@ -37,7 +37,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    cp .env.sample .env
    ```
 
-   For simplicities sake, this repo is configured to work with a remote Beacon node such as one from [Infura](https://infura.io/).
+   For simplicity's sake, this repo is configured to work with a remote Beacon node such as one from [Infura](https://infura.io/).
 
    Create an Eth2 project and copy the `https` URL:
 
