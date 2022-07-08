@@ -20,34 +20,49 @@ In the future, this repo aims to contain compose files for every possible Execut
 
 Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](https://git-scm.com/downloads) installed. Also, make sure `docker` is running before executing the commands below.
 
-```sh
-# Clone this repo
-git clone https://github.com/ObolNetwork/charon-distributed-validator-cluster.git
+1. Clone the [charon-distributed-validator-cluster](https://github.com/ObolNetwork/charon-distributed-validator-cluster) template repo and `cd` into the directory.
 
-# Change directory
-cd charon-distributed-validator-cluster
+   ```sh
+   # Clone the repo
+   git clone https://github.com/ObolNetwork/charon-distributed-validator-cluster.git
 
-# Prepare an environment variable file (requires at minimum an Infura API endpoint for your chosen chain)
-cp .env.sample .env
+   # Change directory
+   cd charon-distributed-validator-cluster/
+   ```
 
-# Shows available make targets
-make
+1. Prepare the environment variables
 
-# Deletes previously created cluster
-make clean
+   ```sh
+   # Copy the sample environment variables
+   cp .env.sample .env
+   ```
 
-# Create the artifacts for a new test cluster
-make create
+   For simplicities sake, this repo is configured to work with a remote Beacon node such as one from [Infura](https://infura.io/).
 
-# Start the cluster
-make up
+   Create an Eth2 project and copy the `https` URL:
 
-# Open Grafana dashboard
-open http://localhost:3000/d/laEp8vupp
+   ![Example Infura API Endpoint](example-infura-details.png)
 
-# Open Jaeger dashboard
-open http://localhost:16686
-```
+   Replace the placeholder value of `CHARON_BEACON_NODE_ENDPOINT` in your newly created `.env` file with this URL.
+
+1. Create the artifacts needed to run a testnet distributed validator cluster
+
+   ```sh
+   # Create a testnet distributed validator cluster
+   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:latest create cluster --cluster-dir=".charon" --withdrawal-address="0x000000000000000000000000000000000000dead"
+   ```
+
+1. Start the cluster
+   ```sh
+   # Start the distributed validator cluster
+   docker-compose up
+   ```
+1. Checkout the monitoring dashboard and see if things look all right
+
+   ```sh
+   # Open Grafana
+   open http://localhost:3000/d/laEp8vupp
+   ```
 
 If all the above went correctly, it's natural to see logs like:
 
