@@ -1,6 +1,6 @@
 charon.yml
 charon
-.charon
+.charon/cluster/
 manifest.json
 cluster_definition.json
 cluster_lock.json
@@ -11,4 +11,4 @@ prater
 .data
 beaconnode.env.old
 split_keys/
-bootnode/
+bootnode/charon-enr-private-key
