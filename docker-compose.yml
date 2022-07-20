@@ -1,11 +1,13 @@
 version: "3.8"
 
-x-node-base: &node-base # Pegged charon version (update this for each release).
+x-node-base:
+  # Pegged charon version (update this for each release).
+  &node-base
   image: ghcr.io/obolnetwork/charon:${CHARON_VERSION}
   env_file: .env
   restart: unless-stopped
-  networks: [cluster]
-  depends_on: [bootnode]
+  networks: [ cluster ]
+  depends_on: [ bootnode ]
   volumes:
     - ./.charon:/opt/charon/.charon/
 
@@ -62,8 +64,8 @@ services:
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
     build: lighthouse
-    networks: [cluster]
-    depends_on: [node0]
+    networks: [ cluster ]
+    depends_on: [ node0 ]
     env_file: .env
     environment:
       NODE: node0
@@ -73,8 +75,8 @@ services:
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION}
-    networks: [cluster]
-    depends_on: [node1]
+    networks: [ cluster ]
+    depends_on: [ node1 ]
     restart: on-failure
     command: |
       validator-client
@@ -87,8 +89,8 @@ services:
 
   vc2-teku:
     image: consensys/teku:${TEKU_VERSION}
-    networks: [cluster]
-    depends_on: [node2]
+    networks: [ cluster ]
+    depends_on: [ node2 ]
     command: |
       validator-client
       --beacon-node-api-endpoint="http://node2:3600"
@@ -100,8 +102,8 @@ services:
 
   vc3-teku:
     image: consensys/teku:${TEKU_VERSION}
-    networks: [cluster]
-    depends_on: [node3]
+    networks: [ cluster ]
+    depends_on: [ node3 ]
     command: |
       validator-client
       --beacon-node-api-endpoint="http://node3:3600"
@@ -121,7 +123,7 @@ services:
     image: prom/prometheus:latest
     ports:
       - "9090:9090"
-    networks: [cluster]
+    networks: [ cluster ]
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
@@ -129,17 +131,23 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
-    networks: [cluster]
-    depends_on: [prometheus]
+    networks: [ cluster ]
+    depends_on: [ prometheus ]
     volumes:
       - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/datasource.yml
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - ./grafana/dashboards:/etc/dashboards
 
+  node-exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    networks: [ cluster ]
+
   jaeger:
     image: jaegertracing/all-in-one:latest
-    networks: [cluster]
+    networks: [ cluster ]
     ports:
       - "16686:16686"
 
