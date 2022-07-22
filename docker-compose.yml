@@ -3,7 +3,7 @@ version: "3.8"
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: ghcr.io/obolnetwork/charon:${CHARON_VERSION}
+  image: obolnetwork/charon:${CHARON_VERSION}
   env_file: .env
   restart: unless-stopped
   networks: [ cluster ]
