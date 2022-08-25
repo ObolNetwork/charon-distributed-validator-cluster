@@ -12,3 +12,4 @@ prater
 beaconnode.env.old
 split_keys/
 bootnode/charon-enr-private-key
+.idea/

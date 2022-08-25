@@ -1,4 +1,4 @@
-FROM sigp/lighthouse:v2.3.1
+FROM sigp/lighthouse:v3.0.0
 
 RUN apt-get update && apt-get install -y curl jq wget
 
