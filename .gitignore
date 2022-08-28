@@ -2,8 +2,9 @@ charon.yml
 charon
 .charon/cluster/
 manifest.json
-cluster_definition.json
-cluster_lock.json
+cluster-definition.json
+cluster-lock.json
+deposit-data.json
 p2pkey
 keystore*
 prater
