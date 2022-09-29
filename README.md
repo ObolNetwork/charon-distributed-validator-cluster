@@ -7,6 +7,7 @@ This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed
 This repo aims to give users a feel for what a [Distributed Validator Cluster](https://docs.obol.tech/docs/int/key-concepts#distributed-validator-cluster) means in practice, and what the future of high-availability, fault-tolerant proof of stake validating deployments will look like.
 
 A distributed validator cluster is a docker-compose file with the following containers running:
+
 - Four Charon Distributed Validator clients
 - One Lighthouse Validator client
 - Three Teku Validator Clients
@@ -66,7 +67,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 
 If all the above went correctly, it's natural to see logs like:
 
-`INFO sched      No active DVs for slot {"slot": 3288627}`
+`INFO sched No active DVs for slot {"slot": 3288627}`
 
 This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/cluster/deposit-data.json`.
 
@@ -85,19 +86,17 @@ The default cluster consists of 4 charon nodes using a mixture of validator clie
 
 The intention is to support all validator clients, and work is underway to add support for vouch and lodestar to this repo, with nimbus and prysm support to follow in future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
-## Creating Test Distributed Validator Private Keys
+## Create Distributed Validator Keys
 
 Create some testnet private keys for a 4 node distributed validator cluster with the command:
 
 ```sh
-docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.10.0 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead"
+docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:77f3497 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead" --nodes 6 --threshold 5
 ```
 
-You can also run `make create` if you prefer to use [Make](https://www.gnu.org/software/make/).
+This command will create a subdirectory `.charon/cluster`. In it are six folders, one for each charon node created. Each folder contains partial private keys that together make up the distributed validator described in `.charon/cluster/cluster-lock.json`.
 
-This command will create a subdirectory `.charon`. In it are four folders, each with different private keys that together make up the distributed validator described in `.charon/cluster/cluster-lock.json`
-
-### Activating your validator
+### Activate your validator
 
 Along with the private keys and cluster lock file is a validator deposit data file located at `.charon/cluster/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
 
@@ -183,12 +182,11 @@ Here are some common errors and how to decipher how to fix them:
 
 ## Charon Nodes
 
-
--   ```
-    Fatal run error: read lock: open .charon/cluster/cluster-lock.json: permission denied
-    Error: read lock: open .charon/cluster/cluster-lock.json: permission denied
-    ```
-    This error was received when I called `charon create cluster` on a local dev machine, and then copied and pasted the generated files in `.charon` to my remote eth2 server. The fix was to run `sudo chmod -R o+r .charon/`
+- ```
+  Fatal run error: read lock: open .charon/cluster/cluster-lock.json: permission denied
+  Error: read lock: open .charon/cluster/cluster-lock.json: permission denied
+  ```
+  This error was received when I called `charon create cluster` on a local dev machine, and then copied and pasted the generated files in `.charon` to my remote eth2 server. The fix was to run `sudo chmod -R o+r .charon/`
 
 ## Validator Clients
 
