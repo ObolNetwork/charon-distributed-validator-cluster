@@ -6,8 +6,8 @@ x-node-base:
   image: obolnetwork/charon:${CHARON_VERSION}
   env_file: .env
   restart: unless-stopped
-  networks: [ cluster ]
-  depends_on: [ bootnode ]
+  networks: [cluster]
+  depends_on: [bootnode]
   volumes:
     - ./.charon:/opt/charon/.charon/
 
@@ -20,30 +20,44 @@ services:
   node0:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node0
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node0/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
 
   node1:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node1
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node1/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node1
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
 
   node2:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node2
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node2/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
   node3:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node3
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node3/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
+
+  node4:
+    <<: *node-base
+    environment:
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node4/charon-enr-private-key
+      CHARON_JAEGER_SERVICE: node4
+      CHARON_P2P_EXTERNAL_HOSTNAME: node4
+
+  node5:
+    <<: *node-base
+    environment:
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node5/charon-enr-private-key
+      CHARON_JAEGER_SERVICE: node5
+      CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
   bootnode:
     <<: *node-base
@@ -64,8 +78,8 @@ services:
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
     build: lighthouse
-    networks: [ cluster ]
-    depends_on: [ node0 ]
+    networks: [cluster]
+    depends_on: [node0]
     env_file: .env
     environment:
       NODE: node0
@@ -75,8 +89,8 @@ services:
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION}
-    networks: [ cluster ]
-    depends_on: [ node1 ]
+    networks: [cluster]
+    depends_on: [node1]
     restart: on-failure
     command: |
       validator-client
@@ -87,23 +101,21 @@ services:
       - .charon/cluster/node1/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
 
-  vc2-teku:
-    image: consensys/teku:${TEKU_VERSION}
-    networks: [ cluster ]
-    depends_on: [ node2 ]
-    command: |
-      validator-client
-      --beacon-node-api-endpoint="http://node2:3600"
-      --config-file "/opt/charon/teku/teku-config.yaml"
-      --network ${ETH2_NETWORK}
+  vc2-lighthouse:
+    build: lighthouse
+    networks: [cluster]
+    depends_on: [node2]
+    env_file: .env
+    environment:
+      NODE: node2
     volumes:
+      - ./lighthouse:/opt/charon/lighthouse
       - .charon/cluster/node2/validator_keys:/opt/charon/keys
-      - ./teku/:/opt/charon/teku
 
   vc3-teku:
     image: consensys/teku:${TEKU_VERSION}
-    networks: [ cluster ]
-    depends_on: [ node3 ]
+    networks: [cluster]
+    depends_on: [node3]
     command: |
       validator-client
       --beacon-node-api-endpoint="http://node3:3600"
@@ -111,6 +123,30 @@ services:
       --network ${ETH2_NETWORK}
     volumes:
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
+      - ./teku/:/opt/charon/teku
+    
+  vc4-lighthouse:
+    build: lighthouse
+    networks: [cluster]
+    depends_on: [node4]
+    env_file: .env
+    environment:
+      NODE: node4
+    volumes:
+      - ./lighthouse:/opt/charon/lighthouse
+      - .charon/cluster/node4/validator_keys:/opt/charon/keys
+
+  vc5-teku:
+    image: consensys/teku:${TEKU_VERSION}
+    networks: [cluster]
+    depends_on: [node5]
+    command: |
+      validator-client
+      --beacon-node-api-endpoint="http://node5:3600"
+      --config-file "/opt/charon/teku/teku-config.yaml"
+      --network ${ETH2_NETWORK}
+    volumes:
+      - .charon/cluster/node5/validator_keys:/opt/charon/keys
       - ./teku/:/opt/charon/teku
 
   #                        _ _             _
@@ -123,7 +159,7 @@ services:
     image: prom/prometheus:latest
     ports:
       - "9090:9090"
-    networks: [ cluster ]
+    networks: [cluster]
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
@@ -131,8 +167,8 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
-    networks: [ cluster ]
-    depends_on: [ prometheus ]
+    networks: [cluster]
+    depends_on: [prometheus]
     volumes:
       - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/datasource.yml
@@ -143,11 +179,11 @@ services:
     image: prom/node-exporter:latest
     ports:
       - "9100:9100"
-    networks: [ cluster ]
+    networks: [cluster]
 
   jaeger:
     image: jaegertracing/all-in-one:latest
-    networks: [ cluster ]
+    networks: [cluster]
     ports:
       - "16686:16686"
 
