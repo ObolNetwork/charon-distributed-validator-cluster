@@ -2,20 +2,20 @@
 
 <h1 align="center">Distributed Validator Cluster with Docker Compose</h1>
 
-This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster running using [docker-compose](https://docs.docker.com/compose/).
+This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster which can be run using [docker-compose](https://docs.docker.com/compose/).
 
 This repo aims to give users a feel for what a [Distributed Validator Cluster](https://docs.obol.tech/docs/int/key-concepts#distributed-validator-cluster) means in practice, and what the future of high-availability, fault-tolerant proof of stake validating deployments will look like.
 
 A distributed validator cluster is a docker-compose file with the following containers running:
 
-- Four Charon Distributed Validator clients
+- Six Charon Distributed Validator clients
 - One Lighthouse Validator client
-- Three Teku Validator Clients
+- Five Teku Validator Clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
 
-In the future, this repo aims to contain compose files for every possible Execution, Beacon, and Validator client combination that is possible with DVT.
+In the future, this repo aims to contain compose files for every possible Execution, Beacon, and Validator client combinations that is possible with DVT.
 
 ## Quickstart
 
@@ -50,7 +50,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 
    ```sh
    # Create a testnet distributed validator cluster
-   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.10.0 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead"
+   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.10.0 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead" --nodes 6 --threshold 5
    ```
 
 1. Start the cluster
@@ -77,18 +77,20 @@ This repo assumes the use of a remote Ethereum Consensus Layer API, offered thro
 
 This only makes sense for a demo validator, and should not be done in a production scenarion. Similarly, a remote beacon node drastically impacts the latency of the system, and is likely to produce sub par validator inclusion distance relative to one with a local consensus client.
 
-The default cluster consists of 4 charon nodes using a mixture of validator clients:
+The default cluster consists of six charon nodes using a mixture of validator clients:
 
 - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
 - vc1: [Teku](https://github.com/ConsenSys/teku)
 - vc2: [Teku](https://github.com/ConsenSys/teku)
 - vc3: [Teku](https://github.com/ConsenSys/teku)
+- vc4: [Teku](https://github.com/ConsenSys/teku)
+- vc5: [Teku](https://github.com/ConsenSys/teku)
 
 The intention is to support all validator clients, and work is underway to add support for vouch and lodestar to this repo, with nimbus and prysm support to follow in future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
 ## Create Distributed Validator Keys
 
-Create some testnet private keys for a 4 node distributed validator cluster with the command:
+Create some testnet private keys for a six node distributed validator cluster with the command:
 
 ```sh
 docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:77f3497 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead" --nodes 6 --threshold 5
