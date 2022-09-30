@@ -6,6 +6,10 @@ while ! curl "http://${NODE}:3600/eth/v1/node/health" 2>/dev/null; do
 done
 
 # Refer: https://lighthouse-book.sigmaprime.io/advanced-datadir.html
+# Running a lighthouse VC involves two steps which needs to run in order:
+# 1. Loading the validator keys
+# 2. Actually running the VC
+
 for f in /opt/charon/keys/keystore-*.json; do
   echo "Importing key ${f}"
   lighthouse --network "${ETH2_NETWORK}" account validator import \

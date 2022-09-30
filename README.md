@@ -8,9 +8,9 @@ This repo aims to give users a feel for what a [Distributed Validator Cluster](h
 
 A distributed validator cluster is a docker-compose file with the following containers running:
 
-- Six Charon Distributed Validator clients
-- Three Lighthouse Validator clients
-- Three Teku Validator Clients
+- Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
+- Three [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
+- Three [Teku](https://github.com/ConsenSys/teku) Validator Clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
