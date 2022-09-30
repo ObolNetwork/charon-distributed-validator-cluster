@@ -20,42 +20,42 @@ services:
   node0:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node0
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node0/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
 
   node1:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node1
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node1/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node1
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
 
   node2:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node2
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node2/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
   node3:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node3
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node3/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
   node4:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node4
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node4/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node4
       CHARON_P2P_EXTERNAL_HOSTNAME: node4
 
   node5:
     <<: *node-base
     environment:
-      CHARON_DATA_DIR: /opt/charon/.charon/cluster/node5
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node5/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node5
       CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
