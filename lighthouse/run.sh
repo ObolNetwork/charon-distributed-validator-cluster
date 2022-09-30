@@ -11,7 +11,7 @@ for f in /opt/charon/keys/keystore-*.json; do
   lighthouse --network "${ETH2_NETWORK}" account validator import \
     --reuse-password \
     --keystore "${f}" \
-    --password-file "$(echo "${f}" | sed 's/json/txt/')"
+    --password-file "${f//json/txt}"
 done
 
 echo "Starting lighthouse validator client for ${NODE}"
