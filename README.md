@@ -2,15 +2,15 @@
 
 <h1 align="center">Distributed Validator Cluster with Docker Compose</h1>
 
-This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster which can be run using [docker-compose](https://docs.docker.com/compose/).
+This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster which you can run using [docker-compose](https://docs.docker.com/compose/).
 
 This repo aims to give users a feel for what a [Distributed Validator Cluster](https://docs.obol.tech/docs/int/key-concepts#distributed-validator-cluster) means in practice, and what the future of high-availability, fault-tolerant proof of stake validating deployments will look like.
 
 A distributed validator cluster is a docker-compose file with the following containers running:
 
 - Six Charon Distributed Validator clients
-- One Lighthouse Validator client
-- Five Teku Validator Clients
+- Three Lighthouse Validator clients
+- Three Teku Validator Clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
@@ -81,9 +81,9 @@ The default cluster consists of six charon nodes using a mixture of validator cl
 
 - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
 - vc1: [Teku](https://github.com/ConsenSys/teku)
-- vc2: [Teku](https://github.com/ConsenSys/teku)
+- vc2: [Lighthouse](https://github.com/sigp/lighthouse)
 - vc3: [Teku](https://github.com/ConsenSys/teku)
-- vc4: [Teku](https://github.com/ConsenSys/teku)
+- vc4: [Lighthouse](https://github.com/sigp/lighthouse)
 - vc5: [Teku](https://github.com/ConsenSys/teku)
 
 The intention is to support all validator clients, and work is underway to add support for vouch and lodestar to this repo, with nimbus and prysm support to follow in future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
