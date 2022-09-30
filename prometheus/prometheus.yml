@@ -34,13 +34,13 @@ scrape_configs:
       - targets: ["vc1-teku:8008"]
   - job_name: "vc2"
     static_configs:
-      - targets: ["vc2-teku:8008"]
+      - targets: ["vc2-lighthouse:5064"]
   - job_name: "vc3"
     static_configs:
       - targets: ["vc3-teku:8008"]
   - job_name: "vc4"
     static_configs:
-      - targets: ["vc4-teku:8008"]
+      - targets: ["vc4-lighthouse:5064"]
   - job_name: "vc5"
     static_configs:
       - targets: ["vc5-teku:8008"]
