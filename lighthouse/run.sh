@@ -5,6 +5,7 @@ while ! curl "http://${NODE}:3600/eth/v1/node/health" 2>/dev/null; do
   sleep 5
 done
 
+# Refer: https://lighthouse-book.sigmaprime.io/advanced-datadir.html
 for f in /opt/charon/keys/keystore-*.json; do
   echo "Importing key ${f}"
   lighthouse --network "${ETH2_NETWORK}" account validator import \
