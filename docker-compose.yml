@@ -94,7 +94,7 @@ services:
     restart: on-failure
     command: |
       validator-client
-      --beacon-node-api-endpoint="http://node1:3600"
+      --beacon-node-api-endpoints="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
       --network ${ETH2_NETWORK}
     volumes:
@@ -118,7 +118,7 @@ services:
     depends_on: [node3]
     command: |
       validator-client
-      --beacon-node-api-endpoint="http://node3:3600"
+      --beacon-node-api-endpoints="http://node3:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
       --network ${ETH2_NETWORK}
     volumes:
@@ -142,7 +142,7 @@ services:
     depends_on: [node5]
     command: |
       validator-client
-      --beacon-node-api-endpoint="http://node5:3600"
+      --beacon-node-api-endpoints="http://node5:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
       --network ${ETH2_NETWORK}
     volumes:
