@@ -12,7 +12,55 @@ x-node-base:
     - ./.charon:/opt/charon/.charon/
 
 services:
-  #       _                                  _ _            _
+#  _   _                         _           _
+#  _ __   ___| |_| |__   ___ _ __ _ __ ___ (_)_ __   __| |
+#  | '_ \ / _ \ __| '_ \ / _ \ '__| '_ ` _ \| | '_ \ / _` |
+#  | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
+#  |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
+  nethermind:
+    image: nethermind/nethermind:1.14.2
+    env_file: .env
+    restart: on-failure
+    command: |
+      --config /opt/nethermind/goerli.cfg
+    networks: [cluster]
+    volumes:
+      - ./nethermind:/opt/nethermind/
+      - ./jwt:/opt/jwt/
+
+#        _           _
+#  _ __ (_)_ __ ___ | |__  _   _ ___
+#  | '_ \| | '_ ` _ \| '_ \| | | / __|
+#  | | | | | | | | | | |_) | |_| \__ \
+#  |_| |_|_|_| |_| |_|_.__/ \__,_|___/
+  nimbus:
+    image: statusim/nimbus-eth2:multiarch-v22.9.1
+    ports:
+      - 9000:9000/tcp # P2P TCP
+      - 9000:9000/udp # P2P UDP
+      - 127.0.0.1:5052:5052/tcp
+      - 127.0.0.1:8008:8008/tcp # Metrics port
+    env_file: .env
+    restart: on-failure
+    command: >-
+      --network=${ETH2_NETWORK}
+      --data-dir=/opt/data/
+      --web3-url=http://nethermind:8551
+      --log-level=info
+      --tcp-port=9000
+      --udp-port=9000
+      --rest
+      --rest-address=0.0.0.0
+      --rest-port=5052
+      --metrics
+      --metrics-address=0.0.0.0
+      --metrics-port=8008
+    networks: [cluster]
+    volumes:
+      - ./nimbus:/opt/data/
+      - /jwt:/opt/jwt/
+
+#       _                                  _ _            _
   #   ___| |__   __ _ _ __ ___  _ __     ___| (_) ___ _ __ | |_ ___
   #  / __| '_ \ / _` | '__/ _ \| '_ \   / __| | |/ _ \ '_ \| __/ __|
   # | (__| | | | (_| | | | (_) | | | | | (__| | |  __/ | | | |_\__ \
