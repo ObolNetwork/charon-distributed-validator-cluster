@@ -2,19 +2,20 @@
 
 <h1 align="center">Distributed Validator Cluster with Docker Compose</h1>
 
-This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster running using [docker-compose](https://docs.docker.com/compose/).
+This repo contains a [charon](https://github.com/ObolNetwork/charon) distributed validator cluster which you can run using [docker-compose](https://docs.docker.com/compose/).
 
 This repo aims to give users a feel for what a [Distributed Validator Cluster](https://docs.obol.tech/docs/int/key-concepts#distributed-validator-cluster) means in practice, and what the future of high-availability, fault-tolerant proof of stake validating deployments will look like.
 
 A distributed validator cluster is a docker-compose file with the following containers running:
-- Four Charon Distributed Validator clients
-- One Lighthouse Validator client
-- Three Teku Validator Clients
+
+- Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
+- Three [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
+- Three [Teku](https://github.com/ConsenSys/teku) Validator Clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
 
-In the future, this repo aims to contain compose files for every possible Execution, Beacon, and Validator client combination that is possible with DVT.
+In the future, this repo aims to contain compose files for every possible Execution, Beacon, and Validator client combinations that is possible with DVT.
 
 ## Quickstart
 
@@ -49,7 +50,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 
    ```sh
    # Create a testnet distributed validator cluster
-   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.10.1 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead"
+   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.10.1 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead" --nodes 6 --threshold 5
    ```
 
 1. Start the cluster
@@ -76,28 +77,28 @@ This repo assumes the use of a remote Ethereum Consensus Layer API, offered thro
 
 This only makes sense for a demo validator, and should not be done in a production scenarion. Similarly, a remote beacon node drastically impacts the latency of the system, and is likely to produce sub par validator inclusion distance relative to one with a local consensus client.
 
-The default cluster consists of 4 charon nodes using a mixture of validator clients:
+The default cluster consists of six charon nodes using a mixture of validator clients:
 
 - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
 - vc1: [Teku](https://github.com/ConsenSys/teku)
-- vc2: [Teku](https://github.com/ConsenSys/teku)
+- vc2: [Lighthouse](https://github.com/sigp/lighthouse)
 - vc3: [Teku](https://github.com/ConsenSys/teku)
+- vc4: [Lighthouse](https://github.com/sigp/lighthouse)
+- vc5: [Teku](https://github.com/ConsenSys/teku)
 
 The intention is to support all validator clients, and work is underway to add support for vouch and lodestar to this repo, with nimbus and prysm support to follow in future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
-## Creating Test Distributed Validator Private Keys
+## Create Distributed Validator Keys
 
-Create some testnet private keys for a 4 node distributed validator cluster with the command:
+Create some testnet private keys for a six node distributed validator cluster with the command:
 
 ```sh
-docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.10.1 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead"
+docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.10.1 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead" --nodes 6 --threshold 5
 ```
 
-You can also run `make create` if you prefer to use [Make](https://www.gnu.org/software/make/).
+This command will create a subdirectory `.charon/cluster`. In it are six folders, one for each charon node created. Each folder contains partial private keys that together make up the distributed validator described in `.charon/cluster/cluster-lock.json`.
 
-This command will create a subdirectory `.charon`. In it are four folders, each with different private keys that together make up the distributed validator described in `.charon/cluster/cluster-lock.json`
-
-### Activating your validator
+### Activate your validator
 
 Along with the private keys and cluster lock file is a validator deposit data file located at `.charon/cluster/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
 
@@ -183,12 +184,11 @@ Here are some common errors and how to decipher how to fix them:
 
 ## Charon Nodes
 
-
--   ```
-    Fatal run error: read lock: open .charon/cluster/cluster-lock.json: permission denied
-    Error: read lock: open .charon/cluster/cluster-lock.json: permission denied
-    ```
-    This error was received when I called `charon create cluster` on a local dev machine, and then copied and pasted the generated files in `.charon` to my remote eth2 server. The fix was to run `sudo chmod -R o+r .charon/`
+- ```
+  Fatal run error: read lock: open .charon/cluster/cluster-lock.json: permission denied
+  Error: read lock: open .charon/cluster/cluster-lock.json: permission denied
+  ```
+  Some users may encounter the above error when trying to copy artifacts generated by `charon create cluster` to a different path (or machine) and then running `docker-compose up` in the new path. This is a permission issue which can be fixed by running `sudo chmod -R o+r .charon/`.
 
 ## Validator Clients
 
@@ -198,7 +198,7 @@ Here are some common errors and how to decipher how to fix them:
 Keystore file /opt/charon/keys/keystore-0.json.lock already in use.
 ```
 
-This can happen when you recreate a docker cluster with the same cluster files. Delete all `.charon/cluster/node<teku-vc-index-here>/keystore-*.json.lock` files to fix this.
+This may occur when teku creates `keystore.json.lock` files which are not deleted when the containers are shut down. To fix this, delete all `.charon/cluster/node<teku-vc-index-here>/keystore-*.json.lock` and restart your cluster.
 
 ```
 java.util.concurrent.CompletionException: java.lang.RuntimeException: Unexpected response from Beacon Node API (url = http://node1:3600/eth/v1/beacon/states/head/validators?id=0x8c4758687121c3b35203c69925e8056799369e0dac2c31c9984946436f3041821080a58e6c1a813b4de1007333552347, status = 404)
