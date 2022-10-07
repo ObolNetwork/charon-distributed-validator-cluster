@@ -45,13 +45,20 @@ services:
   # | '_ \| | '_ ` _ \| '_ \| | | / __|
   # | | | | | | | | | | |_) | |_| \__ \
   # |_| |_|_|_| |_| |_|_.__/ \__,_|___/
+  checkpoint-sync:
+    image: statusim/nimbus-eth2:${NIMBUS_VERSION:-multiarch-v22.9.1}
+    command: trustedNodeSync --network=goerli --data-dir=/opt/data/ --trusted-node-url=https://goerli.checkpoint-sync.ethpandaops.io
+    networks: [ cluster ]
+    volumes:
+      - ./data/nimbus:/opt/data/
+
   nimbus:
     image: statusim/nimbus-eth2:${NIMBUS_VERSION:-multiarch-v22.9.1}
     ports:
       - ${NIMBUS_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${NIMBUS_PORT_P2P:-9000}:9000/udp # P2P UDP
-      - ${NIMBUS_PORT_HTTP:-9000}:5052/tcp
-      - ${NIMBUS_PORT_METRICS:-9000}:8008/tcp # Metrics port
+      - ${NIMBUS_PORT_HTTP:-5052}:5052/tcp
+      - ${NIMBUS_PORT_METRICS:-8008}:8008/tcp # Metrics port
     restart: on-failure
     command: |
       --network=goerli
@@ -67,8 +74,8 @@ services:
       --metrics
       --metrics-address=0.0.0.0
       --metrics-port=8008
+    depends_on: [nethermind, checkpoint-sync]
     networks: [ cluster ]
-    depends_on: [ nethermind ]
     volumes:
       - ./data/nimbus:/opt/data/
       - ./jwt:/opt/jwt/
