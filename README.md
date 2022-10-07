@@ -122,8 +122,18 @@ mkdir split_keys
 # Alongside them, with a matching filename but ending with `.txt` should be the password to the keystore.
 # E.g. keystore-0.json keystore-0.txt
 
-# Split these keystores into key shares for a distributed validator
-make split-existing-keys
+# Split these keystores into "n" (--nodes) key shares with "t" (--threshold) as threshold for a distributed validator
+docker run --rm  -v $(pwd):/opt/charon ghcr.io/obolnetwork/charon:v0.10.1 create cluster --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 3 --nodes 4
+
+# The above command will create 4 validator keys along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
+# .charon/cluster/
+# ├─ cluster-lock.json	Cluster lock defines the cluster lock file which is signed by all nodes
+# ├─ deposit-data.json	Deposit data file is used to activate a Distributed Validator on DV Launchpad
+# ├─ node[0-3]/		Directory for each node
+# │  ├─ charon-enr-private-key		Charon networking private key for node authentication
+# │  ├─ validator_keys		Validator keystores and password
+# │  │  ├─ keystore-*.json	Validator private share key for duty signing
+# │  │  ├─ keystore-*.txt	Keystore password files for keystore-*.json
 ```
 
 ## Project Status
@@ -132,46 +142,6 @@ It is still early days for the Obol Network and everything is under active devel
 It is NOT ready for mainnet.
 Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supported-consensus-layer-clients) is the latest on charon's supported clients and duties.
 
-## Makefile features
-
-### `make create`: Create required artifacts for a testnet cluster
-
-`make create` performs the following actions:
-
-- Call `charon create cluster` to produce ENRs, cluster lock files, distributed validator private keys, and deposit and exit data for the created validator.
-- These artifacts are only suitable for test uses cases and should not be distributed to others. Clusters with groups of operators should perform a DKG ceremony using `charon dkg`.
-
-### `make clean`: Clean and reset cluster
-
-`make clean` performs the following actions:
-
-- Stops and removes all running containers, `docker-compose down`
-- Deletes created cluster artifacts
-
-| ⚠️ The features below are only for the brave ⚔️ 🐉 |
-| -------------------------------------------------- |
-
-### `make split-existing-keys`: Create a cluster by splitting existing validator private keys
-
-Existing validator keys stored in `./split_keys/` folder can be split into threshold private keys suitable for operating in a distributed validator.
-
-```sh
-# Create the folder that holds the original keystores
-mkdir split_keys
-
-# Copy in the keystores
-cp path/to/existing/keys/keystore-*.json split_keys/
-
-# Copy in the password files
-cp path/to/passwords/keystore-*.txt split_keys/
-
-# Each keystore-*.json requires a keystore-*.txt file containing the password.
-make split-existing-keys
-
-# Bring up the cluster
-make up
-```
-
 > Remember: Please make sure any existing validator has been shut down for
 > at least 3 finalised epochs before starting the charon cluster,
 > otherwise your validator could be slashed.
@@ -179,8 +149,6 @@ make up
 # Troubleshooting
 
 Here are some common errors and how to decipher how to fix them:
-
-## Beacon Nodes
 
 ## Charon Nodes
 
