@@ -29,7 +29,6 @@ function createVouchConfig() {
 
   # Set beacon node addresses.
   nodeAddr="http://${NODE}:3600"
-#  nodeAddr="192.168.1.10:5052"
   addr=${nodeAddr} yq -i '.beacon-node-address = strenv(addr)' ${vouchFile}
   addr=${nodeAddr} yq -i '.submitter.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
   addr=${nodeAddr} yq -i '.strategies.beaconblockproposal.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
