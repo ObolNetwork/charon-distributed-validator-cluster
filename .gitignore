@@ -14,3 +14,4 @@ split_keys/
 bootnode/charon-enr-private-key
 .idea/
 data/
+nethermind/nethermind_db/

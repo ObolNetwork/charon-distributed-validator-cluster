@@ -169,53 +169,51 @@ services:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc2-lighthouse:
-    build: lighthouse
+  vc2-vouch:
+    build: vouch
     networks: [ cluster ]
     depends_on: [ node2 ]
-    env_file: .env
+    restart: on-failure
     environment:
       NODE: node2
-      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
-      - ./lighthouse:/opt/charon/lighthouse
-      - .charon/cluster/node2/validator_keys:/opt/charon/keys
+      - .charon/cluster/node2:/opt/charon/node
+      - ./vouch:/opt/charon/vouch
 
-  vc3-teku:
-    image: consensys/teku:${TEKU_VERSION:-22.9.1}
-    networks: [ cluster ]
-    depends_on: [ node3 ]
-    command: |
-      validator-client
-      --beacon-node-api-endpoint="http://node3:3600"
-      --config-file "/opt/charon/teku/teku-config.yaml"
-    volumes:
-      - .charon/cluster/node3/validator_keys:/opt/charon/validator_keys
-      - ./teku:/opt/charon/teku
-
-  vc4-lighthouse:
+  vc3-lighthouse:
     build: lighthouse
     networks: [ cluster ]
-    depends_on: [ node4 ]
+    depends_on: [ node3 ]
     env_file: .env
     environment:
-      NODE: node4
+      NODE: node3
       ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
       - ./lighthouse:/opt/charon/lighthouse
-      - .charon/cluster/node4/validator_keys:/opt/charon/keys
+      - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
-  vc5-teku:
+  vc4-teku:
     image: consensys/teku:${TEKU_VERSION:-22.9.1}
     networks: [ cluster ]
-    depends_on: [ node5 ]
+    depends_on: [ node4 ]
     command: |
       validator-client
-      --beacon-node-api-endpoint="http://node5:3600"
+      --beacon-node-api-endpoint="http://node4:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
-      - .charon/cluster/node5/validator_keys:/opt/charon/validator_keys
+      - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
+
+  vc5-vouch:
+    build: vouch
+    networks: [ cluster ]
+    depends_on: [ node5 ]
+    restart: on-failure
+    environment:
+      NODE: node5
+    volumes:
+      - .charon/cluster/node5:/opt/charon/node
+      - ./vouch:/opt/charon/vouch
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _
