@@ -9,8 +9,9 @@ This repo aims to give users a feel for what a [Distributed Validator Cluster](h
 A distributed validator cluster is a docker-compose file with the following containers running:
 
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
-- Three [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
-- Three [Teku](https://github.com/ConsenSys/teku) Validator Clients
+- Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
+- Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
+- Two [Vouch](https://github.com/attestantio/vouch) Validator Clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
@@ -21,7 +22,7 @@ In the future, this repo aims to contain compose files for every possible Execut
 
 Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](https://git-scm.com/downloads) installed. Also, make sure `docker` is running before executing the commands below.
 
-1. Clone the [charon-distributed-validator-cluster](https://github.com/ObolNetwork/charon-distributed-validator-cluster) template repo and `cd` into the directory.
+1. Clone the [charon-distributed-validator-cluster](https://github.com/ObolNetwork/charon-distributed-validator-cluster) repo and `cd` into the directory.
 
    ```sh
    # Clone the repo
@@ -37,14 +38,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    # Copy the sample environment variables
    cp .env.sample .env
    ```
-
-   For simplicities' sake, this repo is configured to work with a remote Beacon node such as one from [Infura](https://infura.io/).
-
-   Create an Eth2 project and copy the `https` URL, make sure **Prater** is selected in dropdown of ENDPOINTS:
-
-   ![Example Infura API Endpoint](example-infura-details.png)
-
-   Replace the placeholder value of `CHARON_BEACON_NODE_ENDPOINT` in your newly created `.env` file with this URL.
+   `.env.sample` is a sample environment file that allows overriding default configuration defined in `docker-compose.yml`. Rename this file to `.env` and then uncomment and set any variable.
 
 1. Create the artifacts needed to run a testnet distributed validator cluster
 
