@@ -8,6 +8,8 @@ This repo aims to give users a feel for what a [Distributed Validator Cluster](h
 
 A distributed validator cluster is a docker-compose file with the following containers running:
 
+- Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
+- Single [Nimbus](https://github.com/status-im/nimbus-eth2) consensus layer client
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
 - Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
 - Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
@@ -67,18 +69,19 @@ This is because you need to activate your freshly created distributed validator 
 
 ## Remote Beacon Node
 
-This repo assumes the use of a remote Ethereum Consensus Layer API, offered through a product like [Infura](https://infura.io/).
-
 This only makes sense for a demo validator, and should not be done in a production scenarion. Similarly, a remote beacon node drastically impacts the latency of the system, and is likely to produce sub par validator inclusion distance relative to one with a local consensus client.
 
-The default cluster consists of six charon nodes using a mixture of validator clients:
-
-- vc0: [Lighthouse](https://github.com/sigp/lighthouse)
-- vc1: [Teku](https://github.com/ConsenSys/teku)
-- vc2: [Vouch](https://github.com/attestantio/vouch)
-- vc3: [Lighthouse](https://github.com/sigp/lighthouse)
-- vc4: [Teku](https://github.com/ConsenSys/teku)
-- vc5: [Vouch](https://github.com/attestantio/vouch)
+The default cluster consists of:
+- [Nethermind](https://github.com/NethermindEth/nethermind), an execution layer client
+- [Nimbus](https://github.com/status-im/nimbus-eth2), a consensus layer client
+- Six [charon](https://github.com/ObolNetwork/charon) nodes
+- Mixture of validator clients:
+  - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
+  - vc1: [Teku](https://github.com/ConsenSys/teku)
+  - vc2: [Vouch](https://github.com/attestantio/vouch)
+  - vc3: [Lighthouse](https://github.com/sigp/lighthouse)
+  - vc4: [Teku](https://github.com/ConsenSys/teku)
+  - vc5: [Vouch](https://github.com/attestantio/vouch)
 
 The intention is to support all validator clients, and work is underway to add support for lodestar to this repo, with nimbus and prysm support to follow in the future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
