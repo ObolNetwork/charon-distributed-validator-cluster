@@ -67,9 +67,7 @@ If all the above went correctly, it's natural to see logs like:
 
 This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/cluster/deposit-data.json`.
 
-## Remote Beacon Node
-
-This only makes sense for a demo validator, and should not be done in a production scenarion. Similarly, a remote beacon node drastically impacts the latency of the system, and is likely to produce sub par validator inclusion distance relative to one with a local consensus client.
+## Distributed Validator Cluster
 
 The default cluster consists of:
 - [Nethermind](https://github.com/NethermindEth/nethermind), an execution layer client
