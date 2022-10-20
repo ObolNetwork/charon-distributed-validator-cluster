@@ -40,7 +40,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    # Copy the sample environment variables
    cp .env.sample .env
    ```
-   `.env.sample` is a sample environment file that allows overriding default configuration defined in `docker-compose.yml`. Rename this file to `.env` and then uncomment and set any variable.
+   `.env.sample` is a sample environment file that allows overriding default configuration defined in `docker-compose.yml`. Uncomment and set any variable to override its value.
 
 1. Create the artifacts needed to run a testnet distributed validator cluster
 
@@ -67,9 +67,7 @@ If all the above went correctly, it's natural to see logs like:
 
 This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/cluster/deposit-data.json`.
 
-## Remote Beacon Node
-
-This only makes sense for a demo validator, and should not be done in a production scenarion. Similarly, a remote beacon node drastically impacts the latency of the system, and is likely to produce sub par validator inclusion distance relative to one with a local consensus client.
+## Distributed Validator Cluster
 
 The default cluster consists of:
 - [Nethermind](https://github.com/NethermindEth/nethermind), an execution layer client
@@ -120,13 +118,13 @@ mkdir split_keys
 # E.g. keystore-0.json keystore-0.txt
 
 # Split these keystores into "n" (--nodes) key shares with "t" (--threshold) as threshold for a distributed validator
-docker run --rm  -v $(pwd):/opt/charon ghcr.io/obolnetwork/charon:v0.11.0 create cluster --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 3 --nodes 4
+docker run --rm  -v $(pwd):/opt/charon ghcr.io/obolnetwork/charon:v0.11.0 create cluster --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 4 --nodes 6
 
 # The above command will create 4 validator keys along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
 # .charon/cluster/
 # ├─ cluster-lock.json	Cluster lock defines the cluster lock file which is signed by all nodes
 # ├─ deposit-data.json	Deposit data file is used to activate a Distributed Validator on DV Launchpad
-# ├─ node[0-3]/		Directory for each node
+# ├─ node[0-5]/		Directory for each node
 # │  ├─ charon-enr-private-key		Charon networking private key for node authentication
 # │  ├─ validator_keys		Validator keystores and password
 # │  │  ├─ keystore-*.json	Validator private share key for duty signing
