@@ -9,7 +9,7 @@ This repo aims to give users a feel for what a [Distributed Validator Cluster](h
 A distributed validator cluster is a docker-compose file with the following containers running:
 
 - Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
-- Single [Nimbus](https://github.com/status-im/nimbus-eth2) consensus layer client
+- Single [Lighthouse](https://github.com/sigp/lighthouse) consensus layer client
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
 - Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
 - Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
@@ -71,7 +71,7 @@ This is because you need to activate your freshly created distributed validator 
 
 The default cluster consists of:
 - [Nethermind](https://github.com/NethermindEth/nethermind), an execution layer client
-- [Nimbus](https://github.com/status-im/nimbus-eth2), a consensus layer client
+- [Lighthouse](https://github.com/sigp/lighthouse), a consensus layer client
 - Six [charon](https://github.com/ObolNetwork/charon) nodes
 - Mixture of validator clients:
   - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
@@ -81,7 +81,7 @@ The default cluster consists of:
   - vc4: [Teku](https://github.com/ConsenSys/teku)
   - vc5: [Vouch](https://github.com/attestantio/vouch)
 
-The intention is to support all validator clients, and work is underway to add support for lodestar to this repo, with nimbus and prysm support to follow in the future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
+The intention is to support all validator clients, and work is underway to add support for lodestar to this repo, with [nimbus](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/67) and [prysm](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/68) support to follow in the future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
 ## Create Distributed Validator Keys
 
@@ -177,3 +177,17 @@ May 20 12:48:45.048 WARN Offline beacon node                     endpoint: http:
 ```
 
 The above error was caused when the upstream charon client for this validator had died and not restarted.
+
+### Beacon node
+
+### Lighthouse
+
+The HTTP server of lighthouse beacon node takes some time to start (5-10mins) when using checkpoint-sync. So, if you try to get syncing status by running:
+```shell
+curl -X GET http://127.0.0.1:5052/eth/v1/node/syncing
+```
+You would get:
+```
+curl: (52) Empty reply from server
+```
+since the http server hasn't started yet. In that case, it is advised that you try after some time.
