@@ -9,7 +9,7 @@ This repo aims to give users a feel for what a [Distributed Validator Cluster](h
 A distributed validator cluster is a docker-compose file with the following containers running:
 
 - Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
-- Single [https://github.com/sigp/lighthouse](https://github.com/sigp/lighthouse) consensus layer client
+- Single [Lighthouse](https://github.com/sigp/lighthouse) consensus layer client
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
 - Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
 - Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
