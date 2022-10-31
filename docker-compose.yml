@@ -52,45 +52,39 @@ services:
       - ./data/nethermind:/nethermind/data
       - ./jwt:/root/jwt
 
-  #          _           _               
-  #  _ __ (_)_ __ ___ | |__  _   _ ___ 
-  # | '_ \| | '_ ` _ \| '_ \| | | / __|
-  # | | | | | | | | | | |_) | |_| \__ \
-  # |_| |_|_|_| |_| |_|_.__/ \__,_|___/
-  checkpoint-sync:
-    image: statusim/nimbus-eth2:${NIMBUS_VERSION:-multiarch-v22.9.1}
-    command: trustedNodeSync --network=goerli --data-dir=/opt/data/ --trusted-node-url=https://goerli.checkpoint-sync.ethpandaops.io
-    networks: [ cluster ]
-    volumes:
-      - ./data/nimbus:/opt/data/
+  #  _ _       _     _   _
+  # | (_) __ _| |__ | |_| |__   ___  _   _ ___  ___
+  # | | |/ _` | '_ \| __| '_ \ / _ \| | | / __|/ _ \
+  # | | | (_| | | | | |_| | | | (_) | |_| \__ \  __/
+  # |_|_|\__, |_| |_|\__|_| |_|\___/ \__,_|___/\___|
+  #      |___/
 
-  nimbus:
-    image: statusim/nimbus-eth2:${NIMBUS_VERSION:-multiarch-v22.9.1}
+  lighthouse:
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.2.1}
     ports:
-      - ${NIMBUS_PORT_P2P:-9000}:9000/tcp # P2P TCP
-      - ${NIMBUS_PORT_P2P:-9000}:9000/udp # P2P UDP
-      - ${NIMBUS_PORT_HTTP:-5052}:5052/tcp
-      - ${NIMBUS_PORT_METRICS:-8008}:8008/tcp # Metrics port
-    restart: on-failure
+      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp   # P2P TCP
+      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp   # P2P UDP
+      - ${LIGHTHOUSE_PORT_METRICS:-5052}:5052   # Metrics
     command: |
-      --network=${ETH2_NETWORK:-goerli}
-      --data-dir=/opt/data/
-      --web3-url=http://nethermind:8551
-      --log-level=info
-      --tcp-port=9000
-      --udp-port=9000
-      --jwt-secret=/opt/jwt/jwt.hex
-      --rest
-      --rest-address=0.0.0.0
-      --rest-port=5052
+      lighthouse bn
+      --network=goerli
+      --checkpoint-sync-url=https://goerli.checkpoint-sync.ethdevops.io
+      --execution-endpoint=http://geth:8551
+      --execution-jwt=/opt/jwt/jwt.hex
+      --datadir=/opt/app/beacon/
+      --debug-level=info
+      --http
+      --http-address=0.0.0.0
+      --http-port=5052
       --metrics
       --metrics-address=0.0.0.0
-      --metrics-port=8008
-    depends_on: [nethermind, checkpoint-sync]
+      --metrics-port=5054
+      --metrics-allow-origin="*"
     networks: [ cluster ]
     volumes:
-      - ./data/nimbus:/opt/data/
-      - ./jwt:/opt/jwt/
+      - ./data/lighthouse:/opt/app/beacon
+      - ./jwt:/opt/jwt
+    restart: on-failure
 
   #       _                                  _ _            _
   #   ___| |__   __ _ _ __ ___  _ __     ___| (_) ___ _ __ | |_ ___
