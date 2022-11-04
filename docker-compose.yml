@@ -6,7 +6,7 @@ x-node-base:
   image: obolnetwork/charon:${CHARON_VERSION:-v0.11.0}
   restart: on-failure
   environment:
-    - CHARON_BEACON_NODE_ENDPOINTS=${CHARON_BEACON_NODE_ENDPOINTS:-http://nimbus:5052}
+    - CHARON_BEACON_NODE_ENDPOINTS=${CHARON_BEACON_NODE_ENDPOINTS:-http://lighthouse:5052}
     - CHARON_LOG_LEVEL=${CHARON_LOG_LEVEL:-info}
     - CHARON_LOG_FORMAT=${CHARON_LOG_FORMAT:-logfmt}
     - CHARON_P2P_BOOTNODES=${CHARON_P2P_BOOTNODES:-http://bootnode:3640/enr}
@@ -30,7 +30,7 @@ services:
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
   nethermind:
-    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.14.3}
+    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.14.5}
     restart: on-failure
     ports:
       - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
@@ -47,6 +47,9 @@ services:
       --JsonRpc.EnginePort=8551
       --JsonRpc.Host=0.0.0.0
       --JsonRpc.Port=8545
+      --Sync.SnapSync=true 
+      --Sync.AncientBodiesBarrier=4367322
+      --Sync.AncientReceiptsBarrier=4367322
     networks: [ cluster ]
     volumes:
       - ./data/nethermind:/nethermind/data
@@ -62,14 +65,15 @@ services:
   lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.2.1}
     ports:
-      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp   # P2P TCP
-      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp   # P2P UDP
-      - ${LIGHTHOUSE_PORT_METRICS:-5052}:5052   # Metrics
+      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
+      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
+      - ${LIGHTHOUSE_PORT_HTTP:-5052}:5052    # HTTP API
+      - ${LIGHTHOUSE_PORT_METRICS:-5054}:5054 # Metrics
     command: |
       lighthouse bn
       --network=goerli
       --checkpoint-sync-url=https://goerli.checkpoint-sync.ethdevops.io
-      --execution-endpoint=http://geth:8551
+      --execution-endpoint=http://nethermind:8551
       --execution-jwt=/opt/jwt/jwt.hex
       --datadir=/opt/app/beacon/
       --debug-level=info
