@@ -30,6 +30,7 @@ strategies:
     # beacon-node-addresses are the addresses of beacon nodes to use for this strategy.
     beacon-node-addresses:
       -
+    timeout: 4s
 
   # The attestationdata strategy obtains attestation data from multiple sources.
   attestationdata:
@@ -38,6 +39,7 @@ strategies:
     # beacon-node-addresses are the addresses of beacon nodes to use for this strategy.
     beacon-node-addresses:
       -
+    timeout: 4s
 
 feerecipient:
   default-address: '0x0000000000000000000000000000000000000001'

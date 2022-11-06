@@ -5,18 +5,6 @@ x-node-base:
   &node-base
   image: obolnetwork/charon:${CHARON_VERSION:-v0.11.0}
   restart: on-failure
-  environment:
-    - CHARON_BEACON_NODE_ENDPOINTS=${CHARON_BEACON_NODE_ENDPOINTS:-http://lighthouse:5052}
-    - CHARON_LOG_LEVEL=${CHARON_LOG_LEVEL:-info}
-    - CHARON_LOG_FORMAT=${CHARON_LOG_FORMAT:-logfmt}
-    - CHARON_P2P_BOOTNODES=${CHARON_P2P_BOOTNODES:-http://bootnode:3640/enr}
-    - CHARON_P2P_EXTERNAL_HOSTNAME=${CHARON_P2P_EXTERNAL_HOSTNAME:-} # Empty default required to avoid warnings.
-    - CHARON_P2P_TCP_ADDRESS=0.0.0.0:3610
-    - CHARON_P2P_UDP_ADDRESS=0.0.0.0:3630
-    - CHARON_VALIDATOR_API_ADDRESS=0.0.0.0:3600
-    - CHARON_MONITORING_ADDRESS=0.0.0.0:3620
-    - CHARON_JAEGER_ADDRESS=${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
-    - CHARON_JAEGER_SERVICE=charon
   env_file: .env
   networks: [ cluster ]
   depends_on: [ bootnode ]
