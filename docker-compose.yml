@@ -10,8 +10,8 @@ x-node-base:
   volumes:
     - ./.charon:/opt/charon/.charon/
 
-x-charon-env:
-  &charon-env
+x-node-env:
+  &node-env
   CHARON_BEACON_NODE_ENDPOINTS: ${CHARON_BEACON_NODE_ENDPOINTS:-http://lighthouse:5052}
   CHARON_LOG_LEVEL: ${CHARON_LOG_LEVEL:-info}
   CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-logfmt}
@@ -99,7 +99,7 @@ services:
   node0:
     <<: *node-base
     environment:
-      <<: *charon-env
+      <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node0/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
@@ -107,7 +107,7 @@ services:
   node1:
     <<: *node-base
     environment:
-      <<: *charon-env
+      <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node1/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node1
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
@@ -115,6 +115,7 @@ services:
   node2:
     <<: *node-base
     environment:
+      <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node2/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
@@ -122,7 +123,7 @@ services:
   node3:
     <<: *node-base
     environment:
-      <<: *charon-env
+      <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node3/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
@@ -130,7 +131,7 @@ services:
   node4:
     <<: *node-base
     environment:
-      <<: *charon-env
+      <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node4/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node4
       CHARON_P2P_EXTERNAL_HOSTNAME: node4
@@ -138,7 +139,7 @@ services:
   node5:
     <<: *node-base
     environment:
-      <<: *charon-env
+      <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node5/charon-enr-private-key
       CHARON_JAEGER_SERVICE: node5
       CHARON_P2P_EXTERNAL_HOSTNAME: node5
@@ -148,7 +149,7 @@ services:
     command: bootnode
     depends_on: []
     environment:
-      <<: *charon-env
+      <<: *node-env
       CHARON_BOOTNODE_HTTP_ADDRESS: 0.0.0.0:3640
       CHARON_DATA_DIR: /opt/charon/bootnode
       CHARON_P2P_BOOTNODES: ""
