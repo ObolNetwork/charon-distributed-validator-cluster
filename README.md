@@ -120,7 +120,7 @@ mkdir split_keys
 # Split these keystores into "n" (--nodes) key shares with "t" (--threshold) as threshold for a distributed validator
 docker run --rm -v $(pwd):/opt/charon obolnetwork/charon:v0.11.0 create cluster --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 4 --nodes 6
 
-# The above command will create 6 validator keys along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
+# The above command will create 6 validator key shares along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
 # .charon/cluster/
 # ├─ cluster-lock.json	Cluster lock defines the cluster lock file which is signed by all nodes
 # ├─ deposit-data.json	Deposit data file is used to activate a Distributed Validator on Launchpad
