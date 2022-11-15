@@ -113,22 +113,22 @@ To import existing EIP-2335 validator key stores:
 # Create a folder within this checked out repo
 mkdir split_keys
 
-# Put the validator keystore.json files in this folder.
+# Put the validator `keystore.json` files in this folder.
 # Alongside them, with a matching filename but ending with `.txt` should be the password to the keystore.
-# E.g. keystore-0.json keystore-0.txt
+# E.g., keystore-0.json keystore-0.txt
 
 # Split these keystores into "n" (--nodes) key shares with "t" (--threshold) as threshold for a distributed validator
-docker run --rm  -v $(pwd):/opt/charon ghcr.io/obolnetwork/charon:v0.11.0 create cluster --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 4 --nodes 6
+docker run --rm -v $(pwd):/opt/charon obolnetwork/charon:v0.11.0 create cluster --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 4 --nodes 6
 
-# The above command will create 4 validator keys along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
+# The above command will create 6 validator key shares along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
 # .charon/cluster/
 # ├─ cluster-lock.json	Cluster lock defines the cluster lock file which is signed by all nodes
-# ├─ deposit-data.json	Deposit data file is used to activate a Distributed Validator on DV Launchpad
+# ├─ deposit-data.json	Deposit data file is used to activate a Distributed Validator on Launchpad
 # ├─ node[0-5]/		Directory for each node
 # │  ├─ charon-enr-private-key		Charon networking private key for node authentication
 # │  ├─ validator_keys		Validator keystores and password
-# │  │  ├─ keystore-*.json	Validator private share key for duty signing
-# │  │  ├─ keystore-*.txt	Keystore password files for keystore-*.json
+# │  │  ├─ keystore-*.json	Validator private key share for duty signing
+# │  │  ├─ keystore-*.txt	Keystore password file for keystore-*.json
 ```
 
 ## Project Status
