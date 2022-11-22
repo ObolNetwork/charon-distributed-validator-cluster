@@ -11,4 +11,4 @@ ENV YQ_BINARY=yq_linux_amd64
 RUN wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY} -O /usr/bin/yq \
     && chmod +x /usr/bin/yq
 
-ENTRYPOINT ["/opt/charon/vouch/run.sh"]
+ENTRYPOINT ["/opt/config/run.sh"]

@@ -7,11 +7,11 @@ beacon-node-address:
 
 # The wallet account manager obtains account information from local wallets, and signs locally.
 # It supports wallets created by ethdo.
-accountmanager: # TODO: Check if we can get rid of accountmanager module and simply use the keys "as-is".
+accountmanager:
   wallet:
-    locations: /opt/charon/node/validator_keys/ethdo
+    locations: /opt/vouch/keys
     accounts: validators
-    passphrases:
+    passphrases: T8BFYJZU5R
 
 # metrics is the module that logs metrics, in this case using prometheus. Note that vouch doesn't emit metrics if
 # the following block is not provided.

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-while ! curl "http://${NODE}:3600/eth/v1/node/health" 2>/dev/null; do
-  echo "Waiting for http://${NODE}:3600 to become available..."
+apt-get update && apt-get install -y curl jq wget
+
+while ! curl "${LIGHTHOUSE_BEACON_NODE_ADDRESS}/eth/v1/node/health" 2>/dev/null; do
+  echo "Waiting for ${LIGHTHOUSE_BEACON_NODE_ADDRESS} to become available..."
   sleep 5
 done
 
@@ -20,7 +22,7 @@ done
 
 echo "Starting lighthouse validator client for ${NODE}"
 exec lighthouse --network "${ETH2_NETWORK}" validator \
-  --beacon-nodes "http://${NODE}:3600" \
+  --beacon-nodes ${LIGHTHOUSE_BEACON_NODE_ADDRESS} \
   --suggested-fee-recipient "0x0000000000000000000000000000000000000000" \
   --metrics \
   --metrics-address "0.0.0.0" \
