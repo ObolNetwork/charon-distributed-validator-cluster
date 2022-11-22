@@ -21,18 +21,10 @@ wallet="validators"
 # Creates vouch configuration (vouch.yml) and updates it with the required data.
 function createVouchConfig() {
   rm ${vouchFile}
-  cp /opt/charon/vouch/vouch.sample.yml ${vouchFile}
-
-  # Set accountmanager.
-  location=${baseDir} yq -i '.accountmanager.wallet.locations[0] = strenv(location)' ${vouchFile}
-  wallet=${wallet} yq -i '.accountmanager.wallet.accounts[0] = strenv(wallet)' ${vouchFile}
+  cp /opt/charon/vouch/vouch.yml ${vouchFile}
 
   # Set beacon node addresses.
-  nodeAddr="http://${NODE}:3600"
-  addr=${nodeAddr} yq -i '.beacon-node-address = strenv(addr)' ${vouchFile}
-  addr=${nodeAddr} yq -i '.submitter.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
-  addr=${nodeAddr} yq -i '.strategies.beaconblockproposal.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
-  addr=${nodeAddr} yq -i '.strategies.attestationdata.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
+  addr=${VOUCH_BEACON_NODE_ADDRESS} yq -i '.beacon-node-address = strenv(addr)' ${vouchFile}
 }
 
 createVouchConfig

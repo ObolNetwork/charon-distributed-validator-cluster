@@ -1,0 +1,40 @@
+# This is a sample config to run vouch VC. It is used by the run.sh script
+# to generate a custom config for each vouch VC connected to a charon node.
+# Refer: https://github.com/attestantio/vouch/blob/master/docs/configuration.md.
+
+# Address of the charon node. Ex: http://node0:3600
+beacon-node-address:
+
+# The wallet account manager obtains account information from local wallets, and signs locally.
+# It supports wallets created by ethdo.
+accountmanager: # TODO: Check if we can get rid of accountmanager module and simply use the keys "as-is".
+  wallet:
+    locations: /opt/charon/node/validator_keys/ethdo
+    accounts: validators
+    passphrases:
+
+# metrics is the module that logs metrics, in this case using prometheus. Note that vouch doesn't emit metrics if
+# the following block is not provided.
+metrics:
+  prometheus:
+    # listen-address is the address on which prometheus listens for metrics requests.
+    listen-address: 0.0.0.0:8081
+
+# Allow sufficient time (10s) to block while fetching duties for DVT.
+strategies:
+  beaconblockproposal:
+    timeout: 10s
+  blindedbeaconblockproposal:
+    timeout: 10s
+  attestationdata:
+    timeout: 10s
+  aggregateattestation:
+    timeout: 10s
+  synccommitteecontribution:
+    timeout: 10s
+
+feerecipient:
+  default-address: '0x0000000000000000000000000000000000000001'
+
+blockrelay:
+  fallback-fee-recipient: '0x0000000000000000000000000000000000000001'

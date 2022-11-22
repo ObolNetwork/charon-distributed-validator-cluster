@@ -193,7 +193,7 @@ services:
     depends_on: [ node2 ]
     restart: on-failure
     environment:
-      NODE: node2
+      VOUCH_BEACON_NODE_ADDRESS: http://node2:3600
     volumes:
       - .charon/cluster/node2:/opt/charon/node
       - ./vouch:/opt/charon/vouch
@@ -228,7 +228,7 @@ services:
     depends_on: [ node5 ]
     restart: on-failure
     environment:
-      NODE: node5
+      VOUCH_BEACON_NODE_ADDRESS: http://node5:3600
     volumes:
       - .charon/cluster/node5:/opt/charon/node
       - ./vouch:/opt/charon/vouch
