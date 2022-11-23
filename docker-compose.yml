@@ -196,7 +196,8 @@ services:
       VOUCH_BEACON_NODE_ADDRESS: http://node2:3600
     volumes:
       - .charon/cluster/node2/validator_keys:/opt/validator_keys
-      - ./vouch:/opt/config
+      - ./vouch/vouch.yml:/opt/vouch/vouch.yml
+      - ./vouch/run.sh:/opt/vouch/run.sh
 
   vc3-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.2.1}
@@ -231,7 +232,8 @@ services:
       VOUCH_BEACON_NODE_ADDRESS: http://node5:3600
     volumes:
       - .charon/cluster/node5/validator_keys:/opt/validator_keys
-      - ./vouch:/opt/config
+      - ./vouch/vouch.yml:/opt/vouch/vouch.yml
+      - ./vouch/run.sh:/opt/vouch/run.sh
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _

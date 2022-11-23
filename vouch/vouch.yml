@@ -2,16 +2,13 @@
 # to generate a custom config for each vouch VC connected to a charon node.
 # Refer: https://github.com/attestantio/vouch/blob/master/docs/configuration.md.
 
-# Address of the charon node. Ex: http://node0:3600
-beacon-node-address:
-
 # The wallet account manager obtains account information from local wallets, and signs locally.
 # It supports wallets created by ethdo.
 accountmanager:
   wallet:
     locations: /opt/vouch/keys
     accounts: validators
-    passphrases: T8BFYJZU5R # this should match ACCOUNT_PASSPHRASE in run.sh
+    passphrases: secret
 
 # metrics is the module that logs metrics, in this case using prometheus. Note that vouch doesn't emit metrics if
 # the following block is not provided.
@@ -33,8 +30,7 @@ strategies:
   synccommitteecontribution:
     timeout: 10s
 
-feerecipient:
-  default-address: '0x0000000000000000000000000000000000000001'
-
+# blockrelay provides information about working with local execution clients and remote relays for block proposals.
+# fallback-fee-recipient is required field for vouch if no execution configuration is provided.
 blockrelay:
   fallback-fee-recipient: '0x0000000000000000000000000000000000000001'

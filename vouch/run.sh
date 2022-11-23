@@ -6,19 +6,12 @@
 # 3. Actually running the vouch validator client.
 
 BASE_DIR="/opt/vouch"
-VOUCH_FILE="/opt/vouch/vouch.yml"
 KEYS_DIR="/opt/vouch/keys"
-ACCOUNT_PASSPHRASE="T8BFYJZU5R" # Hardcoded ethdo account passphrase
+ACCOUNT_PASSPHRASE="secret" # Hardcoded ethdo account passphrase
 
 # Create an ethdo wallet within the keys folder.
 wallet="validators"
 /app/ethdo --base-dir="${KEYS_DIR}" wallet create --wallet ${wallet}
-
-# Copy vouch.yml to modify with beacon address
-cp /opt/config/vouch.yml ${VOUCH_FILE}
-
-# Set beacon node addresses into vouch.yml.
-yq -i '.beacon-node-address = strenv(VOUCH_BEACON_NODE_ADDRESS)' ${VOUCH_FILE}
 
 # Import keys into the ethdo wallet.
 account=0
@@ -32,7 +25,8 @@ for f in /opt/validator_keys/keystore-*.json; do
     --account="${wallet}"/"${accountName}" \
     --keystore="$f" \
     --passphrase="$ACCOUNT_PASSPHRASE" \
-    --keystore-passphrase="$KEYSTORE_PASSPHRASE"
+    --keystore-passphrase="$KEYSTORE_PASSPHRASE" \
+    --allow-weak-passphrases
 
   # Increment account.
   # shellcheck disable=SC2003
@@ -47,4 +41,4 @@ echo "Starting vouch validator client. Wallet info:"
 --verbose
 
 # Now run vouch.
-exec /app/vouch --base-dir=${BASE_DIR}
+exec /app/vouch --base-dir=${BASE_DIR} --beacon-node-address=${VOUCH_BEACON_NODE_ADDRESS}
