@@ -163,7 +163,7 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.2.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.2.1}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node0 ]
@@ -199,7 +199,7 @@ services:
       - ./vouch:/opt/config
 
   vc3-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.2.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.2.1}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node3 ]

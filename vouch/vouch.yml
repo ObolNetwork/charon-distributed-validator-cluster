@@ -11,7 +11,7 @@ accountmanager:
   wallet:
     locations: /opt/vouch/keys
     accounts: validators
-    passphrases: T8BFYJZU5R
+    passphrases: T8BFYJZU5R # this should match ACCOUNT_PASSPHRASE in run.sh
 
 # metrics is the module that logs metrics, in this case using prometheus. Note that vouch doesn't emit metrics if
 # the following block is not provided.
