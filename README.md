@@ -155,7 +155,6 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 
 ### Why is custom config required?
 - Vouch requires a [configuration file](https://github.com/attestantio/vouch/blob/master/docs/configuration.md#the-configuration-file) called `vouch.yml` (or `vouch.json`). This config requires certain fields that are specific to running a instance of vouch.
-- For example, it requires a top-level `beacon-node-address` field which is different for different charon nodes. Ex: http://node0:3600 for node0, http://node1:3600 for node1 etc.
 - Timeout is set to 10s in `vouch.yml` for all the strategies supported to allow sufficient time for fetching duties for DVT.
 - Since vouch supports wallets created by ethdo, `run.sh` script is needed to import the keystores and create a corresponding ethdo wallet.
 - Creation of wallet is done programatically since each VC has different set of keystores.
