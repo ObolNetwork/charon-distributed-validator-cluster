@@ -34,16 +34,16 @@ scrape_configs:
       - targets: ["vc1-teku:8008"]
   - job_name: "vc2"
     static_configs:
-      - targets: ["vc2-lighthouse:5064"]
+      - targets: ["vc2-vouch:8081"]
   - job_name: "vc3"
     static_configs:
-      - targets: ["vc3-teku:8008"]
+      - targets: ["vc3-lighthouse:5064"]
   - job_name: "vc4"
     static_configs:
-      - targets: ["vc4-lighthouse:5064"]
+      - targets: ["vc4-teku:8008"]
   - job_name: "vc5"
     static_configs:
-      - targets: ["vc5-teku:8008"]
+      - targets: ["vc5-vouch:8081"]
   - job_name: "node-exporter"
     static_configs:
       - targets: ["node-exporter:9100"]

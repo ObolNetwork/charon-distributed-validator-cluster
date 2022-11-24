@@ -5,54 +5,28 @@
 # 2. Creating configuration for vouch (vouch.yml).
 # 3. Actually running the vouch validator client.
 
-baseDir="/opt/charon/node/validator_keys/ethdo"
-vouchFile="/opt/charon/node/vouch.yml" # Copy vouch.yml to respective node folder.
-
-# Remove directory if it already exists.
-rm -r ${baseDir} || true
-
-# Create a fresh directory for ethdo keys.
-mkdir ${baseDir}
+BASE_DIR="/opt/vouch"
+KEYS_DIR="/opt/vouch/keys"
+ACCOUNT_PASSPHRASE="secret" # Hardcoded ethdo account passphrase
 
 # Create an ethdo wallet within the keys folder.
 wallet="validators"
-/app/ethdo --base-dir="${baseDir}" wallet create --wallet ${wallet}
-
-# Creates vouch configuration (vouch.yml) and updates it with the required data.
-function createVouchConfig() {
-  rm ${vouchFile}
-  cp /opt/charon/vouch/vouch.sample.yml ${vouchFile}
-
-  # Set accountmanager.
-  location=${baseDir} yq -i '.accountmanager.wallet.locations[0] = strenv(location)' ${vouchFile}
-  wallet=${wallet} yq -i '.accountmanager.wallet.accounts[0] = strenv(wallet)' ${vouchFile}
-
-  # Set beacon node addresses.
-  nodeAddr="http://${NODE}:3600"
-  addr=${nodeAddr} yq -i '.beacon-node-address = strenv(addr)' ${vouchFile}
-  addr=${nodeAddr} yq -i '.submitter.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
-  addr=${nodeAddr} yq -i '.strategies.beaconblockproposal.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
-  addr=${nodeAddr} yq -i '.strategies.attestationdata.beacon-node-addresses[0] = strenv(addr)' ${vouchFile}
-}
-
-createVouchConfig
+/app/ethdo --base-dir="${KEYS_DIR}" wallet create --wallet ${wallet}
 
 # Import keys into the ethdo wallet.
 account=0
-for f in /opt/charon/node/validator_keys/keystore-*.json; do
+for f in /opt/validator_keys/keystore-*.json; do
   accountName="account-${account}"
   echo "Importing key ${f} into ethdo wallet: ${wallet}/${accountName}"
 
-  PASSPHRASE=$(cat "${f//json/txt}")
+  KEYSTORE_PASSPHRASE=$(cat "${f//json/txt}")
   /app/ethdo \
-    --base-dir="${baseDir}" account import \
+    --base-dir="${KEYS_DIR}" account import \
     --account="${wallet}"/"${accountName}" \
     --keystore="$f" \
-    --passphrase="$PASSPHRASE" \
-    --keystore-passphrase="$PASSPHRASE"
-
-  # Save the passphrase to vouch.yml.
-  id=${account} pass=${PASSPHRASE} yq -i '.accountmanager.wallet.passphrases[env(id)] = strenv(pass)' ${vouchFile}
+    --passphrase="$ACCOUNT_PASSPHRASE" \
+    --keystore-passphrase="$KEYSTORE_PASSPHRASE" \
+    --allow-weak-passphrases
 
   # Increment account.
   # shellcheck disable=SC2003
@@ -61,11 +35,10 @@ done
 
 # Log wallet info.
 echo "Starting vouch validator client. Wallet info:"
-/app/ethdo \
---base-dir=/opt/charon/keys/ethdo wallet info \
+/app/ethdo wallet info \
 --wallet="${wallet}" \
---base-dir="${baseDir}" \
+--base-dir="${KEYS_DIR}" \
 --verbose
 
 # Now run vouch.
-exec /app/vouch --base-dir=/opt/charon/node
+exec /app/vouch --base-dir=${BASE_DIR} --beacon-node-address=${VOUCH_BEACON_NODE_ADDRESS}
