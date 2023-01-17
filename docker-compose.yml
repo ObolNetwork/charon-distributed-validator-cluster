@@ -192,17 +192,18 @@ services:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc2-vouch:
-    build: vouch
+  vc2-lighthouse:
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
+    entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node2 ]
     restart: unless-stopped
     environment:
-      VOUCH_BEACON_NODE_ADDRESS: http://node2:3600
+      LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node2:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
-      - .charon/cluster/node2/validator_keys:/opt/validator_keys
-      - ./vouch/vouch.yml:/opt/vouch/vouch.yml
-      - ./vouch/run.sh:/opt/vouch/run.sh
+      - ./lighthouse/run.sh:/opt/lighthouse/run.sh
+      - .charon/cluster/node2/validator_keys:/opt/charon/keys
 
   vc3-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
@@ -230,17 +231,18 @@ services:
       - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc5-vouch:
-    build: vouch
+  vc5-teku:
+    image: consensys/teku:${TEKU_VERSION:-22.12.0}
     networks: [ cluster ]
     depends_on: [ node5 ]
     restart: unless-stopped
-    environment:
-      VOUCH_BEACON_NODE_ADDRESS: http://node5:3600
+    command: |
+      validator-client
+      --beacon-node-api-endpoint="http://node5:3600"
+      --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
-      - .charon/cluster/node5/validator_keys:/opt/validator_keys
-      - ./vouch/vouch.yml:/opt/vouch/vouch.yml
-      - ./vouch/run.sh:/opt/vouch/run.sh
+      - .charon/cluster/node5/validator_keys:/opt/charon/validator_keys
+      - ./teku:/opt/charon/teku
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _

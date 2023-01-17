@@ -11,9 +11,8 @@ A distributed validator cluster is a docker-compose file with the following cont
 - Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
 - Single [Lighthouse](https://github.com/sigp/lighthouse) consensus layer client
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
-- Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
-- Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
-- Two [Vouch](https://github.com/attestantio/vouch) Validator Clients
+- Three [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
+- Three [Teku](https://github.com/ConsenSys/teku) Validator Clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
@@ -76,10 +75,10 @@ The default cluster consists of:
 - Mixture of validator clients:
   - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
   - vc1: [Teku](https://github.com/ConsenSys/teku)
-  - vc2: [Vouch](https://github.com/attestantio/vouch)
+  - vc2: [Lighthouse](https://github.com/sigp/lighthouse)
   - vc3: [Lighthouse](https://github.com/sigp/lighthouse)
   - vc4: [Teku](https://github.com/ConsenSys/teku)
-  - vc5: [Vouch](https://github.com/attestantio/vouch)
+  - vc5: [Teku](https://github.com/ConsenSys/teku)
 
 The intention is to support all validator clients, and work is underway to add support for lodestar to this repo, with [nimbus](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/67) and [prysm](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/68) support to follow in the future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
@@ -153,24 +152,6 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 > Remember: Please make sure any existing validator has been shut down for
 > at least 3 finalised epochs before starting the charon cluster,
 > otherwise your validator could be slashed.
-
-## Integrating Vouch with charon cluster
-
-[Vouch](https://github.com/attestantio/vouch) is a validator client (VC) for ethereum. The following outlines how we support vouch in a charon distributed validator cluster.
-
-### Requirements
-- The `vouch/` directory contains a basic vouch config file `vouch.yml` which is programmatically populated by `run.sh`.
-- `Dockerfile` is used for building vouch image which uses `run.sh` as entrypoint.
-- The `run.sh` script:
-    - Creates an [ethdo](https://github.com/wealdtech/ethdo) wallet which imports the keystores created during dkg ceremony or with `charon create cluster` command.
-    - Adds the `beacon-node-address` for vouch VC to use. This is obtained from `VOUCH_BEACON_NODE_ADDRESS` environment variable in `docker-compose.yml`.
-    - Starts the validator client.
-
-### Why is custom config required?
-- Vouch requires a [configuration file](https://github.com/attestantio/vouch/blob/master/docs/configuration.md#the-configuration-file) called `vouch.yml` (or `vouch.json`). This config requires certain fields that are specific to running a instance of vouch.
-- Timeout is set to 10s in `vouch.yml` for all the strategies supported to allow sufficient time for fetching duties for DVT.
-- Since vouch supports wallets created by ethdo, `run.sh` script is needed to import the keystores and create a corresponding ethdo wallet.
-- Creation of wallet is done programatically since each VC has different set of keystores.
 
 # Troubleshooting
 
