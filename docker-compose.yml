@@ -3,10 +3,10 @@ version: "3.8"
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v0.12.0}
+  image: obolnetwork/charon:${CHARON_VERSION:-v0.13.0}
   restart: unless-stopped
   networks: [ cluster ]
-  depends_on: [ bootnode ]
+  depends_on: [ relay ]
   volumes:
     - ./.charon:/opt/charon/.charon/
 
@@ -16,9 +16,8 @@ x-node-env:
   CHARON_LOG_LEVEL: ${CHARON_LOG_LEVEL:-info}
   CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-logfmt}
   CHARON_P2P_EXTERNAL_HOSTNAME: ${CHARON_P2P_EXTERNAL_HOSTNAME:-} # Empty default required to avoid warnings.
-  CHARON_P2P_BOOTNODES: ${CHARON_P2P_BOOTNODES:-http://bootnode:3640/enr}
+  CHARON_P2P_RELAYS: ${CHARON_P2P_RELAYS:-http://relay:3640/enr}
   CHARON_P2P_TCP_ADDRESS: ${CHARON_P2P_TCP_ADDRESS:-0.0.0.0:3610}
-  CHARON_P2P_UDP_ADDRESS: ${CHARON_P2P_UDP_ADDRESS:-0.0.0.0:3630}
   CHARON_VALIDATOR_API_ADDRESS: ${CHARON_VALIDATOR_API_ADDRESS:-0.0.0.0:3600}
   CHARON_MONITORING_ADDRESS: ${CHARON_MONITORING_ADDRESS:-0.0.0.0:3620}
   CHARON_JAEGER_ADDRESS: ${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
@@ -149,18 +148,18 @@ services:
       CHARON_JAEGER_SERVICE: node5
       CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
-  bootnode:
+  relay:
     <<: *node-base
-    command: bootnode
+    command: relay
     depends_on: []
     environment:
       <<: *node-env
-      CHARON_BOOTNODE_HTTP_ADDRESS: 0.0.0.0:3640
-      CHARON_DATA_DIR: /opt/charon/bootnode
-      CHARON_P2P_BOOTNODES: ""
-      CHARON_P2P_EXTERNAL_HOSTNAME: bootnode
+      CHARON_HTTP_ADDRESS: 0.0.0.0:3640
+      CHARON_DATA_DIR: /opt/charon/relay
+      CHARON_P2P_RELAYS: ""
+      CHARON_P2P_EXTERNAL_HOSTNAME: relay
     volumes:
-      - ./bootnode:/opt/charon/bootnode:rw
+      - ./relay:/opt/charon/relay:rw
 
   #             _ _     _       _
   # __   ____ _| (_) __| | __ _| |_ ___  _ __ ___

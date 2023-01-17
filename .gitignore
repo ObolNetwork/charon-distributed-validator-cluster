@@ -11,7 +11,7 @@ prater
 .data
 beaconnode.env.old
 split_keys/
-bootnode/charon-enr-private-key
+relay/charon-enr-private-key
 .idea/
 data/
 nethermind/nethermind_db/
