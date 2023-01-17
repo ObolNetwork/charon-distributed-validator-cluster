@@ -97,7 +97,7 @@ This command will create a subdirectory `.charon/cluster`. In it are six folders
 ### Activate your validator
 
 Along with the private keys and cluster lock file is a validator deposit data file located inside each node folder. For example, you can find the deposit data file inside the `node0` folder at
-`.charon/cluster/node0/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
+`.charon/cluster/node0/deposit-data.json`. You can use the original [staking launchpad](https://goerli.launchpad.ethereum.org/) app to activate your new validator with the original UI.
 
 Your deposit will take at minimum 8 hours to process, near to the time you can run this new cluster with the command:
 
