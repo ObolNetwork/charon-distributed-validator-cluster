@@ -3,10 +3,10 @@ version: "3.8"
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v0.12.0}
+  image: obolnetwork/charon:${CHARON_VERSION:-v0.13.0}
   restart: unless-stopped
   networks: [ cluster ]
-  depends_on: [ bootnode ]
+  depends_on: [ relay ]
   volumes:
     - ./.charon:/opt/charon/.charon/
 
@@ -14,11 +14,10 @@ x-node-env:
   &node-env
   CHARON_BEACON_NODE_ENDPOINTS: ${CHARON_BEACON_NODE_ENDPOINTS:-http://lighthouse:5052}
   CHARON_LOG_LEVEL: ${CHARON_LOG_LEVEL:-info}
-  CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-logfmt}
+  CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-console}
   CHARON_P2P_EXTERNAL_HOSTNAME: ${CHARON_P2P_EXTERNAL_HOSTNAME:-} # Empty default required to avoid warnings.
-  CHARON_P2P_BOOTNODES: ${CHARON_P2P_BOOTNODES:-http://bootnode:3640/enr}
+  CHARON_P2P_RELAYS: ${CHARON_P2P_RELAYS:-http://relay:3640/enr}
   CHARON_P2P_TCP_ADDRESS: ${CHARON_P2P_TCP_ADDRESS:-0.0.0.0:3610}
-  CHARON_P2P_UDP_ADDRESS: ${CHARON_P2P_UDP_ADDRESS:-0.0.0.0:3630}
   CHARON_VALIDATOR_API_ADDRESS: ${CHARON_VALIDATOR_API_ADDRESS:-0.0.0.0:3600}
   CHARON_MONITORING_ADDRESS: ${CHARON_MONITORING_ADDRESS:-0.0.0.0:3620}
   CHARON_JAEGER_ADDRESS: ${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
@@ -149,18 +148,18 @@ services:
       CHARON_JAEGER_SERVICE: node5
       CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
-  bootnode:
+  relay:
     <<: *node-base
-    command: bootnode
+    command: relay
     depends_on: []
     environment:
       <<: *node-env
-      CHARON_BOOTNODE_HTTP_ADDRESS: 0.0.0.0:3640
-      CHARON_DATA_DIR: /opt/charon/bootnode
-      CHARON_P2P_BOOTNODES: ""
-      CHARON_P2P_EXTERNAL_HOSTNAME: bootnode
+      CHARON_HTTP_ADDRESS: 0.0.0.0:3640
+      CHARON_DATA_DIR: /opt/charon/relay
+      CHARON_P2P_RELAYS: ""
+      CHARON_P2P_EXTERNAL_HOSTNAME: relay
     volumes:
-      - ./bootnode:/opt/charon/bootnode:rw
+      - ./relay:/opt/charon/relay:rw
 
   #             _ _     _       _
   # __   ____ _| (_) __| | __ _| |_ ___  _ __ ___
@@ -193,17 +192,18 @@ services:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc2-vouch:
-    build: vouch
+  vc2-lighthouse:
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
+    entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node2 ]
     restart: unless-stopped
     environment:
-      VOUCH_BEACON_NODE_ADDRESS: http://node2:3600
+      LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node2:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
-      - .charon/cluster/node2/validator_keys:/opt/validator_keys
-      - ./vouch/vouch.yml:/opt/vouch/vouch.yml
-      - ./vouch/run.sh:/opt/vouch/run.sh
+      - ./lighthouse/run.sh:/opt/lighthouse/run.sh
+      - .charon/cluster/node2/validator_keys:/opt/charon/keys
 
   vc3-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
@@ -231,17 +231,18 @@ services:
       - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc5-vouch:
-    build: vouch
+  vc5-teku:
+    image: consensys/teku:${TEKU_VERSION:-22.12.0}
     networks: [ cluster ]
     depends_on: [ node5 ]
     restart: unless-stopped
-    environment:
-      VOUCH_BEACON_NODE_ADDRESS: http://node5:3600
+    command: |
+      validator-client
+      --beacon-node-api-endpoint="http://node5:3600"
+      --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
-      - .charon/cluster/node5/validator_keys:/opt/validator_keys
-      - ./vouch/vouch.yml:/opt/vouch/vouch.yml
-      - ./vouch/run.sh:/opt/vouch/run.sh
+      - .charon/cluster/node5/validator_keys:/opt/charon/validator_keys
+      - ./teku:/opt/charon/teku
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _
