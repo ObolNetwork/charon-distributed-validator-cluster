@@ -91,11 +91,13 @@ Create some testnet private keys for a six node distributed validator cluster wi
 docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.12.0 create cluster --withdrawal-address="0x000000000000000000000000000000000000dead" --nodes 6 --threshold 5
 ```
 
-This command will create a subdirectory `.charon/cluster`. In it are six folders, one for each charon node created. Each folder contains partial private keys that together make up the distributed validator described in `.charon/cluster/cluster-lock.json`.
+This command will create a subdirectory `.charon/cluster`. In it are six folders, one for each charon node created. Each folder contains partial private keys that together make up distributed validators defined in the `cluster-lock.json` file.
+
 
 ### Activate your validator
 
-Along with the private keys and cluster lock file is a validator deposit data file located at `.charon/cluster/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
+Along with the private keys and cluster lock file is a validator deposit data file located inside each node folder. For example, you can find the deposit data file inside the `node0` folder at
+`.charon/cluster/node0/deposit-data.json`. You can use the original [staking launchpad](https://prater.launchpad.ethereum.org/) app to activate your new validator with the original UI.
 
 Your deposit will take at minimum 8 hours to process, near to the time you can run this new cluster with the command:
 
@@ -121,14 +123,25 @@ mkdir split_keys
 docker run --rm -v $(pwd):/opt/charon obolnetwork/charon:v0.12.0 create cluster --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 4 --nodes 6
 
 # The above command will create 6 validator key shares along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
-# .charon/cluster/
-# ├─ cluster-lock.json	Cluster lock defines the cluster lock file which is signed by all nodes
-# ├─ deposit-data.json	Deposit data file is used to activate a Distributed Validator on Launchpad
-# ├─ node[0-5]/		Directory for each node
-# │  ├─ charon-enr-private-key		Charon networking private key for node authentication
-# │  ├─ validator_keys		Validator keystores and password
-# │  │  ├─ keystore-*.json	Validator private key share for duty signing
-# │  │  ├─ keystore-*.txt	Keystore password file for keystore-*.json
+
+***************** WARNING: Splitting keys **********************
+ Please make sure any existing validator has been shut down for
+ at least 2 finalised epochs before starting the charon cluster,
+ otherwise slashing could occur.                               
+****************************************************************
+
+Created charon cluster:
+ --split-existing-keys=true
+
+.charon/cluster/
+├─ node[0-5]/                   Directory for each node
+│  ├─ charon-enr-private-key    Charon networking private key for node authentication
+│  ├─ cluster-lock.json         Cluster lock defines the cluster lock file which is signed by all nodes
+│  ├─ deposit-data.json         Deposit data file is used to activate a Distributed Validator on DV Launchpad
+│  ├─ validator_keys            Validator keystores and password
+│  │  ├─ keystore-*.json        Validator private share key for duty signing
+│  │  ├─ keystore-*.txt         Keystore password files for keystore-*.json
+
 ```
 
 ## Project Status
