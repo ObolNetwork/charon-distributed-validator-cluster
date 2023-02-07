@@ -10,10 +10,6 @@ labels: Enhancement
 
 # 🛠️ Proposed solution
 
-- [ ] Approved design doc: *link*
-- [ ] Core team consensus on the proposed solution
-
-### Detailed proposed solution
 <!--Describe the solution to be implemented-->
 
 # 🧪 Tests
