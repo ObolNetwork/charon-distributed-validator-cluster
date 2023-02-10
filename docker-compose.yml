@@ -46,7 +46,7 @@ services:
       --JsonRpc.EnginePort=8551
       --JsonRpc.Host=0.0.0.0
       --JsonRpc.Port=8545
-      --Sync.SnapSync=true 
+      --Sync.SnapSync=true
       --Sync.AncientBodiesBarrier=4367322
       --Sync.AncientReceiptsBarrier=4367322
     networks: [ cluster ]
@@ -193,16 +193,15 @@ services:
       - ./teku:/opt/charon/teku
 
   vc2-nimbus:
-    image: statusim/nimbus-validator-client:${NIMBUS_VERSION:-multiarch-v23.1.1}
+    build: nimbus
     networks: [ cluster ]
     depends_on: [ node2 ]
     restart: unless-stopped
-    command: |
-      --beacon-node=http://node2:3600
-      --secrets-dir=/home/user/validator_keys
-      --validators-dir=/home/user/validator_keys
+    environment:
+      NODE: node2
     volumes:
-      - .charon/cluster/node2/validator_keys:/home/user/validator_keys
+      - ./nimbus:/home/user/data
+      - .charon/cluster/node2/validator_keys:/home/validator_keys
 
   vc3-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
@@ -231,16 +230,15 @@ services:
       - ./teku:/opt/charon/teku
 
   vc5-nimbus:
-    image: statusim/nimbus-validator-client:${NIMBUS_VERSION:-multiarch-v23.1.1}
+    build: nimbus
     networks: [ cluster ]
     depends_on: [ node5 ]
     restart: unless-stopped
-    command: |
-      --beacon-node=http://node5:3600
-      --secrets-dir=/home/user/validator_keys
-      --validators-dir=/home/user/validator_keys
+    environment:
+      NODE: node5
     volumes:
-      - .charon/cluster/node5/validator_keys:/home/user/validator_keys
+      - ./nimbus:/home/user/data
+      - .charon/cluster/node5/validator_keys:/home/validator_keys
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _
