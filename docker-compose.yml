@@ -198,6 +198,7 @@ services:
     depends_on: [ node2 ]
     restart: unless-stopped
     environment:
+      BEACON_NODE_ADDRESS: http://node2:3600
       NODE: node2
     volumes:
       - ./nimbus:/home/user/data
@@ -235,6 +236,7 @@ services:
     depends_on: [ node5 ]
     restart: unless-stopped
     environment:
+      BEACON_NODE_ADDRESS: http://node2:3600
       NODE: node5
     volumes:
       - ./nimbus:/home/user/data

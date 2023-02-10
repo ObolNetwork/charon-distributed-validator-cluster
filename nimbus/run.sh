@@ -16,4 +16,4 @@ done
 echo "Imported keys"
 
 # Now run nimbus VC
-exec /home/user/nimbus_validator_client --data-dir=/home/user/data/${NODE} --beacon-node=http://192.168.1.10:5052
+exec /home/user/nimbus_validator_client --data-dir=/home/user/data/${NODE} --beacon-node=${BEACON_NODE_ADDRESS}
