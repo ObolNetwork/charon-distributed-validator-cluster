@@ -15,3 +15,5 @@ relay/charon-enr-private-key
 .idea/
 data/
 nethermind/nethermind_db/
+
+nimbus/node*/

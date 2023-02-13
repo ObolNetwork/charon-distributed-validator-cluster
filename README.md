@@ -11,8 +11,9 @@ A distributed validator cluster is a docker-compose file with the following cont
 - Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
 - Single [Lighthouse](https://github.com/sigp/lighthouse) consensus layer client
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
-- Three [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
-- Three [Teku](https://github.com/ConsenSys/teku) Validator Clients
+- Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
+- Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
+- Two [Nimbus](https://github.com/status-im/nimbus-eth2) Validator Clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
@@ -75,10 +76,10 @@ The default cluster consists of:
 - Mixture of validator clients:
   - vc0: [Lighthouse](https://github.com/sigp/lighthouse)
   - vc1: [Teku](https://github.com/ConsenSys/teku)
-  - vc2: [Lighthouse](https://github.com/sigp/lighthouse)
+  - vc2: [Nimbus](https://github.com/status-im/nimbus-eth2)
   - vc3: [Lighthouse](https://github.com/sigp/lighthouse)
   - vc4: [Teku](https://github.com/ConsenSys/teku)
-  - vc5: [Teku](https://github.com/ConsenSys/teku)
+  - vc5: [Nimbus](https://github.com/status-im/nimbus-eth2)
 
 The intention is to support all validator clients, and work is underway to add support for lodestar to this repo, with [nimbus](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/67) and [prysm](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/68) support to follow in the future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 

@@ -23,7 +23,7 @@ x-node-env:
   CHARON_JAEGER_ADDRESS: ${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
 
 services:
-  #             _   _                         _           _ 
+  #             _   _                         _           _
   #  _ __   ___| |_| |__   ___ _ __ _ __ ___ (_)_ __   __| |
   # | '_ \ / _ \ __| '_ \ / _ \ '__| '_ ` _ \| | '_ \ / _` |
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
@@ -46,7 +46,7 @@ services:
       --JsonRpc.EnginePort=8551
       --JsonRpc.Host=0.0.0.0
       --JsonRpc.Port=8545
-      --Sync.SnapSync=true 
+      --Sync.SnapSync=true
       --Sync.AncientBodiesBarrier=4367322
       --Sync.AncientReceiptsBarrier=4367322
     networks: [ cluster ]
@@ -192,18 +192,17 @@ services:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc2-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
-    entrypoint: /opt/lighthouse/run.sh
+  vc2-nimbus:
+    build: nimbus
     networks: [ cluster ]
     depends_on: [ node2 ]
     restart: unless-stopped
     environment:
-      LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node2:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+      BEACON_NODE_ADDRESS: http://node2:3600
+      NODE: node2
     volumes:
-      - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - .charon/cluster/node2/validator_keys:/opt/charon/keys
+      - ./nimbus:/home/user/data
+      - .charon/cluster/node2/validator_keys:/home/validator_keys
 
   vc3-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
@@ -231,18 +230,17 @@ services:
       - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc5-teku:
-    image: consensys/teku:${TEKU_VERSION:-22.12.0}
+  vc5-nimbus:
+    build: nimbus
     networks: [ cluster ]
     depends_on: [ node5 ]
     restart: unless-stopped
-    command: |
-      validator-client
-      --beacon-node-api-endpoint="http://node5:3600"
-      --config-file "/opt/charon/teku/teku-config.yaml"
+    environment:
+      BEACON_NODE_ADDRESS: http://node5:3600
+      NODE: node5
     volumes:
-      - .charon/cluster/node5/validator_keys:/opt/charon/validator_keys
-      - ./teku:/opt/charon/teku
+      - ./nimbus:/home/user/data
+      - .charon/cluster/node5/validator_keys:/home/validator_keys
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _
