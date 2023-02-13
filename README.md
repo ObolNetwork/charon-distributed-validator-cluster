@@ -61,11 +61,12 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    open http://localhost:3000/d/laEp8vupp
    ```
 
-If all the above went correctly, it's natural to see logs like:
+If everything goes correctly, it's natural to see logs like:
 
 `INFO sched      No active DVs for slot {"slot": 3288627}`
 
-This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be in `.charon/cluster/deposit-data.json`.
+This is because you need to activate your freshly created distributed validator on the testnet with the [existing launchpad](https://prater.launchpad.ethereum.org/en/). The validator deposit data should be
+present inside each `node` directory, for example, `.charon/cluster/node0/deposit-data.json`.
 
 ## Distributed Validator Cluster
 
@@ -81,7 +82,8 @@ The default cluster consists of:
   - vc4: [Teku](https://github.com/ConsenSys/teku)
   - vc5: [Nimbus](https://github.com/status-im/nimbus-eth2)
 
-The intention is to support all validator clients, and work is underway to add support for lodestar to this repo, with [nimbus](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/67) and [prysm](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/68) support to follow in the future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
+The intention is to support all validator clients, and work is underway to add support for lodestar to this repo, with [prysm](https://github.com/ObolNetwork/charon-distributed-validator-cluster/issues/68) support to follow
+in the future. Read more about our client support [here](https://github.com/ObolNetwork/charon#supported-consensus-layer-clients).
 
 ## Create Distributed Validator Keys
 
