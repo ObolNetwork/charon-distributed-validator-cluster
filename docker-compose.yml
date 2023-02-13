@@ -12,7 +12,7 @@ x-node-base:
 
 x-node-env:
   &node-env
-  CHARON_BEACON_NODE_ENDPOINTS: ${CHARON_BEACON_NODE_ENDPOINTS:-http://lighthouse:5052}
+  CHARON_BEACON_NODE_ENDPOINTS: http://192.168.1.10:5052
   CHARON_LOG_LEVEL: ${CHARON_LOG_LEVEL:-info}
   CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-console}
   CHARON_P2P_EXTERNAL_HOSTNAME: ${CHARON_P2P_EXTERNAL_HOSTNAME:-} # Empty default required to avoid warnings.
@@ -201,8 +201,8 @@ services:
       BEACON_NODE_ADDRESS: http://node2:3600
       NODE: node2
     volumes:
-      - ./nimbus:/home/user/data
       - .charon/cluster/node2/validator_keys:/home/validator_keys
+      - ./nimbus:/home/user/data
 
   vc3-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v3.4.0}
@@ -239,8 +239,8 @@ services:
       BEACON_NODE_ADDRESS: http://node5:3600
       NODE: node5
     volumes:
-      - ./nimbus:/home/user/data
       - .charon/cluster/node5/validator_keys:/home/validator_keys
+      - ./nimbus:/home/user/data
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _
