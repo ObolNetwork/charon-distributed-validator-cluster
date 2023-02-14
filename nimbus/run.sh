@@ -25,10 +25,13 @@ for f in /home/validator_keys/keystore-*.json; do
   --data-dir=/home/user/data/${NODE} \
   /home/validator_keys/tmpkeys
 
-  # Delete the keystore file that was copied before.
+  # Delete tmpkeys/keystore-*.json file that was copied before.
   filename="$(basename ${f})"
   rm "${tmpkeys}/${filename}"
 done
+
+# Delete the tmpkeys/ directory since it's no longer needed.
+rm -r ${tmpkeys}
 
 echo "Imported all keys"
 
@@ -36,4 +39,3 @@ echo "Imported all keys"
 exec /home/user/nimbus_validator_client \
   --data-dir=/home/user/data/"${NODE}" \
   --beacon-node="${BEACON_NODE_ADDRESS}" \
-  --log-level=debug
