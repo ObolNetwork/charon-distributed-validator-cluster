@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Cleanup nimbus directories.
+# Cleanup nimbus directories if they already exist.
 rm -rf /home/user/data/${NODE}
 
 # Refer: https://nimbus.guide/keys.html
@@ -19,7 +19,7 @@ for f in /home/validator_keys/keystore-*.json; do
   # Copy keystore file to tmpkeys/ directory.
   cp "${f}" "${tmpkeys}"
 
-  # Import the keystore with the password.
+  # Import keystore with the password.
   echo "$password" | \
   /home/user/nimbus_beacon_node deposits import \
   --data-dir=/home/user/data/${NODE} \
