@@ -39,3 +39,5 @@ echo "Imported all keys"
 exec /home/user/nimbus_validator_client \
   --data-dir=/home/user/data/"${NODE}" \
   --beacon-node="${BEACON_NODE_ADDRESS}" \
+  --log-level=debug \
+  --doppelganger-detection=false
