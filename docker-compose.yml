@@ -72,7 +72,7 @@ services:
       lighthouse bn
       --network=${ETH2_NETWORK:-goerli}
       --checkpoint-sync-url=https://goerli.checkpoint-sync.ethdevops.io
-      --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENPOINT:-http://nethermind:8551}
+      --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENDPOINT:-http://nethermind:8551}
       --execution-jwt=/opt/jwt/jwt.hex
       --datadir=/opt/app/beacon/
       --debug-level=info

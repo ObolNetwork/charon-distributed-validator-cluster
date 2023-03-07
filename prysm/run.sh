@@ -47,5 +47,5 @@ echo "Imported all keys"
     --goerli \
     --enable-beacon-rest-api \
     --accept-terms-of-use \
-    --beacon-rest-api-provider="http://$NODE:3600" \
+    --beacon-rest-api-provider="$BEACON_NODE_ADDRESS" \
     --beacon-rpc-provider="$GRPC_BN"

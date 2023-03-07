@@ -10,8 +10,11 @@ services:
   # |_|         |___/                                                  
   prysm:
     image: prysmaticlabs/prysm-beacon-chain:${PRYSM_VERSION:-v3.2.1}
+    ports:
+      - ${PRYSM_PORT_P2P_TCP:-13000}:13000/tcp # P2P TCP
+      - ${PRYSM_PORT_P2P_UDP:-12000}:12000/udp # P2P UDP
     command: |
-      --execution-endpoint=${PRYSM_EXECUTION_ENPOINT:-http://nethermind:8551}
+      --execution-endpoint=${PRYSM_EXECUTION_ENDPOINT:-http://nethermind:8551}
       --goerli 
       --jwt-secret=/home/jwt/jwt.hex 
       --genesis-state=/home/prysm/genesis.ssz 
@@ -38,7 +41,7 @@ services:
     depends_on: [ node0, prysm ]
     restart: unless-stopped
     environment:
-      NODE: node0
+      BEACON_NODE_ADDRESS: "http://node0:3600"
       GRPC_BN: "prysm:4000"
     volumes:
       - ./prysm:/home/prysm
@@ -51,7 +54,7 @@ services:
     depends_on: [ node1, prysm ]
     restart: unless-stopped
     environment:
-      NODE: node1
+      BEACON_NODE_ADDRESS: "http://node1:3600"
       GRPC_BN: "prysm:4000"
     volumes:
       - ./prysm:/home/prysm
@@ -64,7 +67,7 @@ services:
     depends_on: [ node2, prysm ]
     restart: unless-stopped
     environment:
-      NODE: node2
+      BEACON_NODE_ADDRESS: "http://node2:3600"
       GRPC_BN: "prysm:4000"
     volumes:
       - ./prysm:/home/prysm
@@ -77,7 +80,7 @@ services:
     depends_on: [ node3, prysm ]
     restart: unless-stopped
     environment:
-      NODE: node3
+      BEACON_NODE_ADDRESS: "http://node3:3600"
       GRPC_BN: "prysm:4000"
     volumes:
       - ./prysm:/home/prysm
@@ -90,7 +93,7 @@ services:
     depends_on: [ node4, prysm ]
     restart: unless-stopped
     environment:
-      NODE: node4
+      BEACON_NODE_ADDRESS: "http://node4:3600"
       GRPC_BN: "prysm:4000"
     volumes:
       - ./prysm:/home/prysm
@@ -103,7 +106,7 @@ services:
     depends_on: [ node5, prysm ]
     restart: unless-stopped
     environment:
-      NODE: node5
+      BEACON_NODE_ADDRESS: "http://node5:3600"
       GRPC_BN: "prysm:4000"
     volumes:
       - ./prysm:/home/prysm
