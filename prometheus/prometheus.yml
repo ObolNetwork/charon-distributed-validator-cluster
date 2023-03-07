@@ -6,6 +6,10 @@ remote_write:
   - url: https://vm.monitoring.gcp.obol.tech/write
     authorization:
       credentials: $PROM_REMOTE_WRITE_TOKEN
+    write_relabel_configs:
+      - source_labels: [job]
+        regex: "charon(.*)"
+        action: keep # Keeps charon metrics and drop metrics from other containers.
 
 scrape_configs:
   - job_name: "charon-0"
@@ -34,7 +38,7 @@ scrape_configs:
       - targets: ["vc1-teku:8008"]
   - job_name: "vc2"
     static_configs:
-      - targets: ["vc2-vouch:8081"]
+      - targets: ["vc2-nimbus:8108"]
   - job_name: "vc3"
     static_configs:
       - targets: ["vc3-lighthouse:5064"]
@@ -43,7 +47,7 @@ scrape_configs:
       - targets: ["vc4-teku:8008"]
   - job_name: "vc5"
     static_configs:
-      - targets: ["vc5-vouch:8081"]
+      - targets: ["vc5-nimbus:8108"]
   - job_name: "node-exporter"
     static_configs:
       - targets: ["node-exporter:9100"]

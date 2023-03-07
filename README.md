@@ -52,7 +52,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 1. Start the cluster
    ```sh
    # Start the distributed validator cluster
-   docker-compose up --build
+   docker compose up --build
    ```
 1. Checkout the monitoring dashboard and see if things look all right
 
@@ -104,7 +104,7 @@ Along with the private keys and cluster lock file is a validator deposit data fi
 Your deposit will take at minimum 8 hours to process, near to the time you can run this new cluster with the command:
 
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 ## Import Existing Validator Keys
@@ -155,6 +155,28 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 > Remember: Please make sure any existing validator has been shut down for
 > at least 3 finalised epochs before starting the charon cluster,
 > otherwise your validator could be slashed.
+
+## Run prysm VCs in a Distributed Validator Cluster 
+
+This section of the readme is intended for the "docker power users", i.e., for the ones who are familiar with working with docker-compose and want to have more flexibility and power to change the default configuration.
+
+We use the "Multiple Compose File" feature which provides a very powerful way to override any configuration in docker-compose.yml without needing to modify git-checked-in files since that results in conflicts when upgrading this repo. See [this](https://docs.docker.com/compose/extends/#multiple-compose-files) for more details.
+
+There are some additional compose files in this repository, compose-prysm.yml and docker-compose.override.yml.sample, along with the default docker-compose.yml file that you can use for this purpose.
+
+We have provided experimental support of prysm validator client through `compose-prysm.yml` which needs a prysm beacon node to work alongside a REST based beacon node. Here are the steps to test prysm in a Distributed Validator Cluster:
+
+1. Run the following command:
+   ```sh
+   cp docker-compose.override.yml.sample docker-compose.override.yml
+   ```
+2. **Disable** the VCs in `docker-compose.override.yml` that are to be replaced by corresponding prysm VCs by un-commenting profiles field ([more details on profiles](https://docs.docker.com/compose/profiles/)). Also disable the prysm VCs that are not required in the cluster in `docker-compose.override.yml`.
+3. Run the following command:
+   ```sh
+   docker compose -f docker-compose.yml -f compose-prysm.yml -f docker-compose.override.yml up --build
+   ```
+
+Note: Support for prysm VCs with is in experimental phase as prysm doesn't provide complete support of REST API compatible validator client.
 
 # Troubleshooting
 
