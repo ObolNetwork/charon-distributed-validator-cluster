@@ -72,7 +72,7 @@ services:
       lighthouse bn
       --network=${ETH2_NETWORK:-goerli}
       --checkpoint-sync-url=https://goerli.checkpoint-sync.ethdevops.io
-      --execution-endpoint=http://nethermind:8551
+      --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENDPOINT:-http://nethermind:8551}
       --execution-jwt=/opt/jwt/jwt.hex
       --datadir=/opt/app/beacon/
       --debug-level=info
@@ -198,7 +198,6 @@ services:
     depends_on: [ node2 ]
     restart: unless-stopped
     environment:
-      BEACON_NODE_ADDRESS: http://node2:3600
       NODE: node2
     volumes:
       - .charon/cluster/node2/validator_keys:/home/validator_keys
@@ -236,7 +235,6 @@ services:
     depends_on: [ node5 ]
     restart: unless-stopped
     environment:
-      BEACON_NODE_ADDRESS: http://node5:3600
       NODE: node5
     volumes:
       - .charon/cluster/node5/validator_keys:/home/validator_keys

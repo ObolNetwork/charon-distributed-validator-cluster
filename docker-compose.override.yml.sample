@@ -1,0 +1,114 @@
+# The "Multiple Compose File" feature provides a very powerful way to override
+# any configuration in docker-compose.yml without needing to modify
+# git-checked-in files since that results in conflicts when upgrading this repo.
+# See https://docs.docker.com/compose/extends/#multiple-compose-files for more.
+
+# Just copy this file to `docker-compose.override.yml` and customise it to your liking.
+# `cp docker-compose.override.yml.sample docker-compose.override.yml`
+
+# Some example overrides are commented out below. Any uncommented section
+# below will automatically override the same section in
+# docker-compose.yml when ran with `docker-compose up`.
+# See https://docs.docker.com/compose/extends/#adding-and-overriding-configuration for details.
+
+# WARNING: This is for power users only and requires a deep understanding of Docker Compose
+# and how the local docker-compose.yml is configured.
+
+#services:
+  #nethermind:
+    # Disable nethermind
+    #profiles: [disable]
+    # Bind nethermind internal ports to host ports
+    #ports:
+      #- 8545:8545 # JSON-RPC
+      #- 8551:8551 # AUTH-RPC
+      #- 6060:6060 # Metrics
+
+  #lighthouse:
+    # Disable lighthouse
+    #profiles: [disable]
+    # Bind lighthouse internal ports to host ports
+    #ports:
+      #- 5052:5052 # HTTP
+      #- 5054:5054 # Metrics
+
+  #prysm:
+    # Disable prysm
+    #profiles: [disable]
+    # Bind prysm internal ports to host ports
+    #ports:
+      #- 3500:3500 # HTTP
+      #- 4000:4000 # GRPC SERVER
+
+  #vc0-lighthouse:
+    # Disable vc0-lighthouse
+    #profiles: [disable]
+    # Bind vc0-lighthouse internal ports to host ports
+    #ports:
+      #- 5064:5064 # Metrics
+
+  #vc1-teku:
+    # Disable teku
+    #profiles: [disable]
+    # Bind teku internal ports to host ports
+    #ports:
+      #- 8008:8008 # Metrics
+
+  #vc2-nimbus:
+    # Disable vc2-nimbus
+    #profiles: [disable]
+    # Bind vc2-nimbus internal ports to host ports
+    #ports:
+      #- 8108:8108 # Metrics
+
+  #vc3-lighthouse:
+    # Disable vc3-lighthouse
+    #profiles: [disable]
+    # Bind vc3-lighthouse internal ports to host ports
+    #ports:
+      #- 5064:5064 # Metrics
+
+  #vc4-teku:
+    # Disable vc1-teku
+    #profiles: [disable]
+    # Bind teku internal ports to host ports
+    #ports:
+      #- 8008:8008 # Metrics
+
+  #vc5-nimbus:
+    # Disable vc5-nimbus
+    #profiles: [disable]
+    # Bind vc5-nimbus internal ports to host ports
+    #ports:
+      #- 8108:8108 # Metrics
+
+  #vc0-prysm:
+    # Disable vc0-prysm
+    #profiles: [disable]
+
+  #vc1-prysm:
+    # Disable vc1-prysm
+    #profiles: [disable]
+
+  #vc2-prysm:
+    # Disable vc2-prysm
+    #profiles: [disable]
+
+  #vc3-prysm:
+    # Disable vc3-prysm
+    #profiles: [disable]
+
+  #vc4-prysm:
+    # Disable vc4-prysm
+    #profiles: [disable]
+
+  #vc5-prysm:
+    # Disable vc5-prysm
+    #profiles: [disable]
+
+  #prometheus:
+    # Disable prometheus
+    #profiles: [disable]
+    # Bind prometheus internal ports to host ports
+    #ports:
+      #- 9090:9090 # Metrics
