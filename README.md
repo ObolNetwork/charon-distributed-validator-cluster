@@ -47,9 +47,10 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    ```sh
    # Enter required validator addresses
    WITHDRAWAL_ADDR=<ENTER YOUR WITHDRAWAL ADDRESS HERE>
+   FEE_RECIPIENT_ADDR=<ENTER YOUR FEE RECIPIENT ADDRESS HERE>
    
    # Create a testnet distributed validator cluster
-   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.14.0 create cluster --withdrawal-addresses="${WITHDRAWAL_ADDR}" --nodes 6 --threshold 5
+   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.14.0 create cluster --name="mycluster" --withdrawal-addresses="${WITHDRAWAL_ADDR}" --fee-recipient-addresses="${FEE_RECIPIENT_ADDR}" --nodes 6 --threshold 5
    ```
 
 1. Start the cluster
@@ -95,8 +96,9 @@ Create some testnet private keys for a six node distributed validator cluster wi
 ```sh
 # Enter required validator addresses
 WITHDRAWAL_ADDR=<ENTER YOUR WITHDRAWAL ADDRESS HERE>
+FEE_RECIPIENT_ADDR=<ENTER YOUR FEE RECIPIENT ADDRESS HERE>
 
-docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.14.0 create cluster --withdrawal-addresses="${WITHDRAWAL_ADDR}" --nodes 6 --threshold 5
+docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.14.0 create cluster --name="mycluster" --withdrawal-addresses="${WITHDRAWAL_ADDR}" --fee-recipient-addresses="${FEE_RECIPIENT_ADDR}" --nodes 6 --threshold 5
 ```
 
 This command will create a subdirectory `.charon/cluster`. In it are six folders, one for each charon node created. Each folder contains partial private keys that together make up distributed validators defined in the `cluster-lock.json` file.
