@@ -1,0 +1,87 @@
+# Docker compose file to aid developers to test lodestar VCs in a distributed validator cluster.
+version: "3.8"
+
+services:
+  #  _           _           _             
+  # | | ___   __| | ___  ___| |_ __ _ _ __ 
+  # | |/ _ \ / _` |/ _ \/ __| __/ _` | '__|
+  # | | (_) | (_| |  __/\__ \ || (_| | |   
+  # |_|\___/ \__,_|\___||___/\__\__,_|_|   
+  vc0-lodestar:
+    image: nflaig/lodestar:dvt-compatible
+    entrypoint: /opt/lodestar/run.sh
+    networks: [ cluster ]
+    depends_on: [ node0 ]
+    restart: unless-stopped
+    environment:
+      BEACON_NODE_ADDRESS: http://node0:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+    volumes:
+      - ./lodestar/run.sh:/opt/lodestar/run.sh
+      - .charon/cluster/node0/validator_keys:/home/charon/validator_keys
+
+  vc1-lodestar:
+    image: nflaig/lodestar:dvt-compatible
+    entrypoint: /opt/lodestar/run.sh
+    networks: [ cluster ]
+    depends_on: [ node1 ]
+    restart: unless-stopped
+    environment:
+      BEACON_NODE_ADDRESS: http://node1:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+    volumes:
+      - ./lodestar/run.sh:/opt/lodestar/run.sh
+      - .charon/cluster/node1/validator_keys:/home/charon/validator_keys
+
+  vc2-lodestar:
+    image: nflaig/lodestar:dvt-compatible
+    entrypoint: /opt/lodestar/run.sh
+    networks: [ cluster ]
+    depends_on: [ node2 ]
+    restart: unless-stopped
+    environment:
+      BEACON_NODE_ADDRESS: http://node2:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+    volumes:
+      - ./lodestar/run.sh:/opt/lodestar/run.sh
+      - .charon/cluster/node2/validator_keys:/home/charon/validator_keys
+
+  vc3-lodestar:
+    image: nflaig/lodestar:dvt-compatible
+    entrypoint: /opt/lodestar/run.sh
+    networks: [ cluster ]
+    depends_on: [ node3 ]
+    restart: unless-stopped
+    environment:
+      BEACON_NODE_ADDRESS: http://node3:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+    volumes:
+      - ./lodestar/run.sh:/opt/lodestar/run.sh
+      - .charon/cluster/node3/validator_keys:/home/charon/validator_keys
+
+  vc4-lodestar:
+    image: nflaig/lodestar:dvt-compatible
+    entrypoint: /opt/lodestar/run.sh
+    networks: [ cluster ]
+    depends_on: [ node4 ]
+    restart: unless-stopped
+    environment:
+      BEACON_NODE_ADDRESS: http://node4:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+    volumes:
+      - ./lodestar/run.sh:/opt/lodestar/run.sh
+      - .charon/cluster/node4/validator_keys:/home/charon/validator_keys
+
+  vc5-lodestar:
+    image: nflaig/lodestar:dvt-compatible
+    entrypoint: /opt/lodestar/run.sh
+    networks: [ cluster ]
+    depends_on: [ node5 ]
+    restart: unless-stopped
+    environment:
+      BEACON_NODE_ADDRESS: http://node5:3600
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+    volumes:
+      - ./lodestar/run.sh:/opt/lodestar/run.sh
+      - .charon/cluster/node5/validator_keys:/home/charon/validator_keys
+
