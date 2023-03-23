@@ -193,7 +193,10 @@ services:
       - ./teku:/opt/charon/teku
 
   vc2-nimbus:
-    build: nimbus
+    build:
+      context: ./nimbus
+      args:
+        NIMBUS_VERSION: ${NIMBUS_VERSION:-v23.3.2}
     networks: [ cluster ]
     depends_on: [ node2 ]
     restart: unless-stopped
@@ -230,7 +233,10 @@ services:
       - ./teku:/opt/charon/teku
 
   vc5-nimbus:
-    build: nimbus
+    build:
+      context: ./nimbus
+      args:
+        NIMBUS_VERSION: ${NIMBUS_VERSION:-v23.3.2}
     networks: [ cluster ]
     depends_on: [ node5 ]
     restart: unless-stopped
