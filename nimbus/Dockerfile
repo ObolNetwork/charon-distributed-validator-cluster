@@ -1,4 +1,4 @@
-ARG NIMBUS_VERSION
+ARG NIMBUS_VERSION=latest
 
 FROM statusim/nimbus-eth2:multiarch-$NIMBUS_VERSION as nimbusbn
 
