@@ -45,8 +45,12 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
 1. Create the artifacts needed to run a testnet distributed validator cluster
 
    ```sh
-   # Create a testnet distributed validator cluster
-   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.15.0 create cluster --withdrawal-addresses="0x000000000000000000000000000000000000dead" --fee-recipient-addresses "0x000000000000000000000000000000000000dead" --name testnetdv --nodes 6 --threshold 5
+   # Define the number of validators
+   NUM_VALS=1
+   # Define withdrawal and fee recipient addresses for each validator (comma separated)
+   WITHDRAWAL_ADDRS=0x000000000000000000000000000000000000dead
+   FEE_RECIPIENT_ADDRS=0x000000000000000000000000000000000000dead
+   docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.15.0 create cluster --withdrawal-addresses="$WITHDRAWAL_ADDRS" --fee-recipient-addresses "$FEE_RECIPIENT_ADDRS" --name testnetdv --nodes 6 --threshold 5 -numvals=$NUM_VALS
    ```
 
 1. Start the cluster
@@ -90,7 +94,10 @@ in the future. Read more about our client support [here](https://github.com/Obol
 Create some testnet private keys for a six node distributed validator cluster with the command:
 
 ```sh
-docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.15.0 create cluster --withdrawal-addresses="0x000000000000000000000000000000000000dead" --fee-recipient-addresses "0x000000000000000000000000000000000000dead" --name testnetdv  --nodes 6 --threshold 5
+# Define withdrawal and fee recipient addresses for each validator (comma separated)
+WITHDRAWAL_ADDRS=0x000000000000000000000000000000000000dead
+FEE_RECIPIENT_ADDRS=0x000000000000000000000000000000000000dead
+docker run --rm -v "$(pwd):/opt/charon" ghcr.io/obolnetwork/charon:v0.15.0 create cluster --withdrawal-addresses="$WITHDRAWAL_ADDRS" --fee-recipient-addresses "$FEE_RECIPIENT_ADDRS" --name testnetdv  --nodes 6 --threshold 5
 ```
 
 This command will create a subdirectory `.charon/cluster`. In it are six folders, one for each charon node created. Each folder contains partial private keys that together make up distributed validators defined in the `cluster-lock.json` file.
@@ -121,15 +128,19 @@ mkdir split_keys
 # Alongside them, with a matching filename but ending with `.txt` should be the password to the keystore.
 # E.g., keystore-0.json keystore-0.txt
 
-# Split these keystores into "n" (--nodes) key shares with "t" (--threshold) as threshold for a distributed validator
-docker run --rm -v $(pwd):/opt/charon obolnetwork/charon:v0.15.0 create cluster --withdrawal-addresses="0x000000000000000000000000000000000000dead" --fee-recipient-addresses "0x000000000000000000000000000000000000dead" --name testnetdv --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 4 --nodes 6
+# Define withdrawal and fee recipient addresses for each validator (comma separated)
+WITHDRAWAL_ADDRS=0x000000000000000000000000000000000000dead
+FEE_RECIPIENT_ADDRS=0x000000000000000000000000000000000000dead
 
-# The above command will create 6 validator key shares along with cluster-lock.json and deposit-data.json in ./.charon/cluster : 
+# Split these keystores into "n" (--nodes) key shares with "t" (--threshold) as threshold for a distributed validator
+docker run --rm -v $(pwd):/opt/charon obolnetwork/charon:v0.15.0 create cluster --withdrawal-addresses="$WITHDRAWAL_ADDRS" --fee-recipient-addresses "$FEE_RECIPIENT_ADDRS" --name testnetdv --split-existing-keys --split-keys-dir=/opt/charon/split_keys --threshold 4 --nodes 6
+
+# The above command will create 6 validator key shares along with cluster-lock.json and deposit-data.json in ./.charon/cluster :
 
 ***************** WARNING: Splitting keys **********************
  Please make sure any existing validator has been shut down for
  at least 2 finalised epochs before starting the charon cluster,
- otherwise slashing could occur.                               
+ otherwise slashing could occur.
 ****************************************************************
 
 Created charon cluster:
@@ -156,7 +167,7 @@ Keep checking in for updates, [here](https://github.com/ObolNetwork/charon/#supp
 > at least 3 finalised epochs before starting the charon cluster,
 > otherwise your validator could be slashed.
 
-## Run prysm VCs in a Distributed Validator Cluster 
+## Run prysm VCs in a Distributed Validator Cluster
 
 This section of the readme is intended for the "docker power users", i.e., for the ones who are familiar with working with docker-compose and want to have more flexibility and power to change the default configuration.
 
