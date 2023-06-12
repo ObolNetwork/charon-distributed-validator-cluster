@@ -3,7 +3,7 @@ version: "3.8"
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v0.15.0}
+  image: obolnetwork/charon:${CHARON_VERSION:-v0.16.0}
   restart: unless-stopped
   networks: [ cluster ]
   depends_on: [ relay ]
@@ -29,7 +29,7 @@ services:
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
   nethermind:
-    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.18.0}
+    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.19.2}
     restart: unless-stopped
     ports:
       - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
@@ -62,7 +62,7 @@ services:
   #      |___/
 
   lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.1.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.2.0}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
@@ -167,7 +167,7 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.1.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.2.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node0 ]
@@ -204,7 +204,7 @@ services:
       - ./nimbus:/home/user/data
 
   vc3-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.1.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.2.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node3 ]
@@ -247,7 +247,7 @@ services:
   # |_| |_| |_|\___/|_| |_|_|\__\___/|_|  |_|_| |_|\__, |
   #                                                |___/
   prometheus:
-    image: prom/prometheus:${PROMETHEUS_VERSION:-v2.41.0}
+    image: prom/prometheus:${PROMETHEUS_VERSION:-v2.44.0}
     ports:
       - "9090:9090"
     networks: [ cluster ]
@@ -255,7 +255,7 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
-    image: grafana/grafana:${GRAFANA_VERSION:-9.3.2}
+    image: grafana/grafana:${GRAFANA_VERSION:-9.5.3}
     ports:
       - "3000:3000"
     networks: [ cluster ]
@@ -267,13 +267,13 @@ services:
       - ./grafana/dashboards:/etc/dashboards
 
   node-exporter:
-    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.5.0}
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.6.0}
     ports:
       - "9100:9100"
     networks: [ cluster ]
 
   jaeger:
-    image: jaegertracing/all-in-one:${JAEGAR_VERSION:-1.41.0}
+    image: jaegertracing/all-in-one:${JAEGAR_VERSION:-1.46.0}
     networks: [ cluster ]
     ports:
       - "16686:16686"

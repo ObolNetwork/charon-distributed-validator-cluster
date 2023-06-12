@@ -9,7 +9,7 @@ services:
   # | .__/|_|   \__, |___/_| |_| |_| |_.__/ \___|\__,_|\___\___/|_| |_| |_| |_|\___/ \__,_|\___|
   # |_|         |___/                                                  
   prysm:
-    image: prysmaticlabs/prysm-beacon-chain:${PRYSM_VERSION:-v3.2.1}
+    image: prysmaticlabs/prysm-beacon-chain:${PRYSM_VERSION:-v4.0.5}
     ports:
       - ${PRYSM_PORT_P2P_TCP:-13000}:13000/tcp # P2P TCP
       - ${PRYSM_PORT_P2P_UDP:-12000}:12000/udp # P2P UDP
