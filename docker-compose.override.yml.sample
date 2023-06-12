@@ -32,14 +32,6 @@
       #- 5052:5052 # HTTP
       #- 5054:5054 # Metrics
 
-  #prysm:
-    # Disable prysm
-    #profiles: [disable]
-    # Bind prysm internal ports to host ports
-    #ports:
-      #- 3500:3500 # HTTP
-      #- 4000:4000 # GRPC SERVER
-
   #vc0-lighthouse:
     # Disable vc0-lighthouse
     #profiles: [disable]
@@ -81,30 +73,6 @@
     # Bind vc5-nimbus internal ports to host ports
     #ports:
       #- 8108:8108 # Metrics
-
-  #vc0-prysm:
-    # Disable vc0-prysm
-    #profiles: [disable]
-
-  #vc1-prysm:
-    # Disable vc1-prysm
-    #profiles: [disable]
-
-  #vc2-prysm:
-    # Disable vc2-prysm
-    #profiles: [disable]
-
-  #vc3-prysm:
-    # Disable vc3-prysm
-    #profiles: [disable]
-
-  #vc4-prysm:
-    # Disable vc4-prysm
-    #profiles: [disable]
-
-  #vc5-prysm:
-    # Disable vc5-prysm
-    #profiles: [disable]
 
   #prometheus:
     # Disable prometheus
