@@ -52,7 +52,7 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    WITHDRAWAL_ADDRS=0x000000000000000000000000000000000000dead
    FEE_RECIPIENT_ADDRS=0x000000000000000000000000000000000000dead
    
-   docker run --rm -v "$(pwd):/opt/charon" obolnetwork/charon:v0.15.0 create cluster \
+   docker run --rm -v "$(pwd):/opt/charon" obolnetwork/charon:v0.17.0 create cluster \
     --withdrawal-addresses "$WITHDRAWAL_ADDRS" \
     --fee-recipient-addresses "$FEE_RECIPIENT_ADDRS" \
     --name "$CLUSTER_NAME" --nodes 6 --threshold 5 --num-validators $NUM_VALS --network goerli \
@@ -107,7 +107,7 @@ Create some testnet private keys for a six node distributed validator cluster wi
    WITHDRAWAL_ADDRS=0x000000000000000000000000000000000000dead
    FEE_RECIPIENT_ADDRS=0x000000000000000000000000000000000000dead
    
-   docker run --rm -v "$(pwd):/opt/charon" obolnetwork/charon:v0.15.0 create cluster \
+   docker run --rm -v "$(pwd):/opt/charon" obolnetwork/charon:v0.17.0 create cluster \
     --withdrawal-addresses "$WITHDRAWAL_ADDRS" \
     --fee-recipient-addresses "$FEE_RECIPIENT_ADDRS" \
     --name "$CLUSTER_NAME" --nodes 6 --threshold 5 --num-validators $NUM_VALS --network goerli
@@ -152,7 +152,7 @@ NUM_VALS=1
 WITHDRAWAL_ADDRS=0x000000000000000000000000000000000000dead
 FEE_RECIPIENT_ADDRS=0x000000000000000000000000000000000000dead
 
-docker run --rm -v "$(pwd):/opt/charon" obolnetwork/charon:v0.15.0 create cluster \
+docker run --rm -v "$(pwd):/opt/charon" obolnetwork/charon:v0.17.0 create cluster \
 --withdrawal-addresses "$WITHDRAWAL_ADDRS" \
 --fee-recipient-addresses "$FEE_RECIPIENT_ADDRS" \
 --name "$CLUSTER_NAME" --nodes 6 --threshold 5 --num-validators $NUM_VALS --network goerli
