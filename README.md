@@ -55,7 +55,8 @@ Ensure you have [docker](https://docs.docker.com/engine/install/) and [git](http
    docker run --rm -v "$(pwd):/opt/charon" obolnetwork/charon:v0.15.0 create cluster \
     --withdrawal-addresses "$WITHDRAWAL_ADDRS" \
     --fee-recipient-addresses "$FEE_RECIPIENT_ADDRS" \
-    --name "$CLUSTER_NAME" --nodes 6 --threshold 5 --num-validators $NUM_VALS --network goerli
+    --name "$CLUSTER_NAME" --nodes 6 --threshold 5 --num-validators $NUM_VALS --network goerli \
+    --cluster-dir=/opt/charon/cluster-nodes
    ```
 
 1. Start the cluster

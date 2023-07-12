@@ -3,12 +3,12 @@ version: "3.8"
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v0.16.0}
+  image: obolnetwork/charon:${CHARON_VERSION:-v0.17.0}
   restart: unless-stopped
   networks: [ cluster ]
   depends_on: [ relay ]
   volumes:
-    - ./.charon:/opt/charon/.charon/
+    - ./cluster-nodes:/opt/charon/cluster-nodes
 
 x-node-env:
   &node-env
@@ -98,8 +98,8 @@ services:
     <<: *node-base
     environment:
       <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node0/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node0/cluster-lock.json
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/cluster-nodes/node0/charon-enr-private-key
+      CHARON_LOCK_FILE: /opt/charon/cluster-nodes/node0/cluster-lock.json
       CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
 
@@ -107,8 +107,8 @@ services:
     <<: *node-base
     environment:
       <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node1/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node1/cluster-lock.json
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/cluster-nodes/node1/charon-enr-private-key
+      CHARON_LOCK_FILE: /opt/charon/cluster-nodes/node1/cluster-lock.json
       CHARON_JAEGER_SERVICE: node1
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
 
@@ -116,8 +116,8 @@ services:
     <<: *node-base
     environment:
       <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node2/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node2/cluster-lock.json
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/cluster-nodes/node2/charon-enr-private-key
+      CHARON_LOCK_FILE: /opt/charon/cluster-nodes/node2/cluster-lock.json
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
@@ -125,8 +125,8 @@ services:
     <<: *node-base
     environment:
       <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node3/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node3/cluster-lock.json
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/cluster-nodes/node3/charon-enr-private-key
+      CHARON_LOCK_FILE: /opt/charon/cluster-nodes/node3/cluster-lock.json
       CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
@@ -134,8 +134,8 @@ services:
     <<: *node-base
     environment:
       <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node4/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node4/cluster-lock.json
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/cluster-nodes/node4/charon-enr-private-key
+      CHARON_LOCK_FILE: /opt/charon/cluster-nodes/node4/cluster-lock.json
       CHARON_JAEGER_SERVICE: node4
       CHARON_P2P_EXTERNAL_HOSTNAME: node4
 
@@ -143,8 +143,8 @@ services:
     <<: *node-base
     environment:
       <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node5/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node5/cluster-lock.json
+      CHARON_PRIVATE_KEY_FILE: /opt/charon/cluster-nodes/node5/charon-enr-private-key
+      CHARON_LOCK_FILE: /opt/charon/cluster-nodes/node5/cluster-lock.json
       CHARON_JAEGER_SERVICE: node5
       CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
@@ -177,7 +177,7 @@ services:
       ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - .charon/cluster/node0/validator_keys:/opt/charon/keys
+      - ./cluster-nodes/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION:-23.5.0}
@@ -189,7 +189,7 @@ services:
       --beacon-node-api-endpoint="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
-      - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
+      - ./cluster-nodes/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
   vc2-nimbus:
@@ -200,7 +200,7 @@ services:
     environment:
       NODE: node2
     volumes:
-      - .charon/cluster/node2/validator_keys:/home/validator_keys
+      - ./cluster-nodes/node2/validator_keys:/home/validator_keys
       - ./nimbus:/home/user/data
 
   vc3-lighthouse:
@@ -214,7 +214,7 @@ services:
       ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - .charon/cluster/node3/validator_keys:/opt/charon/keys
+      - ./cluster-nodes/node3/validator_keys:/opt/charon/keys
 
   vc4-teku:
     image: consensys/teku:${TEKU_VERSION:-23.5.0}
@@ -226,7 +226,7 @@ services:
       --beacon-node-api-endpoint="http://node4:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
-      - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
+      - ./cluster-nodes/node4/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
   vc5-nimbus:
@@ -237,7 +237,7 @@ services:
     environment:
       NODE: node5
     volumes:
-      - .charon/cluster/node5/validator_keys:/home/validator_keys
+      - ./cluster-nodes/node5/validator_keys:/home/validator_keys
       - ./nimbus:/home/user/data
 
   #                        _ _             _
