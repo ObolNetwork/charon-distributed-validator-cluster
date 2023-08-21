@@ -177,7 +177,7 @@ services:
       ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - ./.charon/cluster/node0/validator_keys:/opt/charon/keys
+      - .charon/cluster/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION:-23.5.0}
@@ -189,7 +189,7 @@ services:
       --beacon-node-api-endpoint="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
-      - ./.charon/cluster/node1/validator_keys:/opt/charon/validator_keys
+      - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
   vc2-nimbus:
@@ -200,7 +200,7 @@ services:
     environment:
       NODE: node2
     volumes:
-      - ./.charon/cluster/node2/validator_keys:/home/validator_keys
+      - .charon/cluster/node2/validator_keys:/home/validator_keys
       - ./nimbus:/home/user/data
 
   vc3-lighthouse:
@@ -214,7 +214,7 @@ services:
       ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - ./.charon/cluster/node3/validator_keys:/opt/charon/keys
+      - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
   vc4-teku:
     image: consensys/teku:${TEKU_VERSION:-23.5.0}
@@ -226,7 +226,7 @@ services:
       --beacon-node-api-endpoint="http://node4:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
     volumes:
-      - ./.charon/cluster/node4/validator_keys:/opt/charon/validator_keys
+      - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
   vc5-nimbus:
@@ -237,7 +237,7 @@ services:
     environment:
       NODE: node5
     volumes:
-      - ./.charon/cluster/node5/validator_keys:/home/validator_keys
+      - .charon/cluster/node5/validator_keys:/home/validator_keys
       - ./nimbus:/home/user/data
 
   #                        _ _             _
