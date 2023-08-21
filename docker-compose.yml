@@ -8,7 +8,7 @@ x-node-base:
   networks: [ cluster ]
   depends_on: [ relay ]
   volumes:
-    - ./charon:/opt/charon/.charon/
+    - ./.charon:/opt/charon/.charon/
 
 x-node-env:
   &node-env
