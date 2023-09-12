@@ -180,7 +180,7 @@ services:
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
-    image: consensys/teku:${TEKU_VERSION:-23.9.0}
+    image: consensys/teku:${TEKU_VERSION:-23.5.0}
     networks: [ cluster ]
     depends_on: [ node1 ]
     restart: unless-stopped
@@ -217,7 +217,7 @@ services:
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
   vc4-teku:
-    image: consensys/teku:${TEKU_VERSION:-23.9.0}
+    image: consensys/teku:${TEKU_VERSION:-23.5.0}
     networks: [ cluster ]
     depends_on: [ node4 ]
     restart: unless-stopped
