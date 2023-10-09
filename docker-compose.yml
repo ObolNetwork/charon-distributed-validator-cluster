@@ -71,7 +71,7 @@ services:
     command: |
       lighthouse bn
       --network=${ETH2_NETWORK:-goerli}
-      --checkpoint-sync-url=https://goerli.checkpoint-sync.ethdevops.io
+      --checkpoint-sync-url=https://checkpoint-sync.goerli.ethpandaops.io/
       --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENDPOINT:-http://nethermind:8551}
       --execution-jwt=/opt/jwt/jwt.hex
       --datadir=/opt/app/beacon/
