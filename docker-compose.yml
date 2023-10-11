@@ -192,16 +192,18 @@ services:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
 
-  vc2-nimbus:
-    build: nimbus
+  vc2-prysm:
+    build: prysm
+    platform: "linux/amd64"
     networks: [ cluster ]
     depends_on: [ node2 ]
     restart: unless-stopped
     environment:
-      NODE: node2
+      BEACON_NODE_ADDRESS: "http://node2:3600"
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
-      - .charon/cluster/node2/validator_keys:/home/validator_keys
-      - ./nimbus:/home/user/data
+      - ./prysm:/home/prysm
+      - .charon/cluster/node2/validator_keys:/home/charon/validator_keys
 
   vc3-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.2.0}
@@ -216,18 +218,18 @@ services:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
-  vc4-teku:
-    image: consensys/teku:${TEKU_VERSION:-23.5.0}
+  vc4-prysm:
+    build: prysm
+    platform: "linux/amd64"
     networks: [ cluster ]
     depends_on: [ node4 ]
     restart: unless-stopped
-    command: |
-      validator-client
-      --beacon-node-api-endpoint="http://node4:3600"
-      --config-file "/opt/charon/teku/teku-config.yaml"
+    environment:
+      BEACON_NODE_ADDRESS: "http://node4:3600"
+      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
     volumes:
-      - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
-      - ./teku:/opt/charon/teku
+      - ./prysm:/home/prysm
+      - .charon/cluster/node4/validator_keys:/home/charon/validator_keys
 
   vc5-nimbus:
     build: nimbus
