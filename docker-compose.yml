@@ -129,7 +129,7 @@ services:
   #     - ./jwt:/opt/jwt
   #   restart: unless-stopped
   lighthouse:
-    image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.6.0-rc.0}
     # build:
     #   context: ./lighthouse-bn
     #   dockerfile: Dockerfile.lighthouse
@@ -234,7 +234,7 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.6.0-rc.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node0 ]
@@ -247,7 +247,7 @@ services:
       - ./cl_config:/opt/lighthouse/custom_config_data
 
   vc1-lighthouse:
-    image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.6.0-rc.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node1 ]
@@ -260,7 +260,7 @@ services:
       - ./cl_config:/opt/lighthouse/custom_config_data
 
   vc2-lighthouse:
-    image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.6.0-rc.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node2 ]
