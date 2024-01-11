@@ -14,14 +14,15 @@ done
 
 for f in /opt/charon/keys/keystore-*.json; do
   echo "Importing key ${f}"
-  lighthouse --network "${ETH2_NETWORK}" account validator import \
+  lighthouse account validator import \
     --reuse-password \
     --keystore "${f}" \
-    --password-file "${f//json/txt}"
+    --password-file "${f//json/txt}" \
+    --testnet-dir "/opt/lighthouse/custom_config_data"
 done
 
 echo "Starting lighthouse validator client for ${NODE}"
-exec lighthouse --network "${ETH2_NETWORK}" validator \
+exec lighthouse validator \
   --beacon-nodes ${LIGHTHOUSE_BEACON_NODE_ADDRESS} \
   --suggested-fee-recipient "0x0000000000000000000000000000000000000000" \
   --metrics \
@@ -29,3 +30,5 @@ exec lighthouse --network "${ETH2_NETWORK}" validator \
   --metrics-allow-origin "*" \
   --metrics-port "5064" \
   --use-long-timeouts \
+  --testnet-dir "/opt/lighthouse/custom_config_data" \
+  --debug-level "trace"

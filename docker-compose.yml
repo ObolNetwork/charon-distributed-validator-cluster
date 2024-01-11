@@ -1,12 +1,17 @@
 version: "3.8"
 
+volumes:
+  geth_data:
+  lighthouse_data:
+
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: xenowits/charon:v1
+  image: obolnetwork/charon:latest
   restart: unless-stopped
   networks: [ cluster ]
   depends_on: [ relay ]
+  command: "run --testnet-chain-id=7011893062 --testnet-fork-version='0x10430399' --testnet-genesis-timestamp=1701262740 --testnet-name=dencun-devnet-12"
   volumes:
     - ./.charon:/opt/charon/.charon/
 
@@ -28,32 +33,67 @@ services:
   # | '_ \ / _ \ __| '_ \ / _ \ '__| '_ ` _ \| | '_ \ / _` |
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
-  nethermind:
-    image: nethermindeth/nethermind:cancun-3320d24
-    restart: unless-stopped
-    ports:
-      - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
-      - ${NETHERMIND_PORT_P2P:-30303}:30303/udp # P2P UDP
-      - ${NETHERMIND_PORT_HTTP:-8545}:8545 # JSON-RPC
-      - ${NETHERMIND_PORT_ENGINE:-8551}:8551 # ENGINE-API
-    command: |
-      --config=${ETH2_NETWORK:-dencun-devnet-9}
-      --datadir=data
-      --HealthChecks.Enabled=true
-      --JsonRpc.Enabled=true
-      --JsonRpc.JwtSecretFile="/root/jwt/jwt.hex"
-      --JsonRpc.EngineHost=0.0.0.0
-      --JsonRpc.EnginePort=8551
-      --JsonRpc.Host=0.0.0.0
-      --JsonRpc.Port=8545
-      --Sync.SnapSync=true
-      --Sync.AncientBodiesBarrier=4367322
-      --Sync.AncientReceiptsBarrier=4367322
-    networks: [ cluster ]
-    volumes:
-      - ./data/nethermind:/nethermind/data
-      - ./jwt:/root/jwt
+    # nethermind:
+    #   image: nethermindeth/nethermind:latest
+    #   restart: unless-stopped
+    #   ports:
+    #     - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
+    #     - ${NETHERMIND_PORT_P2P:-30303}:30303/udp # P2P UDP
+    #     - ${NETHERMIND_PORT_HTTP:-8545}:8545 # JSON-RPC
+    #     - ${NETHERMIND_PORT_ENGINE:-8551}:8551 # ENGINE-API
+    #   command: |
+    #     --config=${ETH2_NETWORK:-dencun-devnet-12}
+    #     --datadir=data
+    #     --HealthChecks.Enabled=true
+    #     --JsonRpc.Enabled=true
+    #     --JsonRpc.JwtSecretFile="/root/jwt/jwt.hex"
+    #     --JsonRpc.EngineHost=0.0.0.0
+    #     --JsonRpc.EnginePort=8551
+    #     --JsonRpc.Host=0.0.0.0
+    #     --JsonRpc.Port=8545
+    #     --Sync.SnapSync=true
+    #     --Sync.AncientBodiesBarrier=4367322
+    #     --Sync.AncientReceiptsBarrier=4367322
+    #   networks: [ cluster ]
+    #   volumes:
+    #     - ./data/nethermind:/nethermind/data
+    #     - ./jwt:/root/jwt
 
+    #             _   _
+  #   __ _  ___| |_| |__
+  #  / _` |/ _ \ __| '_ \
+  # | (_| |  __/ |_| | | |
+  #  \__, |\___|\__|_| |_|
+  #  |___/
+
+  geth:
+    # image: ethpandaops/lighthouse:unstable-38df87c
+    build:
+      context: ./geth
+      dockerfile: Dockerfile.geth
+    ports:
+      - '8545:8545'
+      - ${GETH_PORT_P2P:-30303}:30303/tcp # P2P TCP
+      - ${GETH_PORT_P2P:-30303}:30303/udp # P2P UDP
+    command: /usr/local/bin/geth.sh
+    networks: [cluster]
+    stop_grace_period: 2m
+    volumes:
+      - ./data/geth:/root/.ethereum
+      - 'geth_data:/db'
+      - type: bind
+        source: ./geth/geth.sh
+        target: /usr/local/bin/geth.sh
+      - type: bind
+        source: ./geth/jwtsecret
+        target: /config/jwtsecret
+      - type: bind
+        source: ./geth/genesis.json
+        target: /config/genesis.json
+      - type: bind
+        source: ./geth/enodes.list
+        target: /config/enodes.list
+    restart: unless-stopped
   #  _ _       _     _   _
   # | (_) __ _| |__ | |_| |__   ___  _   _ ___  ___
   # | | |/ _` | '_ \| __| '_ \ / _ \| | | / __|/ _ \
@@ -61,33 +101,60 @@ services:
   # |_|_|\__, |_| |_|\__|_| |_|\___/ \__,_|___/\___|
   #      |___/
 
+  # lighthouse:
+  #   image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+  #   ports:
+  #     - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
+  #     - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
+  #     - ${LIGHTHOUSE_PORT_HTTP:-5052}:5052    # HTTP API
+  #     - ${LIGHTHOUSE_PORT_METRICS:-5054}:5054 # Metrics
+  #   command: |
+  #     lighthouse bn
+  #     --network=${ETH2_NETWORK:-dencun-devnet-12}
+  #     --checkpoint-sync-url=https://checkpoint-sync.dencun-devnet-12.ethpandaops.io/
+  #     --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENDPOINT:-http://nethermind:8551}
+  #     --execution-jwt=/opt/jwt/jwt.hex
+  #     --datadir=/opt/app/beacon/
+  #     --debug-level=info
+  #     --http
+  #     --http-address=0.0.0.0
+  #     --http-port=5052
+  #     --metrics
+  #     --metrics-address=0.0.0.0
+  #     --metrics-port=5054
+  #     --metrics-allow-origin="*"
+  #   networks: [ cluster ]
+  #   volumes:
+  #     - ./data/lighthouse:/opt/app/beacon
+  #     - ./jwt:/opt/jwt
+  #   restart: unless-stopped
   lighthouse:
     image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+    # build:
+    #   context: ./lighthouse-bn
+    #   dockerfile: Dockerfile.lighthouse
+    environment:
+      - CL_P2P_PORT=${CL_P2P_PORT:-9000}
+      - CL_LOG_LEVEL=${CL_LOG_LEVEL:-info}
+      - CHECKPOINT_SYNC_URL=${CHECKPOINT_SYNC_URL:-https://checkpoint-sync.dencun-devnet-12.ethpandaops.io}
     ports:
-      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
-      - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
-      - ${LIGHTHOUSE_PORT_HTTP:-5052}:5052    # HTTP API
-      - ${LIGHTHOUSE_PORT_METRICS:-5054}:5054 # Metrics
-    command: |
-      lighthouse bn
-      --network=${ETH2_NETWORK:-dencun-devnet-9}
-      --checkpoint-sync-url=https://checkpoint-sync.dencun-devnet-9.ethpandaops.io/
-      --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENDPOINT:-http://nethermind:8551}
-      --execution-jwt=/opt/jwt/jwt.hex
-      --datadir=/opt/app/beacon/
-      --debug-level=info
-      --http
-      --http-address=0.0.0.0
-      --http-port=5052
-      --metrics
-      --metrics-address=0.0.0.0
-      --metrics-port=5054
-      --metrics-allow-origin="*"
-    networks: [ cluster ]
+      - "5052:5052"
+      - "5054:5054"
+      - 0.0.0.0:${CL_P2P_PORT:-9000}:${CL_P2P_PORT:-9000}/tcp
+      - 0.0.0.0:${CL_P2P_PORT:-9000}:${CL_P2P_PORT:-9000}/udp
+    command: /usr/local/bin/lighthouse.sh
     volumes:
-      - ./data/lighthouse:/opt/app/beacon
-      - ./jwt:/opt/jwt
-    restart: unless-stopped
+      - lighthouse_data:/data
+      - type: bind
+        source: ./lighthouse-bn/lighthouse.sh
+        target: /usr/local/bin/lighthouse.sh
+      - type: bind
+        source: ./cl_config
+        target: /config/testnet
+      - type: bind
+        source: ./geth/jwtsecret
+        target: /config/jwtsecret
+    networks: [ cluster ]
 
   #       _                                  _ _            _
   #   ___| |__   __ _ _ __ ___  _ __     ___| (_) ___ _ __ | |_ ___
@@ -121,32 +188,32 @@ services:
       CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
-  node3:
-    <<: *node-base
-    environment:
-      <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node3/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node3/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node3
-      CHARON_P2P_EXTERNAL_HOSTNAME: node3
+  # node3:
+  #   <<: *node-base
+  #   environment:
+  #     <<: *node-env
+  #     CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node3/charon-enr-private-key
+  #     CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node3/cluster-lock.json
+  #     CHARON_JAEGER_SERVICE: node3
+  #     CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
-  node4:
-    <<: *node-base
-    environment:
-      <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node4/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node4/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node4
-      CHARON_P2P_EXTERNAL_HOSTNAME: node4
+  # node4:
+  #   <<: *node-base
+  #   environment:
+  #     <<: *node-env
+  #     CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node4/charon-enr-private-key
+  #     CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node4/cluster-lock.json
+  #     CHARON_JAEGER_SERVICE: node4
+  #     CHARON_P2P_EXTERNAL_HOSTNAME: node4
 
-  node5:
-    <<: *node-base
-    environment:
-      <<: *node-env
-      CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node5/charon-enr-private-key
-      CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node5/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node5
-      CHARON_P2P_EXTERNAL_HOSTNAME: node5
+  # node5:
+  #   <<: *node-base
+  #   environment:
+  #     <<: *node-env
+  #     CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node5/charon-enr-private-key
+  #     CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node5/cluster-lock.json
+  #     CHARON_JAEGER_SERVICE: node5
+  #     CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
   relay:
     <<: *node-base
@@ -174,10 +241,10 @@ services:
     restart: unless-stopped
     environment:
       LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node0:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-9}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
+      - ./cl_config:/opt/lighthouse/custom_config_data
 
   vc1-lighthouse:
     image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
@@ -187,10 +254,10 @@ services:
     restart: unless-stopped
     environment:
       LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node1:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-9}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node1/validator_keys:/opt/charon/keys
+      - ./cl_config:/opt/lighthouse/custom_config_data
 
   vc2-lighthouse:
     image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
@@ -200,49 +267,49 @@ services:
     restart: unless-stopped
     environment:
       LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node2:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-9}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node2/validator_keys:/opt/charon/key
+      - ./cl_config:/opt/lighthouse/custom_config_data
 
-  vc3-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.2.0}
-    entrypoint: /opt/lighthouse/run.sh
-    networks: [ cluster ]
-    depends_on: [ node3 ]
-    restart: unless-stopped
-    environment:
-      LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node3:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-9}
-    volumes:
-      - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - .charon/cluster/node3/validator_keys:/opt/charon/keys
+  # vc3-lighthouse:
+  #   image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v4.2.0}
+  #   entrypoint: /opt/lighthouse/run.sh
+  #   networks: [ cluster ]
+  #   depends_on: [ node3 ]
+  #   restart: unless-stopped
+  #   environment:
+  #     LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node3:3600
+  #     ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-12}
+  #   volumes:
+  #     - ./lighthouse/run.sh:/opt/lighthouse/run.sh
+  #     - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
-  vc4-lighthouse:
-    image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
-    entrypoint: /opt/lighthouse/run.sh
-    networks: [ cluster ]
-    depends_on: [ node4 ]
-    restart: unless-stopped
-    environment:
-      LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node4:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-9}
-    volumes:
-      - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - .charon/cluster/node4/validator_keys:/opt/charon/key
+  # vc4-lighthouse:
+  #   image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+  #   entrypoint: /opt/lighthouse/run.sh
+  #   networks: [ cluster ]
+  #   depends_on: [ node4 ]
+  #   restart: unless-stopped
+  #   environment:
+  #     LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node4:3600
+  #     ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-12}
+  #   volumes:
+  #     - ./lighthouse/run.sh:/opt/lighthouse/run.sh
+  #     - .charon/cluster/node4/validator_keys:/opt/charon/key
 
-  vc5-lighthouse:
-    image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
-    entrypoint: /opt/lighthouse/run.sh
-    networks: [ cluster ]
-    depends_on: [ node5 ]
-    restart: unless-stopped
-    environment:
-      LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node5:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-9}
-    volumes:
-      - ./lighthouse/run.sh:/opt/lighthouse/run.sh
-      - .charon/cluster/node5/validator_keys:/opt/charon/key
+  # vc5-lighthouse:
+  #   image: ethpandaops/lighthouse:deneb-free-blobs-57edc0f
+  #   entrypoint: /opt/lighthouse/run.sh
+  #   networks: [ cluster ]
+  #   depends_on: [ node5 ]
+  #   restart: unless-stopped
+  #   environment:
+  #     LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node5:3600
+  #     ETH2_NETWORK: ${ETH2_NETWORK:-dencun-devnet-12}
+  #   volumes:
+  #     - ./lighthouse/run.sh:/opt/lighthouse/run.sh
+  #     - .charon/cluster/node5/validator_keys:/opt/charon/key
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _

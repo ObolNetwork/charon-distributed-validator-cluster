@@ -1,0 +1,18 @@
+FROM rust:1.74.0-bullseye AS builder
+RUN apt-get update && apt-get -y upgrade && apt-get install -y cmake clang libclang-dev protobuf-compiler bash
+ARG FEATURES
+
+RUN bash -c "git clone https://github.com/sigp/lighthouse.git && cd lighthouse && git checkout unstable && CROSS_PROFILE=maxperf make"
+
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository ppa:rmescandon/yq
+RUN apt-get update && apt-get -y upgrade && apt-get install -y --no-install-recommends \
+  libssl-dev \
+  ca-certificates \
+  curl \
+  iproute2 \
+  jq \
+  yq \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /usr/local/cargo/bin/lighthouse /usr/local/bin/lighthouse

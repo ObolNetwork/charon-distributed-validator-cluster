@@ -1,0 +1,36 @@
+# FROM golang:1.21-alpine as builder
+
+# RUN apk add --no-cache make gcc musl-dev linux-headers git bash
+
+# WORKDIR /app
+
+# # The flag below may be needed if blst throws SIGILL, which happens with certain (older) CPUs
+# # ENV CGO_CFLAGS="-O -D__BLST_PORTABLE__"
+# ENV CGO_CFLAGS=$CGO_CFLAGS
+
+# RUN bash -c "git clone https://github.com/ethereum/go-ethereum && cd go-ethereum && git checkout master && make geth"
+
+# # Pull Geth into a second stage deploy alpine container
+# FROM alpine:latest
+
+# RUN apk add --no-cache ca-certificates curl jq bind-tools
+# COPY --from=builder /app/go-ethereum/build/bin/geth /usr/local/bin/
+
+# WORKDIR /usr/local/bin/
+# EXPOSE 8545 8546 8547 30303/udp
+
+# Use the existing Geth Docker image as the base image
+FROM ethpandaops/lighthouse:unstable-38df87c as source
+
+# Create a new stage based on a lightweight image
+FROM alpine:latest
+
+# Install necessary packages
+RUN apk add --no-cache ca-certificates curl jq bind-tools
+
+# Copy the Geth binary from the source image to the new image
+COPY --from=source /app/go-ethereum/build/bin/geth /usr/local/bin/
+
+# Set the working directory and expose the required ports
+WORKDIR /usr/local/bin/
+EXPOSE 8545 8546 8547 30303/udp
