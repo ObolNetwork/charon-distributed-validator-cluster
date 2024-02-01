@@ -1,4 +1,4 @@
-FROM statusim/nimbus-eth2:multiarch-v24.1.1 as nimbusbn
+FROM statusim/nimbus-eth2:multiarch-v24.1.2 as nimbusbn
 
 FROM statusim/nimbus-validator-client:multiarch-v24.1.1
 
