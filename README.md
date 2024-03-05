@@ -24,7 +24,7 @@ In the future, this repo aims to contain compose files for every possible Execut
 
 ## Quickstart
 
-You can view a quickstart guide for testing this repo out on our [docs site](https://docs.obol.tech/docs/next/int/quickstart/alone/test-locally).
+You can view a quickstart guide for testing this repo out on our [docs site](https://docs.obol.tech/docs/start/quickstart_alone).
 
 ## Project Status
 
@@ -36,4 +36,4 @@ See [dvt.obol.tech](https://dvt.obol.tech/) for the latest status of the Obol Ne
 
 # Troubleshooting
 
-[Check the docs](https://docs.obol.tech/docs/int/faq/errors) for some common errors and how to fix them.
+[Check the docs](https://docs.obol.tech/docs/faq/errors) for some common errors and how to fix them.
