@@ -37,7 +37,7 @@ services:
       - ${NETHERMIND_PORT_HTTP:-8545}:8545 # JSON-RPC
       - ${NETHERMIND_PORT_ENGINE:-8551}:8551 # ENGINE-API
     command: |
-      --config=${ETH2_NETWORK:-goerli}
+      --config=${ETH2_NETWORK:-hole}
       --datadir=data
       --HealthChecks.Enabled=true
       --JsonRpc.Enabled=true
@@ -70,8 +70,8 @@ services:
       - ${LIGHTHOUSE_PORT_METRICS:-5054}:5054 # Metrics
     command: |
       lighthouse bn
-      --network=${ETH2_NETWORK:-goerli}
-      --checkpoint-sync-url=https://checkpoint-sync.goerli.ethpandaops.io/
+      --network=${ETH2_NETWORK:-holesky}
+      --checkpoint-sync-url=https://checkpoint-sync.holesky.ethpandaops.io/
       --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENDPOINT:-http://nethermind:8551}
       --execution-jwt=/opt/jwt/jwt.hex
       --datadir=/opt/app/beacon/
@@ -174,7 +174,7 @@ services:
     restart: unless-stopped
     environment:
       LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node0:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+      ETH2_NETWORK: ${ETH2_NETWORK:-holesky}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
@@ -212,7 +212,7 @@ services:
     restart: unless-stopped
     environment:
       LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node3:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-goerli}
+      ETH2_NETWORK: ${ETH2_NETWORK:-holesky}
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
