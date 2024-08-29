@@ -3,7 +3,7 @@ version: "3.8"
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v1.0.0}
+  image: obolnetwork/charon:${CHARON_VERSION:-v1.1.0}
   restart: unless-stopped
   networks: [ cluster ]
   depends_on: [ relay ]
@@ -62,7 +62,7 @@ services:
   #      |___/
 
   lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v5.1.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v5.3.0}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
@@ -167,7 +167,7 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v5.1.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v5.3.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node0 ]
@@ -180,7 +180,7 @@ services:
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
-    image: consensys/teku:${TEKU_VERSION:-24.2.0}
+    image: consensys/teku:${TEKU_VERSION:-24.8.0}
     networks: [ cluster ]
     depends_on: [ node1 ]
     restart: unless-stopped
@@ -205,7 +205,7 @@ services:
       - ./nimbus:/home/user/data
 
   vc3-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v5.1.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v5.3.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [ cluster ]
     depends_on: [ node3 ]
@@ -218,7 +218,7 @@ services:
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
   vc4-teku:
-    image: consensys/teku:${TEKU_VERSION:-24.2.0}
+    image: consensys/teku:${TEKU_VERSION:-24.8.0}
     networks: [ cluster ]
     depends_on: [ node4 ]
     restart: unless-stopped
