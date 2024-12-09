@@ -1,9 +1,7 @@
-version: "3.8"
-
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v1.1.1}
+  image: obolnetwork/charon:${CHARON_VERSION:-v1.2.0}
   restart: unless-stopped
   networks: [ cluster ]
   depends_on: [ relay ]
@@ -29,7 +27,7 @@ services:
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
   nethermind:
-    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.25.4}
+    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.28.0}
     restart: unless-stopped
     ports:
       - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
@@ -180,7 +178,7 @@ services:
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
-    image: consensys/teku:${TEKU_VERSION:-24.8.0}
+    image: consensys/teku:${TEKU_VERSION:-24.10.3}
     networks: [ cluster ]
     depends_on: [ node1 ]
     restart: unless-stopped
@@ -218,7 +216,7 @@ services:
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
   vc4-teku:
-    image: consensys/teku:${TEKU_VERSION:-24.8.0}
+    image: consensys/teku:${TEKU_VERSION:-24.10.3}
     networks: [ cluster ]
     depends_on: [ node4 ]
     restart: unless-stopped
