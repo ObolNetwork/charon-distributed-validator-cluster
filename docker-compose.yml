@@ -11,6 +11,7 @@ x-node-base:
 x-node-env:
   &node-env
   CHARON_BEACON_NODE_ENDPOINTS: ${CHARON_BEACON_NODE_ENDPOINTS:-http://lighthouse:5052}
+  CHARON_BEACON_NODE_HEADERS: ${CHARON_BEACON_NODE_HEADERS:-IgnoredHTTP=header}
   CHARON_LOG_LEVEL: ${CHARON_LOG_LEVEL:-info}
   CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-console}
   CHARON_P2P_EXTERNAL_HOSTNAME: ${CHARON_P2P_EXTERNAL_HOSTNAME:-} # Empty default required to avoid warnings.
@@ -186,7 +187,6 @@ services:
       validator-client
       --beacon-node-api-endpoint="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
-      --Xblock-v3-enabled=false
     volumes:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
@@ -224,7 +224,6 @@ services:
       validator-client
       --beacon-node-api-endpoint="http://node4:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
-      --Xblock-v3-enabled=false
     volumes:
       - .charon/cluster/node4/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
