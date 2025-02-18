@@ -19,6 +19,7 @@ x-node-env:
   CHARON_VALIDATOR_API_ADDRESS: ${CHARON_VALIDATOR_API_ADDRESS:-0.0.0.0:3600}
   CHARON_MONITORING_ADDRESS: ${CHARON_MONITORING_ADDRESS:-0.0.0.0:3620}
   CHARON_JAEGER_ADDRESS: ${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
+  CHARON_NICKNAME: ${CHARON_NICKNAME:-}
 
 services:
   #             _   _                         _           _
