@@ -6,3 +6,4 @@ validators-keystore-locking-enabled: false
 network: auto
 validator-keys: "/opt/charon/validator_keys:/opt/charon/validator_keys"
 validators-proposer-default-fee-recipient: "0x0000000000000000000000000000000000000000"
+Xobol-dvt-integration-enabled: true
