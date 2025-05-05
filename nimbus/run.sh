@@ -41,4 +41,5 @@ exec /home/user/nimbus_validator_client \
   --beacon-node="http://$NODE:3600" \
   --doppelganger-detection=false \
   --metrics \
-  --metrics-address=0.0.0.0
+  --metrics-address=0.0.0.0 \
+  --distributed

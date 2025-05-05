@@ -29,4 +29,4 @@ exec lighthouse --network "${ETH2_NETWORK}" validator \
   --metrics-allow-origin "*" \
   --metrics-port "5064" \
   --use-long-timeouts \
-  --produce-block-v3=false
+  --distributed
