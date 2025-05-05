@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-77b153e}
+  image: obolnetwork/charon:${CHARON_VERSION:v1.4.0}
   restart: unless-stopped
   networks: [ cluster ]
   depends_on: [ relay ]
@@ -62,7 +62,7 @@ services:
   #      |___/
 
   lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v7.0.0-beta.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v7.0.1}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
