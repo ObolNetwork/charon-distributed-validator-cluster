@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v1.6.1}
+  image: obolnetwork/charon:${CHARON_VERSION:-v1.7.0}
   restart: unless-stopped
   networks: [ cluster ]
   depends_on: [ relay ]
