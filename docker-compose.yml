@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v1.7.0}
+  image: obolnetwork/charon:${CHARON_VERSION:-v1.7.1}
   restart: unless-stopped
   networks: [cluster]
   depends_on: [relay]
@@ -28,7 +28,7 @@ services:
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
   nethermind:
-    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.34.1}
+    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.35.0}
     restart: unless-stopped
     ports:
       - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
@@ -61,7 +61,7 @@ services:
   #      |___/
 
   lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.0.0-rc.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.0.0-rc.2}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
@@ -166,7 +166,7 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.0.0-rc.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.0.0-rc.2}
     entrypoint: /opt/lighthouse/run.sh
     networks: [cluster]
     depends_on: [node0]
@@ -179,7 +179,7 @@ services:
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
-    image: consensys/teku:${TEKU_VERSION:-25.9.3}
+    image: consensys/teku:${TEKU_VERSION:-25.10.0}
     networks: [cluster]
     depends_on: [node1]
     restart: unless-stopped
@@ -203,7 +203,7 @@ services:
       - ./nimbus:/home/user/data
 
   vc3-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.0.0-rc.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.0.0-rc.2}
     entrypoint: /opt/lighthouse/run.sh
     networks: [cluster]
     depends_on: [node3]
@@ -216,7 +216,7 @@ services:
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
   vc4-teku:
-    image: consensys/teku:${TEKU_VERSION:-25.9.3}
+    image: consensys/teku:${TEKU_VERSION:-25.10.0}
     networks: [cluster]
     depends_on: [node4]
     restart: unless-stopped
@@ -246,7 +246,7 @@ services:
   # |_| |_| |_|\___/|_| |_|_|\__\___/|_|  |_|_| |_|\__, |
   #                                                |___/
   prometheus:
-    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.2.1}
+    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.7.2}
     ports:
       - "9090:9090"
     networks: [cluster]
@@ -254,7 +254,7 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
-    image: grafana/grafana:${GRAFANA_VERSION:-11.5.2}
+    image: grafana/grafana:${GRAFANA_VERSION:-12.2.1}
     ports:
       - "3000:3000"
     networks: [cluster]
