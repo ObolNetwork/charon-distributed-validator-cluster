@@ -18,6 +18,83 @@
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "ObolNetwork/charon",
       "versioningTemplate": "semver"
+    },
+    {
+      "fileMatch": [
+        "^docker-compose\\.yml$"
+      ],
+      "matchStrings": [
+        "image:\\s*nethermind/nethermind:\\$\\{NETHERMIND_VERSION:-(?<currentValue>[\\w.-]+)}"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "nethermind/nethermind",
+      "versioningTemplate": "semver"
+    },
+    {
+      "fileMatch": [
+        "^docker-compose\\.yml$"
+      ],
+      "matchStrings": [
+        "image:\\s*sigp/lighthouse:\\$\\{LIGHTHOUSE_VERSION:-(?<currentValue>[\\w.-]+)}"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "sigp/lighthouse",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": [
+        "^docker-compose\\.yml$"
+      ],
+      "matchStrings": [
+        "image:\\s*consensys/teku:\\$\\{TEKU_VERSION:-(?<currentValue>[\\w.-]+)}"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "consensys/teku",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": [
+        "^docker-compose\\.yml$"
+      ],
+      "matchStrings": [
+        "image:\\s*prom/prometheus:\\$\\{PROMETHEUS_VERSION:-(?<currentValue>[\\w.-]+)}"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "prom/prometheus",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": [
+        "^docker-compose\\.yml$"
+      ],
+      "matchStrings": [
+        "image:\\s*grafana/grafana:\\$\\{GRAFANA_VERSION:-(?<currentValue>[\\w.-]+)}"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "grafana/grafana",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": [
+        "^nimbus/Dockerfile$"
+      ],
+      "matchStrings": [
+        "FROM\\s+statusim/nimbus-eth2:multiarch-(?<currentValue>[\\w.-]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "statusim/nimbus-eth2",
+      "versioningTemplate": "docker"
+    },
+    {
+      "fileMatch": [
+        "^nimbus/Dockerfile$"
+      ],
+      "matchStrings": [
+        "FROM\\s+statusim/nimbus-validator-client:multiarch-(?<currentValue>[\\w.-]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "statusim/nimbus-validator-client",
+      "versioningTemplate": "docker"
     }
   ],
   "packageRules": [
@@ -50,6 +127,35 @@
         "renovate/charon"
       ],
       "groupName": "Charon image updates"
+    },
+    {
+      "matchManagers": [
+        "regex"
+      ],
+      "matchDepNames": [
+        "nethermind/nethermind",
+        "sigp/lighthouse",
+        "consensys/teku",
+        "statusim/nimbus-eth2",
+        "statusim/nimbus-validator-client"
+      ],
+      "labels": [
+        "renovate/eth-clients"
+      ],
+      "groupName": "Ethereum client updates"
+    },
+    {
+      "matchManagers": [
+        "regex"
+      ],
+      "matchDepNames": [
+        "prom/prometheus",
+        "grafana/grafana"
+      ],
+      "labels": [
+        "renovate/monitoring"
+      ],
+      "groupName": "Monitoring stack updates"
     }
   ]
 }
