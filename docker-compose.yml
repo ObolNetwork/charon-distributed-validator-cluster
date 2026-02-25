@@ -246,7 +246,7 @@ services:
   # |_| |_| |_|\___/|_| |_|_|\__\___/|_|  |_|_| |_|\__, |
   #                                                |___/
   prometheus:
-    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.7.2}
+    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.10.0}
     ports:
       - "9090:9090"
     networks: [cluster]
@@ -254,7 +254,7 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
-    image: grafana/grafana:${GRAFANA_VERSION:-12.2.1}
+    image: grafana/grafana:${GRAFANA_VERSION:-12.4.0}
     ports:
       - "3000:3000"
     networks: [cluster]
