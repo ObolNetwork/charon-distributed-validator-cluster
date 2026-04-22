@@ -254,7 +254,7 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
-    image: grafana/grafana:${GRAFANA_VERSION:-12.4.1}
+    image: grafana/grafana:${GRAFANA_VERSION:-13.0.1}
     ports:
       - "3000:3000"
     networks: [cluster]
