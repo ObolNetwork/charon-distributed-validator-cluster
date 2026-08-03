@@ -1,6 +1,6 @@
-FROM wealdtech/ethdo:1.35.2 as ethdo
+FROM wealdtech/ethdo:1.39.1 as ethdo
 
-FROM attestant/vouch:1.8.0
+FROM attestant/vouch:1.13.1
 
 COPY --from=ethdo /app/ethdo /app/ethdo
 
