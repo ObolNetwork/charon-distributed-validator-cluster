@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-v1.11.0}
+  image: obolnetwork/charon:${CHARON_VERSION:-gloas}
   restart: unless-stopped
   networks: [cluster]
   depends_on: [relay]
@@ -20,38 +20,37 @@ x-node-env: &node-env
   CHARON_MONITORING_ADDRESS: ${CHARON_MONITORING_ADDRESS:-0.0.0.0:3620}
   CHARON_JAEGER_ADDRESS: ${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
   CHARON_NICKNAME: ${CHARON_NICKNAME:-}
+  # Platåberget (glamsterdam-devnet-8) custom network parameters. These make
+  # charon compute signing domains for a devnet that it does not know by name.
+  # Values taken from network-config/config.yaml.
+  CHARON_TESTNET_NAME: ${CHARON_TESTNET_NAME:-plataberget}
+  CHARON_TESTNET_FORK_VERSION: ${CHARON_TESTNET_FORK_VERSION:-0x10733183}
+  CHARON_TESTNET_CHAIN_ID: ${CHARON_TESTNET_CHAIN_ID:-7091047534}
+  CHARON_TESTNET_GENESIS_TIMESTAMP: ${CHARON_TESTNET_GENESIS_TIMESTAMP:-1786622400}
+  CHARON_TESTNET_CAPELLA_HARD_FORK: ${CHARON_TESTNET_CAPELLA_HARD_FORK:-0x40733183}
 
 services:
-  #             _   _                         _           _
-  #  _ __   ___| |_| |__   ___ _ __ _ __ ___ (_)_ __   __| |
-  # | '_ \ / _ \ __| '_ \ / _ \ '__| '_ ` _ \| | '_ \ / _` |
-  # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
-  # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
-  nethermind:
-    image: nethermind/nethermind:${NETHERMIND_VERSION:-1.39.3}
+  #                 _   _
+  #   __ _  ___ ___| |_| |__
+  #  / _` |/ _ \_  / __| '_ \
+  # | (_| |  __// /| |_| | | |
+  #  \__, |\___/___|\__|_| |_|
+  #  |___/
+  # Execution layer: go-ethereum built for the devnet (consumes genesis.json).
+  geth:
+    image: ethpandaops/geth:${GETH_VERSION:-master}
     restart: unless-stopped
+    entrypoint: ["/bin/sh", "/opt/geth/run.sh"]
     ports:
-      - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
-      - ${NETHERMIND_PORT_P2P:-30303}:30303/udp # P2P UDP
-      - ${NETHERMIND_PORT_HTTP:-8545}:8545 # JSON-RPC
-      - ${NETHERMIND_PORT_ENGINE:-8551}:8551 # ENGINE-API
-    command: |
-      --config=${ETH2_NETWORK:-holesky}
-      --datadir=data
-      --HealthChecks.Enabled=true
-      --JsonRpc.Enabled=true
-      --JsonRpc.JwtSecretFile="/root/jwt/jwt.hex"
-      --JsonRpc.EngineHost=0.0.0.0
-      --JsonRpc.EnginePort=8551
-      --JsonRpc.Host=0.0.0.0
-      --JsonRpc.Port=8545
-      --Sync.SnapSync=true
-      --Sync.AncientBodiesBarrier=4367322
-      --Sync.AncientReceiptsBarrier=4367322
+      - ${GETH_PORT_P2P:-30303}:30303/tcp # P2P TCP
+      - ${GETH_PORT_P2P:-30303}:30303/udp # P2P UDP
+      - ${GETH_PORT_HTTP:-8545}:8545 # JSON-RPC
     networks: [cluster]
     volumes:
-      - ./data/nethermind:/nethermind/data
-      - ./jwt:/root/jwt
+      - ./data/geth:/data
+      - ./jwt:/opt/jwt
+      - ./network-config:/network-config:ro
+      - ./geth/run.sh:/opt/geth/run.sh:ro
 
   #  _ _       _     _   _
   # | (_) __ _| |__ | |_| |__   ___  _   _ ___  ___
@@ -59,9 +58,9 @@ services:
   # | | | (_| | | | | |_| | | | (_) | |_| \__ \  __/
   # |_|_|\__, |_| |_|\__|_| |_|\___/ \__,_|___/\___|
   #      |___/
-
+  # Consensus layer: lighthouse beacon node against the devnet testnet-dir.
   lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.2}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-unstable-afadb9a}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
@@ -69,9 +68,9 @@ services:
       - ${LIGHTHOUSE_PORT_METRICS:-5054}:5054 # Metrics
     command: |
       lighthouse bn
-      --network=${ETH2_NETWORK:-holesky}
-      --checkpoint-sync-url=https://checkpoint-sync.holesky.ethpandaops.io/
-      --execution-endpoint=${LIGHTHOUSE_EXECUTION_ENDPOINT:-http://nethermind:8551}
+      --testnet-dir=/network-config
+      --checkpoint-sync-url=${CHECKPOINT_SYNC_URL:-https://checkpoint-sync.plataberget.ethpandaops.io}
+      --execution-endpoint=http://geth:8551
       --execution-jwt=/opt/jwt/jwt.hex
       --datadir=/opt/app/beacon/
       --debug-level=info
@@ -86,7 +85,9 @@ services:
     volumes:
       - ./data/lighthouse:/opt/app/beacon
       - ./jwt:/opt/jwt
+      - ./network-config:/network-config:ro
     restart: unless-stopped
+    depends_on: [geth]
 
   #       _                                  _ _            _
   #   ___| |__   __ _ _ __ ___  _ __     ___| (_) ___ _ __ | |_ ___
@@ -166,20 +167,21 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.2}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-unstable-afadb9a}
     entrypoint: /opt/lighthouse/run.sh
     networks: [cluster]
     depends_on: [node0]
     restart: unless-stopped
     environment:
       LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node0:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-holesky}
+      NODE: node0
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
+      - ./network-config:/network-config:ro
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
 
   vc1-teku:
-    image: consensys/teku:${TEKU_VERSION:-26.8.0}
+    image: consensys/teku:${TEKU_VERSION:-master}
     networks: [cluster]
     depends_on: [node1]
     restart: unless-stopped
@@ -192,7 +194,8 @@ services:
       - ./teku:/opt/charon/teku
 
   vc2-nimbus:
-    build: nimbus
+    image: ethpandaops/nimbus-eth2:${NIMBUS_VERSION:-unstable}
+    entrypoint: ["/bin/sh", "/opt/nimbus/run.sh"]
     networks: [cluster]
     depends_on: [node2]
     restart: unless-stopped
@@ -200,23 +203,25 @@ services:
       NODE: node2
     volumes:
       - .charon/cluster/node2/validator_keys:/home/validator_keys
-      - ./nimbus:/home/user/data
+      - ./nimbus/run.sh:/opt/nimbus/run.sh:ro
+      - ./data/nimbus:/home/user/data
 
   vc3-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.2}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-unstable-afadb9a}
     entrypoint: /opt/lighthouse/run.sh
     networks: [cluster]
     depends_on: [node3]
     restart: unless-stopped
     environment:
       LIGHTHOUSE_BEACON_NODE_ADDRESS: http://node3:3600
-      ETH2_NETWORK: ${ETH2_NETWORK:-holesky}
+      NODE: node3
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
+      - ./network-config:/network-config:ro
       - .charon/cluster/node3/validator_keys:/opt/charon/keys
 
   vc4-teku:
-    image: consensys/teku:${TEKU_VERSION:-26.8.0}
+    image: consensys/teku:${TEKU_VERSION:-master}
     networks: [cluster]
     depends_on: [node4]
     restart: unless-stopped
@@ -229,7 +234,8 @@ services:
       - ./teku:/opt/charon/teku
 
   vc5-nimbus:
-    build: nimbus
+    image: ethpandaops/nimbus-eth2:${NIMBUS_VERSION:-unstable}
+    entrypoint: ["/bin/sh", "/opt/nimbus/run.sh"]
     networks: [cluster]
     depends_on: [node5]
     restart: unless-stopped
@@ -237,7 +243,8 @@ services:
       NODE: node5
     volumes:
       - .charon/cluster/node5/validator_keys:/home/validator_keys
-      - ./nimbus:/home/user/data
+      - ./nimbus/run.sh:/opt/nimbus/run.sh:ro
+      - ./data/nimbus5:/home/user/data
 
   #                        _ _             _
   #  _ __ ___   ___  _ __ (_) |_ ___  _ __(_)_ __   __ _
