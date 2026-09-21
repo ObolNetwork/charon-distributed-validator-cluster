@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-gloas}
+  image: obolnetwork/charon:${CHARON_VERSION:-2efb57e} # latest gloas
   restart: unless-stopped
   networks: [cluster]
   depends_on: [relay]
