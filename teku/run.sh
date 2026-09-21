@@ -32,7 +32,8 @@ fi
 exec "${TEKU}" validator-client \
     --beacon-node-api-endpoint "${BEACON_NODE_ADDRESS}" \
     --network=auto \
-    --data-base-path=/home/data \
+    --data-base-path=/tmp/teku \
+    --log-destination=CONSOLE \
     --validator-keys="/opt/charon/validator_keys:/opt/charon/validator_keys" \
     --validators-keystore-locking-enabled false \
     --validators-external-signer-slashing-protection-enabled true \
