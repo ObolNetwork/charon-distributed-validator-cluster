@@ -1,28 +1,26 @@
 #!/usr/bin/env bash
 
-apt-get update && apt-get install -y curl jq wget
-
-while ! curl "${LIGHTHOUSE_BEACON_NODE_ADDRESS}/eth/v1/node/health" 2>/dev/null; do
-  echo "Waiting for ${LIGHTHOUSE_BEACON_NODE_ADDRESS} to become available..."
-  sleep 5
-done
+# Lighthouse validator client entrypoint for the Platåberget devnet.
+# The network is a custom devnet, so both the key import and the validator
+# client are pointed at the mounted testnet-dir instead of a named --network.
+# The beacon "node" is the local charon node (node<N>:3600).
 
 # Refer: https://lighthouse-book.sigmaprime.io/advanced-datadir.html
-# Running a lighthouse VC involves two steps which needs to run in order:
-# 1. Loading the validator keys
-# 2. Actually running the VC
+# Running a lighthouse VC involves two steps which need to run in order:
+# 1. Import the validator keys
+# 2. Run the VC
 
 for f in /opt/charon/keys/keystore-*.json; do
   echo "Importing key ${f}"
-  lighthouse --network "${ETH2_NETWORK}" account validator import \
+  lighthouse --testnet-dir /network-config account validator import \
     --reuse-password \
     --keystore "${f}" \
     --password-file "${f//json/txt}"
 done
 
 echo "Starting lighthouse validator client for ${NODE}"
-exec lighthouse --network "${ETH2_NETWORK}" validator \
-  --beacon-nodes ${LIGHTHOUSE_BEACON_NODE_ADDRESS} \
+exec lighthouse --testnet-dir /network-config validator \
+  --beacon-nodes "${LIGHTHOUSE_BEACON_NODE_ADDRESS}" \
   --suggested-fee-recipient "0x0000000000000000000000000000000000000000" \
   --metrics \
   --metrics-address "0.0.0.0" \
