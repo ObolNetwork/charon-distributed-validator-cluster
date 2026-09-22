@@ -20,6 +20,9 @@ x-node-env: &node-env
   CHARON_MONITORING_ADDRESS: ${CHARON_MONITORING_ADDRESS:-0.0.0.0:3620}
   CHARON_JAEGER_ADDRESS: ${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
   CHARON_NICKNAME: ${CHARON_NICKNAME:-}
+  # sse_reorg_duties: refresh cached duties on beacon reorg events (mitigates
+  # stale-duties AttesterNotInCommittee when the BN imports anchor blocks late).
+  CHARON_FEATURE_SET_ENABLE: ${CHARON_FEATURE_SET_ENABLE:-sse_reorg_duties}
   # Platåberget (glamsterdam-devnet-8) custom network parameters. These make
   # charon compute signing domains for a devnet that it does not know by name.
   # Values taken from network-config/config.yaml.
