@@ -18,7 +18,7 @@ mkdir $WALLET_DIR
 # 2. Run the validator client.
 WALLET_PASSWORD="prysm-validator-secret"
 echo $WALLET_PASSWORD > /wallet-password.txt
-/app/cmd/validator/validator wallet create --accept-terms-of-use --wallet-password-file=wallet-password.txt --keymanager-kind=direct --wallet-dir="$WALLET_DIR"
+/app/cmd/validator/validator wallet create --accept-terms-of-use --wallet-password-file=/wallet-password.txt --keymanager-kind=direct --wallet-dir="$WALLET_DIR"
 
 tmpkeys="/home/validator_keys/tmpkeys"
 mkdir -p ${tmpkeys}
@@ -35,7 +35,7 @@ for f in /home/charon/validator_keys/keystore-*.json; do
         --wallet-dir="$WALLET_DIR" \
         --keys-dir="${tmpkeys}" \
         --account-password-file="${f//json/txt}" \
-        --wallet-password-file=wallet-password.txt
+        --wallet-password-file=/wallet-password.txt
 
     # Delete tmpkeys/keystore-*.json file that was copied before.
     filename="$(basename ${f})"
