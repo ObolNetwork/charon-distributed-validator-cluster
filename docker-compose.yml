@@ -65,7 +65,7 @@ services:
   #      |___/
   # Consensus layer: lighthouse beacon node against the devnet testnet-dir.
   lighthouse:
-    image: ethpandaops/lighthouse:${LIGHTHOUSE_VERSION:-unstable-fdcc865}
+    image: ethpandaops/lighthouse:${LIGHTHOUSE_VERSION:-unstable-4b1f3c2}
     entrypoint: ["/bin/sh", "/opt/lighthouse/bn-run.sh"]
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
@@ -165,8 +165,8 @@ services:
     build:
       context: ./lighthouse
       args:
-        VERSION: ${LIGHTHOUSE_VERSION:-unstable-fdcc865}
-    image: cdvc-lighthouse-vc:${LIGHTHOUSE_VERSION:-unstable-fdcc865}
+        VERSION: ${LIGHTHOUSE_VERSION:-unstable-4b1f3c2}
+    image: cdvc-lighthouse-vc:${LIGHTHOUSE_VERSION:-unstable-4b1f3c2}
     networks: [cluster]
     depends_on: [node0]
     restart: unless-stopped
