@@ -43,13 +43,13 @@ scrape_configs:
       - targets: ["vc2-nimbus:8108"]
   - job_name: "vc3"
     static_configs:
-      - targets: ["vc3-lighthouse:5064"]
+      - targets: ["vc3-prysm:8081"]
   - job_name: "vc4"
     static_configs:
-      - targets: ["vc4-teku:8008"]
+      - targets: ["vc4-lodestar:5064"]
   - job_name: "vc5"
     static_configs:
-      - targets: ["vc5-nimbus:8108"]
+      - targets: ["vc5-lodestar:5064"]
   - job_name: "node-exporter"
     static_configs:
       - targets: ["node-exporter:9100"]
