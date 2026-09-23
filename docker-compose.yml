@@ -15,6 +15,10 @@ x-node-env: &node-env
   # Per-request beacon node timeout. Raise (e.g. 5s) when the primary is a remote
   # BN; a timeout on a slow-but-healthy remote call otherwise falls back.
   CHARON_BEACON_NODE_TIMEOUT: ${CHARON_BEACON_NODE_TIMEOUT:-2s}
+  # Go runtime debug settings. Set GODEBUG=http2client=0 to force HTTP/1.1 to the
+  # beacon node when it sits behind a CDN edge (e.g. Cloudflare): Go's default
+  # HTTP/2 client intermittently hangs requests there until the request deadline.
+  GODEBUG: ${GODEBUG:-}
   CHARON_BEACON_NODE_HEADERS: ${CHARON_BEACON_NODE_HEADERS:-IgnoredHTTP=header}
   CHARON_LOG_LEVEL: ${CHARON_LOG_LEVEL:-info}
   CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-console}
