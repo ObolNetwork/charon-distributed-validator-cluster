@@ -10,6 +10,8 @@ x-node-base:
 
 x-node-env: &node-env
   CHARON_BEACON_NODE_ENDPOINTS: ${CHARON_BEACON_NODE_ENDPOINTS:-http://lighthouse:5052}
+  # Fallback beacon nodes are used only when the primaries are offline or unhealthy.
+  CHARON_FALLBACK_BEACON_NODE_ENDPOINTS: ${CHARON_FALLBACK_BEACON_NODE_ENDPOINTS:-}
   CHARON_BEACON_NODE_HEADERS: ${CHARON_BEACON_NODE_HEADERS:-IgnoredHTTP=header}
   CHARON_LOG_LEVEL: ${CHARON_LOG_LEVEL:-info}
   CHARON_LOG_FORMAT: ${CHARON_LOG_FORMAT:-console}
