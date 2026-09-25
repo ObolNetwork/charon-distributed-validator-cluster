@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-2efb57e} # latest gloas
+  image: obolnetwork/charon:${CHARON_VERSION:-c14206b} # latest gloas
   restart: unless-stopped
   networks: [cluster]
   depends_on: [relay]
@@ -72,7 +72,7 @@ services:
   #      |___/
   # Consensus layer: lighthouse beacon node against the devnet testnet-dir.
   lighthouse:
-    image: ethpandaops/lighthouse:${LIGHTHOUSE_VERSION:-unstable-4b1f3c2}
+    image: ethpandaops/lighthouse:${LIGHTHOUSE_VERSION:-unstable-de4ef40}
     entrypoint: ["/bin/sh", "/opt/lighthouse/bn-run.sh"]
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
@@ -172,8 +172,8 @@ services:
     build:
       context: ./lighthouse
       args:
-        VERSION: ${LIGHTHOUSE_VERSION:-unstable-4b1f3c2}
-    image: cdvc-lighthouse-vc:${LIGHTHOUSE_VERSION:-unstable-4b1f3c2}
+        VERSION: ${LIGHTHOUSE_VERSION:-unstable-de4ef40}
+    image: cdvc-lighthouse-vc:${LIGHTHOUSE_VERSION:-unstable-de4ef40}
     networks: [cluster]
     depends_on: [node0]
     restart: unless-stopped
