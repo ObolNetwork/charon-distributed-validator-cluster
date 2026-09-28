@@ -8,7 +8,8 @@
 set -e
 
 BN=/home/user/nimbus_beacon_node
-VC=$(command -v nimbus_validator_client || echo /home/user/nimbus_validator_client)
+# Use the nightly binary copied to /home/user (not the statusim one still on PATH).
+VC=/home/user/nimbus_validator_client
 DATA=/home/user/data
 
 # Import keys once; nimbus persists them in DATA/validators, so skip on restart.
