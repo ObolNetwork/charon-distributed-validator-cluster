@@ -74,7 +74,10 @@ else
     echo "proposer-config.json not found, running without proposer settings"
 fi
 
-# Now run prysm VC
+# Now run prysm VC.
+# --disable-attest-timely: attest at the due time, not early on the block event. Charon
+# serves consensus-agreed attestation data just after the due mark; early-attesting pins
+# prysm's fetch deadline too tight to receive it ("query until accepted: deadline exceeded").
 exec /app/cmd/validator/validator --wallet-dir="$WALLET_DIR" \
     --accept-terms-of-use=true \
     --datadir="/data/vc" \
@@ -85,4 +88,5 @@ exec /app/cmd/validator/validator --wallet-dir="$WALLET_DIR" \
     --beacon-rpc-provider="${BEACON_NODE_ADDRESS}" \
     --chain-config-file=/network-config/config.yaml \
     --distributed \
+    --disable-attest-timely \
     "${PROPOSER_SETTINGS[@]}"
