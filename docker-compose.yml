@@ -247,11 +247,18 @@ services:
   #                                                |___/
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VERSION:-v3.14.0}
+    # Runs as root so run.sh can write the rendered prometheus.yml into the bind-mounted dir.
+    user: ":"
     ports:
       - "9090:9090"
     networks: [cluster]
+    environment:
+      # Obol hosted-monitoring token, rendered into prometheus.yml by run.sh; never tracked.
+      PROM_REMOTE_WRITE_TOKEN: ${PROM_REMOTE_WRITE_TOKEN}
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/etc/prometheus
+      - ./data/prometheus:/prometheus
+    entrypoint: /etc/prometheus/run.sh
 
   grafana:
     image: grafana/grafana:${GRAFANA_VERSION:-13.2.0}
