@@ -8,6 +8,8 @@ p2pkey
 keystore*
 prater
 .env
+# Rendered by prometheus/run.sh from prometheus.yml.example (contains the remote-write token).
+prometheus/prometheus.yml
 .data
 beaconnode.env.old
 split_keys/
