@@ -82,6 +82,10 @@ else
     echo "proposer-config.json not found, running without proposer settings"
 fi
 
+# --payloadLocal=false requests the stateless (payload-included) gloas block. Lodestar only
+# auto-selects it with more than one beacon node; behind charon (a single endpoint) it would
+# default to stateful, which a distributed validator cannot serve (no single node holds the
+# payload envelope).
 # Word splitting of $PROPOSER_SETTINGS is intentional, it is empty or a single flag.
 # shellcheck disable=SC2086
 exec node /usr/app/packages/cli/bin/lodestar validator \
@@ -96,4 +100,5 @@ exec node /usr/app/packages/cli/bin/lodestar validator \
     --builder="$BUILDER_API_ENABLED" \
     --builder.selection="$BUILDER_SELECTION" \
     --distributed \
+    --payloadLocal=false \
     $PROPOSER_SETTINGS

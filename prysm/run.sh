@@ -81,6 +81,8 @@ fi
 # --disable-attest-timely: attest at the due time, not early on the block event. Charon
 # serves consensus-agreed attestation data just after the due mark; early-attesting pins
 # prysm's fetch deadline too tight to receive it ("query until accepted: deadline exceeded").
+# --stateless: request the stateless (payload-included) gloas block. A distributed
+# validator cannot serve the stateful form, as no single node holds the payload envelope.
 exec /app/cmd/validator/validator --wallet-dir="$WALLET_DIR" \
     --accept-terms-of-use=true \
     --datadir="/data/vc" \
@@ -92,4 +94,5 @@ exec /app/cmd/validator/validator --wallet-dir="$WALLET_DIR" \
     --chain-config-file=/network-config/config.yaml \
     --distributed \
     --disable-attest-timely \
+    --stateless \
     "${PROPOSER_SETTINGS[@]}"
