@@ -58,7 +58,7 @@ services:
   #      |___/
 
   lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.3}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.3.0-rc.0}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
@@ -157,7 +157,7 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.3}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.3.0-rc.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [cluster]
     depends_on: [node0]
