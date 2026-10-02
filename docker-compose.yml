@@ -18,7 +18,6 @@ x-node-env: &node-env
   CHARON_P2P_TCP_ADDRESS: ${CHARON_P2P_TCP_ADDRESS:-0.0.0.0:3610}
   CHARON_VALIDATOR_API_ADDRESS: ${CHARON_VALIDATOR_API_ADDRESS:-0.0.0.0:3600}
   CHARON_MONITORING_ADDRESS: ${CHARON_MONITORING_ADDRESS:-0.0.0.0:3620}
-  CHARON_JAEGER_ADDRESS: ${CHARON_JAEGER_ADDRESS-jaeger:6831} # Overriding to empty address allowed
   CHARON_NICKNAME: ${CHARON_NICKNAME:-}
 
 services:
@@ -46,8 +45,6 @@ services:
       --JsonRpc.Host=0.0.0.0
       --JsonRpc.Port=8545
       --Sync.SnapSync=true
-      --Sync.AncientBodiesBarrier=4367322
-      --Sync.AncientReceiptsBarrier=4367322
     networks: [cluster]
     volumes:
       - ./data/nethermind:/nethermind/data
@@ -99,7 +96,6 @@ services:
       <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node0/charon-enr-private-key
       CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node0/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node0
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
 
   node1:
@@ -108,7 +104,6 @@ services:
       <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node1/charon-enr-private-key
       CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node1/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node1
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
 
   node2:
@@ -117,7 +112,6 @@ services:
       <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node2/charon-enr-private-key
       CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node2/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node2
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
   node3:
@@ -126,7 +120,6 @@ services:
       <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node3/charon-enr-private-key
       CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node3/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node3
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
   node4:
@@ -135,7 +128,6 @@ services:
       <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node4/charon-enr-private-key
       CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node4/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node4
       CHARON_P2P_EXTERNAL_HOSTNAME: node4
 
   node5:
@@ -144,7 +136,6 @@ services:
       <<: *node-env
       CHARON_PRIVATE_KEY_FILE: /opt/charon/.charon/cluster/node5/charon-enr-private-key
       CHARON_LOCK_FILE: /opt/charon/.charon/cluster/node5/cluster-lock.json
-      CHARON_JAEGER_SERVICE: node5
       CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
   relay:

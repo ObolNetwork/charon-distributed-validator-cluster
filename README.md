@@ -18,7 +18,7 @@ A distributed validator cluster is a docker-compose file with the following cont
 - One [Nimbus](https://github.com/status-im/nimbus-eth2) Validator client
 - One [Prysm](https://github.com/OffchainLabs/prysm) Validator client
 - Two [Lodestar](https://github.com/ChainSafe/lodestar) Validator clients
-- Prometheus, Grafana and Jaeger clients for monitoring this cluster.
+- Prometheus and Grafana for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
 
