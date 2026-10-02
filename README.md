@@ -12,11 +12,14 @@ A distributed validator cluster is a docker-compose file with the following cont
 
 - Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
 - Single [Lighthouse](https://github.com/sigp/lighthouse) consensus layer client
+- Single [MEV-boost](https://github.com/flashbots/mev-boost) client, used by the consensus layer client as its builder
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
-- Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
-- Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
-- Two [Nimbus](https://github.com/status-im/nimbus-eth2) Validator Clients
-- Prometheus, Grafana and Jaeger clients for monitoring this cluster.
+- One [Lighthouse](https://github.com/sigp/lighthouse) Validator client
+- One [Teku](https://github.com/ConsenSys/teku) Validator client
+- One [Nimbus](https://github.com/status-im/nimbus-eth2) Validator client
+- One [Prysm](https://github.com/OffchainLabs/prysm) Validator client
+- Two [Lodestar](https://github.com/ChainSafe/lodestar) Validator clients
+- Prometheus and Grafana for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
 
@@ -25,6 +28,16 @@ In the future, this repo aims to contain compose files for every possible Execut
 ## Quickstart
 
 You can view a quickstart guide for testing this repo out on our [docs site](https://docs.obol.tech/docs/start/quickstart_alone).
+
+## Configuration
+
+Copy the `.env.sample.<NETWORK>` file for the network you want to run on to `.env`, where `<NETWORK>` is one of `hoodi`, `sepolia` or `mainnet`:
+
+```sh
+cp .env.sample.hoodi .env
+```
+
+`ETH2_NETWORK` is required and has no default. The sample files set it, along with the matching Lighthouse checkpoint sync URL. `PROM_REMOTE_WRITE_TOKEN` is also required, since Prometheus exits on start without it. Set `FEE_RECIPIENT` to the address that should receive priority fees and MEV rewards. Every other variable is optional and overrides a default in `docker-compose.yml`.
 
 ## Project Status
 

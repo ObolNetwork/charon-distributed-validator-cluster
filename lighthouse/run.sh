@@ -20,13 +20,19 @@ for f in /opt/charon/keys/keystore-*.json; do
     --password-file "${f//json/txt}"
 done
 
+BUILDER_ARGS=""
+if [ "${BUILDER_API_ENABLED}" = "true" ]; then
+  BUILDER_ARGS="--builder-proposals"
+fi
+
 echo "Starting lighthouse validator client for ${NODE}"
 exec lighthouse --network "${ETH2_NETWORK}" validator \
   --beacon-nodes ${LIGHTHOUSE_BEACON_NODE_ADDRESS} \
-  --suggested-fee-recipient "0x0000000000000000000000000000000000000000" \
+  --suggested-fee-recipient "${FEE_RECIPIENT}" \
   --metrics \
   --metrics-address "0.0.0.0" \
   --metrics-allow-origin "*" \
   --metrics-port "5064" \
   --use-long-timeouts \
+  ${BUILDER_ARGS} \
   --distributed
