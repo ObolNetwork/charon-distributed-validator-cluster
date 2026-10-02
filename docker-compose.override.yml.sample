@@ -53,26 +53,26 @@
     #ports:
       #- 8108:8108 # Metrics
 
-  #vc3-lighthouse:
-    # Disable vc3-lighthouse
+  #vc3-lodestar:
+    # Disable vc3-lodestar
     #profiles: [disable]
-    # Bind vc3-lighthouse internal ports to host ports
+    # Bind vc3-lodestar internal ports to host ports
     #ports:
       #- 5064:5064 # Metrics
 
-  #vc4-teku:
-    # Disable vc1-teku
+  #vc4-prysm:
+    # Disable vc4-prysm
     #profiles: [disable]
-    # Bind teku internal ports to host ports
+    # Bind vc4-prysm internal ports to host ports
     #ports:
-      #- 8008:8008 # Metrics
+      #- 8081:8081 # Metrics
 
-  #vc5-nimbus:
-    # Disable vc5-nimbus
+  #vc5-lodestar:
+    # Disable vc5-lodestar
     #profiles: [disable]
-    # Bind vc5-nimbus internal ports to host ports
+    # Bind vc5-lodestar internal ports to host ports
     #ports:
-      #- 8108:8108 # Metrics
+      #- 5064:5064 # Metrics
 
   #prometheus:
     # Disable prometheus

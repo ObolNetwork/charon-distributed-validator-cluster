@@ -13,9 +13,11 @@ A distributed validator cluster is a docker-compose file with the following cont
 - Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
 - Single [Lighthouse](https://github.com/sigp/lighthouse) consensus layer client
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
-- Two [Lighthouse](https://github.com/sigp/lighthouse) Validator clients
-- Two [Teku](https://github.com/ConsenSys/teku) Validator Clients
-- Two [Nimbus](https://github.com/status-im/nimbus-eth2) Validator Clients
+- One [Lighthouse](https://github.com/sigp/lighthouse) Validator client
+- One [Teku](https://github.com/ConsenSys/teku) Validator client
+- One [Nimbus](https://github.com/status-im/nimbus-eth2) Validator client
+- One [Prysm](https://github.com/OffchainLabs/prysm) Validator client
+- Two [Lodestar](https://github.com/ChainSafe/lodestar) Validator clients
 - Prometheus, Grafana and Jaeger clients for monitoring this cluster.
 
 ![Distributed Validator Cluster](DVCluster.png)
