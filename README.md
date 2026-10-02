@@ -28,6 +28,16 @@ In the future, this repo aims to contain compose files for every possible Execut
 
 You can view a quickstart guide for testing this repo out on our [docs site](https://docs.obol.tech/docs/start/quickstart_alone).
 
+## Configuration
+
+Copy the `.env.sample.<NETWORK>` file for the network you want to run on to `.env`, where `<NETWORK>` is one of `hoodi`, `sepolia` or `mainnet`:
+
+```sh
+cp .env.sample.hoodi .env
+```
+
+`ETH2_NETWORK` is required and has no default. The sample files set it, along with the matching Lighthouse checkpoint sync URL. `PROM_REMOTE_WRITE_TOKEN` is also required, since Prometheus exits on start without it. Every other variable is optional and overrides a default in `docker-compose.yml`.
+
 ## Project Status
 
 See [dvt.obol.tech](https://dvt.obol.tech/) for the latest status of the Obol Network including which upstream consensus clients and which downstream validators are supported.
