@@ -42,4 +42,6 @@ exec /home/user/nimbus_validator_client \
   --doppelganger-detection=false \
   --metrics \
   --metrics-address=0.0.0.0 \
+  --suggested-fee-recipient="${FEE_RECIPIENT}" \
+  --payload-builder="${BUILDER_API_ENABLED}" \
   --distributed

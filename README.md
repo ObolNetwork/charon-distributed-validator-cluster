@@ -12,6 +12,7 @@ A distributed validator cluster is a docker-compose file with the following cont
 
 - Single [Nethermind](https://github.com/NethermindEth/nethermind) execution layer client
 - Single [Lighthouse](https://github.com/sigp/lighthouse) consensus layer client
+- Single [MEV-boost](https://github.com/flashbots/mev-boost) client, used by the consensus layer client as its builder
 - Six [charon](https://github.com/ObolNetwork/charon) Distributed Validator clients
 - One [Lighthouse](https://github.com/sigp/lighthouse) Validator client
 - One [Teku](https://github.com/ConsenSys/teku) Validator client
@@ -36,7 +37,7 @@ Copy the `.env.sample.<NETWORK>` file for the network you want to run on to `.en
 cp .env.sample.hoodi .env
 ```
 
-`ETH2_NETWORK` is required and has no default. The sample files set it, along with the matching Lighthouse checkpoint sync URL. `PROM_REMOTE_WRITE_TOKEN` is also required, since Prometheus exits on start without it. Every other variable is optional and overrides a default in `docker-compose.yml`.
+`ETH2_NETWORK` is required and has no default. The sample files set it, along with the matching Lighthouse checkpoint sync URL. `PROM_REMOTE_WRITE_TOKEN` is also required, since Prometheus exits on start without it. Set `FEE_RECIPIENT` to the address that should receive priority fees and MEV rewards. Every other variable is optional and overrides a default in `docker-compose.yml`.
 
 ## Project Status
 

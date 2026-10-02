@@ -45,6 +45,11 @@ rm -r "${tmpkeys}"
 
 echo "Imported all keys"
 
+BUILDER_ARGS=""
+if [ "${BUILDER_API_ENABLED}" = "true" ]; then
+    BUILDER_ARGS="--enable-builder"
+fi
+
 # Now run prysm VC
 exec /app/cmd/validator/validator \
     --wallet-dir="${WALLET_DIR}" \
@@ -54,8 +59,9 @@ exec /app/cmd/validator/validator \
     --enable-beacon-rest-api \
     --beacon-rest-api-provider="${BEACON_NODE_ADDRESS}" \
     --beacon-rpc-provider="${BEACON_NODE_ADDRESS}" \
-    --suggested-fee-recipient="0x0000000000000000000000000000000000000000" \
+    --suggested-fee-recipient="${FEE_RECIPIENT}" \
     --monitoring-host=0.0.0.0 \
     --monitoring-port=8081 \
     --"${NETWORK}" \
+    ${BUILDER_ARGS} \
     --distributed

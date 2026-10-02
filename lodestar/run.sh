@@ -35,7 +35,9 @@ exec node /usr/app/packages/cli/bin/lodestar validator \
     --secretsDir="$SECRETS_DIR" \
     --network="$NETWORK" \
     --beaconNodes="$BEACON_NODE_ADDRESS" \
-    --suggestedFeeRecipient="0x0000000000000000000000000000000000000000" \
+    --suggestedFeeRecipient="${FEE_RECIPIENT}" \
+    --builder="${BUILDER_API_ENABLED}" \
+    --builder.selection="${BUILDER_SELECTION}" \
     --metrics=true \
     --metrics.address="0.0.0.0" \
     --metrics.port=5064 \
