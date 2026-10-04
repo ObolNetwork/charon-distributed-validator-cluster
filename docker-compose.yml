@@ -46,6 +46,7 @@ services:
       --JsonRpc.Host=0.0.0.0
       --JsonRpc.Port=8545
       --Sync.SnapSync=true
+      --Sync.SnapServingEnabled=false
     networks: [cluster]
     volumes:
       - ./data/nethermind:/nethermind/data
