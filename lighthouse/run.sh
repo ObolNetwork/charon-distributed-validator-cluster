@@ -12,6 +12,11 @@ done
 # 1. Loading the validator keys
 # 2. Actually running the VC
 
+# Remove previously imported keys, but keep the slashing protection DB
+# (validators/slashing_protection.sqlite) across restarts.
+VALIDATORS_DIR="/root/.lighthouse/${ETH2_NETWORK}/validators"
+rm -rf "${VALIDATORS_DIR}"/0x* "${VALIDATORS_DIR}/validator_definitions.yml"
+
 for f in /opt/charon/keys/keystore-*.json; do
   echo "Importing key ${f}"
   lighthouse --network "${ETH2_NETWORK}" account validator import \

@@ -193,9 +193,12 @@ services:
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
+      - ./data/vc0-lighthouse:/root/.lighthouse
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION:-26.9.1}
+    # Runs as root so it can write to ./data/vc1-teku regardless of the host user's uid.
+    user: root
     networks: [cluster]
     depends_on: [node1]
     restart: unless-stopped
@@ -203,14 +206,18 @@ services:
       validator-client
       --beacon-node-api-endpoint="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
+      --data-base-path=/home/data
       --validators-proposer-default-fee-recipient=${FEE_RECIPIENT:-0x0000000000000000000000000000000000000000}
       --validators-builder-registration-default-enabled=${BUILDER_API_ENABLED:-true}
     volumes:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
+      - ./data/vc1-teku:/home/data
 
   vc2-nimbus:
     build: nimbus
+    # Runs as root so it can write to ./nimbus regardless of the host user's uid.
+    user: root
     networks: [cluster]
     depends_on: [node2]
     restart: unless-stopped

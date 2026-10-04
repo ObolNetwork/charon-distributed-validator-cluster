@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Cleanup nimbus directories if they already exist.
-rm -rf /home/user/data/${NODE}
+# Remove previously imported keys, but keep the slashing protection DB
+# (validators/slashing_protection.sqlite3*) across restarts.
+rm -rf /home/user/data/${NODE}/secrets /home/user/data/${NODE}/validators/0x*
 
 # Refer: https://nimbus.guide/keys.html
 # Running a nimbus VC involves two steps which need to run in order:
