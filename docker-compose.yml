@@ -182,6 +182,16 @@ services:
   # \ \ / / _` | | |/ _` |/ _` | __/ _ \| '__/ __|
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
+  # Teku and Nimbus run as uid 1000, but docker creates missing bind mount
+  # directories as root. Hand their data directories to uid 1000 before they start.
+  vc-data-permissions:
+    image: busybox:${BUSYBOX_VERSION:-1.38.0}
+    network_mode: none
+    command: sh -c "chown -R 1000:1000 /vc1-teku /vc2-nimbus && chmod 700 /vc1-teku /vc2-nimbus"
+    volumes:
+      - ./data/vc1-teku:/vc1-teku
+      - ./data/vc2-nimbus:/vc2-nimbus
+
   vc0-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.3}
     entrypoint: /opt/lighthouse/run.sh
@@ -201,22 +211,32 @@ services:
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION:-26.9.1}
     networks: [cluster]
-    depends_on: [node1]
+    depends_on:
+      node1:
+        condition: service_started
+      vc-data-permissions:
+        condition: service_completed_successfully
     restart: unless-stopped
     command: |
       validator-client
       --beacon-node-api-endpoint="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
+      --data-base-path=/home/data
       --validators-proposer-default-fee-recipient=${FEE_RECIPIENT:-0x0000000000000000000000000000000000000000}
       --validators-builder-registration-default-enabled=${BUILDER_API_ENABLED:-true}
     volumes:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
+      - ./data/vc1-teku:/home/data
 
   vc2-nimbus:
     build: nimbus
     networks: [cluster]
-    depends_on: [node2]
+    depends_on:
+      node2:
+        condition: service_started
+      vc-data-permissions:
+        condition: service_completed_successfully
     restart: unless-stopped
     environment:
       NODE: node2
@@ -224,7 +244,8 @@ services:
       FEE_RECIPIENT: ${FEE_RECIPIENT:-0x0000000000000000000000000000000000000000}
     volumes:
       - .charon/cluster/node2/validator_keys:/home/validator_keys
-      - ./nimbus:/home/user/data
+      - ./nimbus/run.sh:/home/user/data/run.sh
+      - ./data/vc2-nimbus:/home/user/data
 
   vc3-lodestar:
     image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.49.0}
