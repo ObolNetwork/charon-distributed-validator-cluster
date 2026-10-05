@@ -200,6 +200,9 @@ services:
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION:-26.9.1}
+    # Starts as root so run.sh can hand ./data/vc1-teku to uid 1000; Teku itself runs as uid 1000.
+    user: root
+    entrypoint: /opt/charon/teku/run.sh
     networks: [cluster]
     depends_on: [node1]
     restart: unless-stopped
@@ -207,14 +210,19 @@ services:
       validator-client
       --beacon-node-api-endpoint="http://node1:3600"
       --config-file "/opt/charon/teku/teku-config.yaml"
+      --data-base-path=/home/data
       --validators-proposer-default-fee-recipient=${FEE_RECIPIENT:-0x0000000000000000000000000000000000000000}
       --validators-builder-registration-default-enabled=${BUILDER_API_ENABLED:-true}
     volumes:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
       - ./teku:/opt/charon/teku
+      - ./data/vc1-teku:/home/data
 
   vc2-nimbus:
     build: nimbus
+    # Starts as root so run.sh can hand ./data/vc2-nimbus to uid 1000; Nimbus itself runs as uid 1000.
+    user: root
+    entrypoint: /home/user/run.sh
     networks: [cluster]
     depends_on: [node2]
     restart: unless-stopped
@@ -224,7 +232,8 @@ services:
       FEE_RECIPIENT: ${FEE_RECIPIENT:-0x0000000000000000000000000000000000000000}
     volumes:
       - .charon/cluster/node2/validator_keys:/home/validator_keys
-      - ./nimbus:/home/user/data
+      - ./nimbus/run.sh:/home/user/run.sh
+      - ./data/vc2-nimbus:/home/user/data
 
   vc3-lodestar:
     image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.49.0}
