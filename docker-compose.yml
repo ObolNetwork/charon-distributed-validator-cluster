@@ -196,16 +196,23 @@ services:
     volumes:
       - ./lighthouse/run.sh:/opt/lighthouse/run.sh
       - .charon/cluster/node0/validator_keys:/opt/charon/keys
+      - .charon/cluster/node0:/opt/charon/node:ro
       - ./data/vc0-lighthouse:/root/.lighthouse
 
   vc1-teku:
-    image: consensys/teku:${TEKU_VERSION:-26.9.1}
+    build:
+      context: teku
+      args:
+        VERSION: ${TEKU_VERSION:-26.9.1}
+    image: cdvc-teku:${TEKU_VERSION:-26.9.1}
     # Starts as root so run.sh can hand ./data/vc1-teku to uid 1000; Teku itself runs as uid 1000.
     user: root
     entrypoint: /opt/charon/teku/run.sh
     networks: [cluster]
     depends_on: [node1]
     restart: unless-stopped
+    environment:
+      BUILDER_API_ENABLED: ${BUILDER_API_ENABLED:-true}
     command: |
       validator-client
       --beacon-node-api-endpoint="http://node1:3600"
@@ -215,11 +222,14 @@ services:
       --validators-builder-registration-default-enabled=${BUILDER_API_ENABLED:-true}
     volumes:
       - .charon/cluster/node1/validator_keys:/opt/charon/validator_keys
+      - .charon/cluster/node1:/opt/charon/node:ro
       - ./teku:/opt/charon/teku
       - ./data/vc1-teku:/home/data
 
   vc2-nimbus:
     build: nimbus
+    # Keep the tag in sync with nimbus/Dockerfile: compose only builds an image it doesn't have yet.
+    image: cdvc-nimbus:v26.10.0
     # Starts as root so run.sh can hand ./data/vc2-nimbus to uid 1000; Nimbus itself runs as uid 1000.
     user: root
     entrypoint: /home/user/run.sh
@@ -232,6 +242,7 @@ services:
       FEE_RECIPIENT: ${FEE_RECIPIENT:-0x0000000000000000000000000000000000000000}
     volumes:
       - .charon/cluster/node2/validator_keys:/home/validator_keys
+      - .charon/cluster/node2:/opt/charon/node:ro
       - ./nimbus/run.sh:/home/user/run.sh
       - ./data/vc2-nimbus:/home/user/data
 
@@ -250,10 +261,15 @@ services:
     volumes:
       - ./lodestar/run.sh:/opt/lodestar/run.sh
       - .charon/cluster/node3/validator_keys:/home/charon/validator_keys
+      - .charon/cluster/node3:/opt/charon/node:ro
       - ./data/vc3-lodestar:/opt/data
 
   vc4-prysm:
-    image: offchainlabs/prysm-validator:${PRYSM_VERSION:-v7.2.0}
+    build:
+      context: prysm
+      args:
+        VERSION: ${PRYSM_VERSION:-v7.2.0}
+    image: cdvc-prysm:${PRYSM_VERSION:-v7.2.0}
     platform: "linux/amd64"
     entrypoint: /home/prysm/run.sh
     networks: [cluster]
@@ -267,6 +283,7 @@ services:
     volumes:
       - ./prysm/run.sh:/home/prysm/run.sh
       - .charon/cluster/node4/validator_keys:/home/charon/validator_keys
+      - .charon/cluster/node4:/opt/charon/node:ro
       - ./data/vc4-prysm:/data/vc
 
   vc5-lodestar:
@@ -284,6 +301,7 @@ services:
     volumes:
       - ./lodestar/run.sh:/opt/lodestar/run.sh
       - .charon/cluster/node5/validator_keys:/home/charon/validator_keys
+      - .charon/cluster/node5:/opt/charon/node:ro
       - ./data/vc5-lodestar:/opt/data
 
   #                        _ _             _

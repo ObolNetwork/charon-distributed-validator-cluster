@@ -29,16 +29,63 @@ done
 
 echo "Imported all keys"
 
+# On a fresh setup charon writes proposer-config.json shortly after it starts, wait for it.
+PROPOSER_CONFIG="/opt/charon/node/vc-config/proposer-config.json"
+for _ in $(seq 60); do
+    [ -f "${PROPOSER_CONFIG}" ] && break
+    sleep 2
+done
+
+# Render Lodestar's proposer settings from charon's proposer-config.json: entries only
+# carry fields diverging from default_config, absent fields fall back to it. Lodestar
+# only accepts yml/yaml file extensions; JSON is valid YAML. CLI flags override the
+# file's default_config, so --suggestedFeeRecipient is only passed without it.
+if [ -f "${PROPOSER_CONFIG}" ]; then
+    echo "proposer-config.json found, rendering lodestar proposer settings"
+    node -e '
+        const fs = require("fs");
+        const src = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+        const d = src.default_config;
+        const out = {
+            proposer_config: {},
+            default_config: {fee_recipient: d.fee_recipient, builder: {gas_limit: d.gas_limit}},
+        };
+        if (d.builder) {
+            Object.assign(out.default_config.builder, {
+                min_bid: d.builder.min_bid,
+                boost_factor: d.builder.builder_boost_factor,
+                max_execution_payment: d.builder.max_execution_payment,
+                builders: d.builder.builders,
+            });
+        }
+        for (const [pubkey, entry] of Object.entries(src.proposer_config || {})) {
+            out.proposer_config[pubkey] = {
+                fee_recipient: entry.fee_recipient ?? d.fee_recipient,
+                builder: {gas_limit: entry.gas_limit ?? d.gas_limit},
+            };
+        }
+        fs.writeFileSync(process.argv[2], JSON.stringify(out));
+    ' "${PROPOSER_CONFIG}" /tmp/proposer-config.yml
+    set -- --proposerSettingsFile=/tmp/proposer-config.yml
+    # Lodestar refuses a max execution payment above 0 (trusted payments) without an explicit opt-in.
+    if [ "$(node -p 'require(process.argv[1]).default_config.builder?.max_execution_payment ?? "0"' "${PROPOSER_CONFIG}")" != "0" ]; then
+        set -- "$@" --allowDangerousTrustedPayments
+    fi
+else
+    echo "proposer-config.json not found, using FEE_RECIPIENT for all validators"
+    set -- --suggestedFeeRecipient="${FEE_RECIPIENT}"
+fi
+
 exec node /usr/app/packages/cli/bin/lodestar validator \
     --dataDir="$DATA_DIR" \
     --keystoresDir="$KEYSTORES_DIR" \
     --secretsDir="$SECRETS_DIR" \
     --network="$NETWORK" \
     --beaconNodes="$BEACON_NODE_ADDRESS" \
-    --suggestedFeeRecipient="${FEE_RECIPIENT}" \
     --builder="${BUILDER_API_ENABLED}" \
     --builder.selection="${BUILDER_SELECTION}" \
     --metrics=true \
     --metrics.address="0.0.0.0" \
     --metrics.port=5064 \
-    --distributed
+    --distributed \
+    "$@"
