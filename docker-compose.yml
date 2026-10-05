@@ -182,16 +182,6 @@ services:
   # \ \ / / _` | | |/ _` |/ _` | __/ _ \| '__/ __|
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
-  # Teku and Nimbus run as uid 1000, but docker creates missing bind mount
-  # directories as root. Hand their data directories to uid 1000 before they start.
-  vc-data-permissions:
-    image: busybox:${BUSYBOX_VERSION:-1.38.0}
-    network_mode: none
-    command: sh -c "chown -R 1000:1000 /vc1-teku /vc2-nimbus && chmod 700 /vc1-teku /vc2-nimbus"
-    volumes:
-      - ./data/vc1-teku:/vc1-teku
-      - ./data/vc2-nimbus:/vc2-nimbus
-
   vc0-lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.3}
     entrypoint: /opt/lighthouse/run.sh
@@ -210,12 +200,11 @@ services:
 
   vc1-teku:
     image: consensys/teku:${TEKU_VERSION:-26.9.1}
+    # Starts as root so run.sh can hand ./data/vc1-teku to uid 1000; Teku itself runs as uid 1000.
+    user: root
+    entrypoint: /opt/charon/teku/run.sh
     networks: [cluster]
-    depends_on:
-      node1:
-        condition: service_started
-      vc-data-permissions:
-        condition: service_completed_successfully
+    depends_on: [node1]
     restart: unless-stopped
     command: |
       validator-client
@@ -231,12 +220,11 @@ services:
 
   vc2-nimbus:
     build: nimbus
+    # Starts as root so run.sh can hand ./data/vc2-nimbus to uid 1000; Nimbus itself runs as uid 1000.
+    user: root
+    entrypoint: /home/user/run.sh
     networks: [cluster]
-    depends_on:
-      node2:
-        condition: service_started
-      vc-data-permissions:
-        condition: service_completed_successfully
+    depends_on: [node2]
     restart: unless-stopped
     environment:
       NODE: node2
@@ -244,7 +232,7 @@ services:
       FEE_RECIPIENT: ${FEE_RECIPIENT:-0x0000000000000000000000000000000000000000}
     volumes:
       - .charon/cluster/node2/validator_keys:/home/validator_keys
-      - ./nimbus/run.sh:/home/user/data/run.sh
+      - ./nimbus/run.sh:/home/user/run.sh
       - ./data/vc2-nimbus:/home/user/data
 
   vc3-lodestar:
