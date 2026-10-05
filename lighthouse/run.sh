@@ -69,6 +69,9 @@ if [ -f /network-config/config.yaml ]; then
 fi
 
 echo "Starting lighthouse validator client"
+# From the gloas fork, request the stateless (payload-included) block form: charon spreads block
+# production across nodes, so no single beacon node can be relied on to hold the payload envelope
+# for the stateful form.
 exec lighthouse "${NETWORK_ARGS[@]}" --datadir "/root/.lighthouse/${ETH2_NETWORK}" validator \
   --beacon-nodes ${LIGHTHOUSE_BEACON_NODE_ADDRESS} \
   --suggested-fee-recipient "${FEE_RECIPIENT}" \
@@ -80,4 +83,5 @@ exec lighthouse "${NETWORK_ARGS[@]}" --datadir "/root/.lighthouse/${ETH2_NETWORK
   --metrics-port "5064" \
   --use-long-timeouts \
   ${BUILDER_ARGS} \
-  --distributed
+  --distributed \
+  --stateless-block-production

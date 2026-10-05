@@ -200,6 +200,9 @@ services:
       - ./data/vc0-lighthouse:/root/.lighthouse
 
   vc1-teku:
+    # Note: Teku (26.9.1) always requests the stateful (payload-excluded) form of gloas block
+    # production and has no option to request the stateless form, which a distributed validator
+    # needs, so it cannot propose gloas blocks behind charon today.
     build:
       context: teku
       args:
