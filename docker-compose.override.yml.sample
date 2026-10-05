@@ -33,6 +33,11 @@
       #- 5054:5054 # Metrics
 
   #vc0-lighthouse:
+    # Run on a network the client doesn't know by name, e.g. a devnet, by mounting its network
+    # config directory. Lighthouse, Lodestar and Prysm VCs pick it up; Teku and Nimbus take the
+    # network from charon.
+    #volumes:
+      #- ./network-config:/network-config:ro
     # Disable vc0-lighthouse
     #profiles: [disable]
     # Bind vc0-lighthouse internal ports to host ports

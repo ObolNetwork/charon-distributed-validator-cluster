@@ -76,11 +76,18 @@ else
     set -- --suggestedFeeRecipient="${FEE_RECIPIENT}"
 fi
 
+# A network the client doesn't know by name, e.g. a devnet, is configured by mounting its
+# network config directory (config.yaml, genesis.ssz, ...) at /network-config.
+NETWORK_ARG="--network=${NETWORK}"
+if [ -f /network-config/config.yaml ]; then
+    NETWORK_ARG="--paramsFile=/network-config/config.yaml"
+fi
+
 exec node /usr/app/packages/cli/bin/lodestar validator \
     --dataDir="$DATA_DIR" \
     --keystoresDir="$KEYSTORES_DIR" \
     --secretsDir="$SECRETS_DIR" \
-    --network="$NETWORK" \
+    "${NETWORK_ARG}" \
     --beaconNodes="$BEACON_NODE_ADDRESS" \
     --builder="${BUILDER_API_ENABLED}" \
     --builder.selection="${BUILDER_SELECTION}" \
