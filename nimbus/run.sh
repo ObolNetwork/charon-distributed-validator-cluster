@@ -44,6 +44,29 @@ rm -r ${tmpkeys}
 
 echo "Imported all keys"
 
+# On a fresh setup charon writes proposer-config.json shortly after it starts, wait for it.
+PROPOSER_CONFIG="/opt/charon/node/vc-config/proposer-config.json"
+for _ in $(seq 60); do
+  [ -f "${PROPOSER_CONFIG}" ] && break
+  sleep 2
+done
+
+# Render the per-validator proposer settings from charon's proposer-config.json:
+# entries only carry fields diverging from default_config, absent fields fall back
+# to it. Without it, Nimbus falls back to --suggested-fee-recipient.
+if [ -f "${PROPOSER_CONFIG}" ]; then
+  echo "proposer-config.json found, rendering per-validator proposer settings"
+  for f in /home/validator_keys/keystore-*.json; do
+    pubkey="0x$(jq -r .pubkey "${f}")"
+    dir="/home/user/data/${NODE}/validators/${pubkey}"
+
+    jq -r --arg pk "${pubkey}" '.proposer_config[$pk].fee_recipient // .default_config.fee_recipient' "${PROPOSER_CONFIG}" >"${dir}/suggested_fee_recipient.hex"
+    jq -r --arg pk "${pubkey}" '.proposer_config[$pk].gas_limit // .default_config.gas_limit' "${PROPOSER_CONFIG}" >"${dir}/suggested_gas_limit.json"
+  done
+else
+  echo "proposer-config.json not found, using FEE_RECIPIENT for all validators"
+fi
+
 # Now run nimbus VC
 exec /home/user/nimbus_validator_client \
   --data-dir=/home/user/data/"${NODE}" \

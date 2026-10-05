@@ -39,6 +39,8 @@ cp .env.sample.hoodi .env
 
 `ETH2_NETWORK` is required and has no default. The sample files set it, along with the matching Lighthouse checkpoint sync URL. `PROM_REMOTE_WRITE_TOKEN` is also required, since Prometheus exits on start without it. Set `FEE_RECIPIENT` to the address that should receive priority fees and MEV rewards. Every other variable is optional and overrides a default in `docker-compose.yml`.
 
+Each validator client takes its fee recipient, gas limit and builder settings from the `vc-config/proposer-config.json` file that charon writes next to each node's cluster lock when it starts and the file doesn't exist yet. The file mirrors the cluster lock, so every node signs the same values, which they must from the Gloas fork. To change the settings, edit the file on every node and restart the validator clients. `FEE_RECIPIENT` is only used when the file is missing.
+
 ## Project Status
 
 See [dvt.obol.tech](https://dvt.obol.tech/) for the latest status of the Obol Network including which upstream consensus clients and which downstream validators are supported.

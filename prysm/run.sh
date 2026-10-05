@@ -50,6 +50,40 @@ if [ "${BUILDER_API_ENABLED}" = "true" ]; then
     BUILDER_ARGS="--enable-builder"
 fi
 
+# On a fresh setup charon writes proposer-config.json shortly after it starts, wait for it.
+PROPOSER_CONFIG="/opt/charon/node/vc-config/proposer-config.json"
+for _ in $(seq 60); do
+    [ -f "${PROPOSER_CONFIG}" ] && break
+    sleep 2
+done
+
+# Render Prysm's proposer settings from charon's proposer-config.json: entries only carry
+# fields diverging from default_config, absent fields fall back to it. Rendered as v2
+# settings with a top-level gas_limit, since from gloas Prysm ignores the legacy
+# builder.gas_limit. The legacy builder block is kept for pre-gloas builder registrations.
+PROPOSER_SETTINGS=(--suggested-fee-recipient="${FEE_RECIPIENT}")
+if [ -f "${PROPOSER_CONFIG}" ]; then
+    echo "proposer-config.json found, rendering prysm proposer settings"
+    jq --argjson enabled "${BUILDER_API_ENABLED}" '
+        .default_config as $d |
+        {
+            version: 2,
+            proposer_config: (.proposer_config | map_values({
+                fee_recipient: (.fee_recipient // $d.fee_recipient),
+                gas_limit: (.gas_limit // $d.gas_limit),
+                builder: {enabled: $enabled, gas_limit: (.gas_limit // $d.gas_limit)}
+            })),
+            default_config: {
+                fee_recipient: $d.fee_recipient,
+                gas_limit: $d.gas_limit,
+                builder: ({enabled: $enabled, gas_limit: $d.gas_limit} + ($d.builder // {}))
+            }
+        }' "${PROPOSER_CONFIG}" >/tmp/prysm-proposer-settings.json
+    PROPOSER_SETTINGS=(--proposer-settings-file=/tmp/prysm-proposer-settings.json)
+else
+    echo "proposer-config.json not found, using FEE_RECIPIENT for all validators"
+fi
+
 # Now run prysm VC
 exec /app/cmd/validator/validator \
     --wallet-dir="${WALLET_DIR}" \
@@ -59,9 +93,9 @@ exec /app/cmd/validator/validator \
     --enable-beacon-rest-api \
     --beacon-rest-api-provider="${BEACON_NODE_ADDRESS}" \
     --beacon-rpc-provider="${BEACON_NODE_ADDRESS}" \
-    --suggested-fee-recipient="${FEE_RECIPIENT}" \
     --monitoring-host=0.0.0.0 \
     --monitoring-port=8081 \
     --"${NETWORK}" \
     ${BUILDER_ARGS} \
-    --distributed
+    --distributed \
+    "${PROPOSER_SETTINGS[@]}"
