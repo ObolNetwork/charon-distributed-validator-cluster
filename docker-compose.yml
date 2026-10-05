@@ -1,10 +1,3 @@
-x-logging: &logging
-  # Rotate container logs so they cannot fill the disk.
-  driver: json-file
-  options:
-    max-size: ${LOG_MAX_SIZE:-100m}
-    max-file: "${LOG_MAX_FILE:-3}"
-
 x-node-base:
   # Pegged charon version (update this for each release).
   &node-base
@@ -35,7 +28,6 @@ services:
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
   nethermind:
-    logging: *logging
     image: nethermind/nethermind:${NETHERMIND_VERSION:-2.1.0}
     restart: unless-stopped
     ports:
@@ -70,7 +62,6 @@ services:
   #      |___/
 
   lighthouse:
-    logging: *logging
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.3}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
@@ -105,7 +96,6 @@ services:
   #  | | | | | |  __/\ V /_____| |_) | (_) | (_) \__ \ |_
   #  |_| |_| |_|\___| \_/      |_.__/ \___/ \___/|___/\__|
   mev-boost:
-    logging: *logging
     image: flashbots/mev-boost:${MEV_BOOST_VERSION:-1.12}
     command: |
       -${ETH2_NETWORK}
@@ -127,7 +117,6 @@ services:
   # | (__| | | | (_| | | | (_) | | | | | (__| | |  __/ | | | |_\__ \
   #  \___|_| |_|\__,_|_|  \___/|_| |_|  \___|_|_|\___|_| |_|\__|___/
   node0:
-    logging: *logging
     <<: *node-base
     environment:
       <<: *node-env
@@ -136,7 +125,6 @@ services:
       CHARON_P2P_EXTERNAL_HOSTNAME: node0
 
   node1:
-    logging: *logging
     <<: *node-base
     environment:
       <<: *node-env
@@ -145,7 +133,6 @@ services:
       CHARON_P2P_EXTERNAL_HOSTNAME: node1
 
   node2:
-    logging: *logging
     <<: *node-base
     environment:
       <<: *node-env
@@ -154,7 +141,6 @@ services:
       CHARON_P2P_EXTERNAL_HOSTNAME: node2
 
   node3:
-    logging: *logging
     <<: *node-base
     environment:
       <<: *node-env
@@ -163,7 +149,6 @@ services:
       CHARON_P2P_EXTERNAL_HOSTNAME: node3
 
   node4:
-    logging: *logging
     <<: *node-base
     environment:
       <<: *node-env
@@ -172,7 +157,6 @@ services:
       CHARON_P2P_EXTERNAL_HOSTNAME: node4
 
   node5:
-    logging: *logging
     <<: *node-base
     environment:
       <<: *node-env
@@ -181,7 +165,6 @@ services:
       CHARON_P2P_EXTERNAL_HOSTNAME: node5
 
   relay:
-    logging: *logging
     <<: *node-base
     command: relay
     depends_on: []
@@ -200,7 +183,6 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    logging: *logging
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.2.3}
     entrypoint: /opt/lighthouse/run.sh
     networks: [cluster]
@@ -217,7 +199,6 @@ services:
       - ./data/vc0-lighthouse:/root/.lighthouse
 
   vc1-teku:
-    logging: *logging
     image: consensys/teku:${TEKU_VERSION:-26.9.1}
     networks: [cluster]
     depends_on: [node1]
@@ -233,7 +214,6 @@ services:
       - ./teku:/opt/charon/teku
 
   vc2-nimbus:
-    logging: *logging
     build: nimbus
     networks: [cluster]
     depends_on: [node2]
@@ -247,7 +227,6 @@ services:
       - ./nimbus:/home/user/data
 
   vc3-lodestar:
-    logging: *logging
     image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.49.0}
     entrypoint: /opt/lodestar/run.sh
     networks: [cluster]
@@ -265,7 +244,6 @@ services:
       - ./data/vc3-lodestar:/opt/data
 
   vc4-prysm:
-    logging: *logging
     image: offchainlabs/prysm-validator:${PRYSM_VERSION:-v7.2.0}
     platform: "linux/amd64"
     entrypoint: /home/prysm/run.sh
@@ -283,7 +261,6 @@ services:
       - ./data/vc4-prysm:/data/vc
 
   vc5-lodestar:
-    logging: *logging
     image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.49.0}
     entrypoint: /opt/lodestar/run.sh
     networks: [cluster]
@@ -307,7 +284,6 @@ services:
   # |_| |_| |_|\___/|_| |_|_|\__\___/|_|  |_|_| |_|\__, |
   #                                                |___/
   prometheus:
-    logging: *logging
     image: prom/prometheus:${PROMETHEUS_VERSION:-v3.15.0}
     # Runs as root so run.sh can write the rendered prometheus.yml into the bind-mounted dir.
     user: ":"
@@ -323,7 +299,6 @@ services:
     entrypoint: /etc/prometheus/run.sh
 
   grafana:
-    logging: *logging
     image: grafana/grafana:${GRAFANA_VERSION:-13.2.3}
     ports:
       - "3000:3000"
