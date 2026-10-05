@@ -84,6 +84,13 @@ else
     echo "proposer-config.json not found, using FEE_RECIPIENT for all validators"
 fi
 
+# A network the client doesn't know by name, e.g. a devnet, is configured by mounting its
+# network config directory (config.yaml, genesis.ssz, ...) at /network-config.
+NETWORK_ARGS=(--"${NETWORK}")
+if [ -f /network-config/config.yaml ]; then
+    NETWORK_ARGS=(--chain-config-file=/network-config/config.yaml)
+fi
+
 # Now run prysm VC
 exec /app/cmd/validator/validator \
     --wallet-dir="${WALLET_DIR}" \
@@ -95,7 +102,7 @@ exec /app/cmd/validator/validator \
     --beacon-rpc-provider="${BEACON_NODE_ADDRESS}" \
     --monitoring-host=0.0.0.0 \
     --monitoring-port=8081 \
-    --"${NETWORK}" \
+    "${NETWORK_ARGS[@]}" \
     ${BUILDER_ARGS} \
     --distributed \
     "${PROPOSER_SETTINGS[@]}"

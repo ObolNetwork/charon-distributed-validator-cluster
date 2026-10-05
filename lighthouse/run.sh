@@ -61,8 +61,15 @@ if [ "${BUILDER_API_ENABLED}" = "true" ]; then
   BUILDER_ARGS="--builder-proposals"
 fi
 
+# A network the client doesn't know by name, e.g. a devnet, is configured by mounting its
+# network config directory (config.yaml, genesis.ssz, ...) at /network-config.
+NETWORK_ARGS=(--network "${ETH2_NETWORK}")
+if [ -f /network-config/config.yaml ]; then
+  NETWORK_ARGS=(--testnet-dir /network-config)
+fi
+
 echo "Starting lighthouse validator client"
-exec lighthouse --network "${ETH2_NETWORK}" validator \
+exec lighthouse "${NETWORK_ARGS[@]}" --datadir "/root/.lighthouse/${ETH2_NETWORK}" validator \
   --beacon-nodes ${LIGHTHOUSE_BEACON_NODE_ADDRESS} \
   --suggested-fee-recipient "${FEE_RECIPIENT}" \
   --init-slashing-protection \
