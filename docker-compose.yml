@@ -271,8 +271,8 @@ services:
     build:
       context: prysm
       args:
-        VERSION: ${PRYSM_VERSION:-v7.2.0}
-    image: cdvc-prysm:${PRYSM_VERSION:-v7.2.0}
+        VERSION: ${PRYSM_VERSION:-v7.2.1}
+    image: cdvc-prysm:${PRYSM_VERSION:-v7.2.1}
     platform: "linux/amd64"
     entrypoint: /home/prysm/run.sh
     networks: [cluster]
