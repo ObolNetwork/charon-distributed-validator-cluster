@@ -39,6 +39,16 @@ cp .env.sample.hoodi .env
 
 `ETH2_NETWORK` is required and has no default. The sample files set it, along with the matching Lighthouse checkpoint sync URL. `PROM_REMOTE_WRITE_TOKEN` is also required, since Prometheus exits on start without it. Set `FEE_RECIPIENT` to the address that should receive priority fees and MEV rewards. Every other variable is optional and overrides a default in `docker-compose.yml`.
 
+## Updating
+
+To update a running cluster without downtime, pull the latest changes and restart the charon nodes one at a time:
+
+```sh
+git pull && scripts/rolling-restart.sh
+```
+
+The script waits until every node is ready before and after each restart, and stops if a node doesn't become ready. Pass `--with-vcs` to also restart each node's validator client, and `--force-recreate` when the validator client scripts changed. See `scripts/rolling-restart.sh --help` for all options.
+
 ## Project Status
 
 See [dvt.obol.tech](https://dvt.obol.tech/) for the latest status of the Obol Network including which upstream consensus clients and which downstream validators are supported.
