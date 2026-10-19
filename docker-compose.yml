@@ -20,6 +20,7 @@ x-node-env: &node-env
   CHARON_MONITORING_ADDRESS: ${CHARON_MONITORING_ADDRESS:-0.0.0.0:3620}
   CHARON_NICKNAME: ${CHARON_NICKNAME:-}
   CHARON_BUILDER_API: ${BUILDER_API_ENABLED:-true}
+  CHARON_BUILDER_URLS: ${CHARON_BUILDER_URLS:-}
 
 services:
   #             _   _                         _           _
