@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version: latest gloas branch commit (needed for the Sepolia Gloas fork).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-6f69e2a}
+  image: obolnetwork/charon:${CHARON_VERSION:-6e59dc0}
   restart: unless-stopped
   networks: [cluster]
   depends_on: [relay]
@@ -28,7 +28,7 @@ services:
   # | | | |  __/ |_| | | |  __/ |  | | | | | | | | | | (_| |
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
   nethermind:
-    image: nethermind/nethermind:${NETHERMIND_VERSION:-2.1.0}
+    image: nethermind/nethermind:${NETHERMIND_VERSION:-2.2.0}
     restart: unless-stopped
     ports:
       - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
@@ -62,7 +62,7 @@ services:
   #      |___/
 
   lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.3.0-rc.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.3.0}
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
@@ -183,7 +183,7 @@ services:
   #  \ V / (_| | | | (_| | (_| | || (_) | |  \__ \
   #   \_/ \__,_|_|_|\__,_|\__,_|\__\___/|_|  |___/
   vc0-lighthouse:
-    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.3.0-rc.0}
+    image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.3.0}
     entrypoint: /opt/lighthouse/run.sh
     networks: [cluster]
     depends_on: [node0]
@@ -200,14 +200,14 @@ services:
       - ./data/vc0-lighthouse:/root/.lighthouse
 
   vc1-teku:
-    # Note: Teku (26.9.1) always requests the stateful (payload-excluded) form of gloas block
+    # Note: Teku (26.10.1) always requests the stateful (payload-excluded) form of gloas block
     # production and has no option to request the stateless form, which a distributed validator
     # needs, so it cannot propose gloas blocks behind charon today.
     build:
       context: teku
       args:
-        VERSION: ${TEKU_VERSION:-26.9.1}
-    image: cdvc-teku:${TEKU_VERSION:-26.9.1}
+        VERSION: ${TEKU_VERSION:-26.10.1}
+    image: cdvc-teku:${TEKU_VERSION:-26.10.1}
     # Starts as root so run.sh can hand ./data/vc1-teku to uid 1000; Teku itself runs as uid 1000.
     user: root
     entrypoint: /opt/charon/teku/run.sh
@@ -232,7 +232,7 @@ services:
   vc2-nimbus:
     build: nimbus
     # Keep the tag in sync with nimbus/Dockerfile: compose only builds an image it doesn't have yet.
-    image: cdvc-nimbus:v26.10.0
+    image: cdvc-nimbus:v26.10.1
     # Starts as root so run.sh can hand ./data/vc2-nimbus to uid 1000; Nimbus itself runs as uid 1000.
     user: root
     entrypoint: /home/user/run.sh
@@ -250,7 +250,7 @@ services:
       - ./data/vc2-nimbus:/home/user/data
 
   vc3-lodestar:
-    image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.49.0}
+    image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.50.0}
     entrypoint: /opt/lodestar/run.sh
     networks: [cluster]
     depends_on: [node3]
@@ -271,8 +271,8 @@ services:
     build:
       context: prysm
       args:
-        VERSION: ${PRYSM_VERSION:-v7.2.1}
-    image: cdvc-prysm:${PRYSM_VERSION:-v7.2.1}
+        VERSION: ${PRYSM_VERSION:-v7.3.0}
+    image: cdvc-prysm:${PRYSM_VERSION:-v7.3.0}
     platform: "linux/amd64"
     entrypoint: /home/prysm/run.sh
     networks: [cluster]
@@ -290,7 +290,7 @@ services:
       - ./data/vc4-prysm:/data/vc
 
   vc5-lodestar:
-    image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.49.0}
+    image: chainsafe/lodestar:${LODESTAR_VERSION:-v1.50.0}
     entrypoint: /opt/lodestar/run.sh
     networks: [cluster]
     depends_on: [node5]

@@ -1,8 +1,8 @@
 FROM ghcr.io/jqlang/jq:1.8.2 AS jq
 
-FROM statusim/nimbus-eth2:multiarch-v26.10.0 as nimbusbn
+FROM statusim/nimbus-eth2:multiarch-v26.10.1 as nimbusbn
 
-FROM statusim/nimbus-validator-client:multiarch-v26.10.0
+FROM statusim/nimbus-validator-client:multiarch-v26.10.1
 
 COPY --from=nimbusbn /home/user/nimbus_beacon_node /home/user/nimbus_beacon_node
 
