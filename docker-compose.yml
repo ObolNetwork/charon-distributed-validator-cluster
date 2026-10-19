@@ -1,7 +1,7 @@
 x-node-base:
   # Pegged charon version: latest gloas branch commit (needed for the Sepolia Gloas fork).
   &node-base
-  image: obolnetwork/charon:${CHARON_VERSION:-6e59dc0}
+  image: obolnetwork/charon:${CHARON_VERSION:-e428ac3}
   restart: unless-stopped
   networks: [cluster]
   depends_on: [relay]
