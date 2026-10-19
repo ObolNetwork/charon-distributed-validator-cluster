@@ -9,7 +9,4 @@ COPY --from=nimbusbn /home/user/nimbus_beacon_node /home/user/nimbus_beacon_node
 # jq is used by run.sh to render the per-validator proposer settings from charon's proposer-config.json.
 COPY --from=jq /jq /usr/local/bin/jq
 
-# compose starts the container as root so run.sh can chown the data dir; default to the image user otherwise.
-USER user
-
 ENTRYPOINT ["/home/user/data/run.sh"]
