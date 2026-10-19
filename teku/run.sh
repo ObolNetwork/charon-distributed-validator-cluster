@@ -37,4 +37,16 @@ else
   echo "proposer-config.json not found, using FEE_RECIPIENT for all validators"
 fi
 
+# From the gloas fork, Teku signs builder request auths for the builders in --Xbuilder-urls one
+# epoch ahead for charon to aggregate. Its builder settings are global, so per-builder overrides
+# don't apply.
+if [ -f "${PROPOSER_CONFIG}" ] && jq -e '.default_config.builder.builders[0]' "${PROPOSER_CONFIG}" >/dev/null; then
+  builder() { jq -r ".default_config.builder.$1" "${PROPOSER_CONFIG}"; }
+  set -- "$@" \
+    --Xbuilder-urls="$(jq -r '[.default_config.builder.builders[].url] | join(",")' "${PROPOSER_CONFIG}")" \
+    --Xbuilder-min-bid="$(builder min_bid)" \
+    --Xbuilder-boost-factor="$(builder builder_boost_factor)" \
+    --Xbuilder-max-execution-payment="$(builder max_execution_payment)"
+fi
+
 exec /opt/teku/bin/teku "$@"
