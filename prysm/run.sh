@@ -92,9 +92,6 @@ if [ -f /network-config/config.yaml ]; then
 fi
 
 # Now run prysm VC.
-# From the gloas fork, request the stateless (payload-included) block form: charon spreads block
-# production across nodes, so no single beacon node can be relied on to hold the payload envelope
-# for the stateful form. Prysm only forces it on with more than one beacon node.
 exec /app/cmd/validator/validator \
     --wallet-dir="${WALLET_DIR}" \
     --wallet-password-file="${WALLET_PASSWORD_FILE}" \
@@ -108,5 +105,4 @@ exec /app/cmd/validator/validator \
     "${NETWORK_ARGS[@]}" \
     ${BUILDER_ARGS} \
     --distributed \
-    --stateless \
     "${PROPOSER_SETTINGS[@]}"

@@ -83,9 +83,8 @@ if [ -f /network-config/config.yaml ]; then
     NETWORK_ARG="--paramsFile=/network-config/config.yaml"
 fi
 
-# From the gloas fork, request the stateless (payload-included) block form: charon spreads block
-# production across nodes, so no single beacon node can be relied on to hold the payload envelope
-# for the stateful form. Lodestar only picks it itself with more than one beacon node.
+# Request the stateful gloas block form (payload kept on the beacon node), which charon expects from
+# distributed validators.
 exec node /usr/app/packages/cli/bin/lodestar validator \
     --dataDir="$DATA_DIR" \
     --keystoresDir="$KEYSTORES_DIR" \
@@ -98,5 +97,5 @@ exec node /usr/app/packages/cli/bin/lodestar validator \
     --metrics.address="0.0.0.0" \
     --metrics.port=5064 \
     --distributed \
-    --payloadLocal=false \
+    --payloadLocal=true \
     "$@"
