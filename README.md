@@ -39,6 +39,12 @@ cp .env.sample.hoodi .env
 
 `ETH2_NETWORK` is required and has no default. The sample files set it, along with the matching Lighthouse checkpoint sync URL. `PROM_REMOTE_WRITE_TOKEN` is also required, since Prometheus exits on start without it. Set `FEE_RECIPIENT` to the address that should receive priority fees and MEV rewards. Every other variable is optional and overrides a default in `docker-compose.yml`.
 
+## Security
+
+Grafana, Prometheus and the execution and beacon node APIs are only published on `127.0.0.1`. To view Grafana from another machine, use an SSH tunnel: `ssh -L 3000:127.0.0.1:3000 <user>@<host>`, then open `http://localhost:3000`. Anonymous visitors get read-only access. Docker-published ports bypass host firewalls such as `ufw`, so only publish them on other addresses if a provider or network firewall restricts who can reach them.
+
+If you ran an earlier release with Grafana reachable from the internet, recreate its container to discard any changes made to it: `docker compose up -d --force-recreate grafana`.
+
 ## Project Status
 
 See [dvt.obol.tech](https://dvt.obol.tech/) for the latest status of the Obol Network including which upstream consensus clients and which downstream validators are supported.
