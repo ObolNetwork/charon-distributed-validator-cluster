@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+permissions:
+  contents: read
 jobs:
   check_exposure:
     # Ensures the defaults only expose P2P ports and keep anonymous Grafana access read-only.
