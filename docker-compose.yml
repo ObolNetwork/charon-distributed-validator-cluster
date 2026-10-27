@@ -33,8 +33,8 @@ services:
     ports:
       - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
       - ${NETHERMIND_PORT_P2P:-30303}:30303/udp # P2P UDP
-      - ${NETHERMIND_PORT_HTTP:-8545}:8545 # JSON-RPC
-      - ${NETHERMIND_PORT_ENGINE:-8551}:8551 # ENGINE-API
+      - 127.0.0.1:${NETHERMIND_PORT_HTTP:-8545}:8545 # JSON-RPC
+      - 127.0.0.1:${NETHERMIND_PORT_ENGINE:-8551}:8551 # ENGINE-API
     command: |
       --config=${ETH2_NETWORK}
       --datadir=data
@@ -66,8 +66,8 @@ services:
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
-      - ${LIGHTHOUSE_PORT_HTTP:-5052}:5052 # HTTP API
-      - ${LIGHTHOUSE_PORT_METRICS:-5054}:5054 # Metrics
+      - 127.0.0.1:${LIGHTHOUSE_PORT_HTTP:-5052}:5052 # HTTP API
+      - 127.0.0.1:${LIGHTHOUSE_PORT_METRICS:-5054}:5054 # Metrics
     command: |
       lighthouse bn
       --network=${ETH2_NETWORK}
@@ -297,8 +297,8 @@ services:
     # Runs as root so run.sh can write the rendered prometheus.yml into the bind-mounted dir.
     user: ":"
     ports:
-      - "9090:9090"
-    networks: [cluster]
+      - "127.0.0.1:9090:9090"
+    networks: [cluster, monitoring]
     environment:
       # Obol hosted-monitoring token, rendered into prometheus.yml by run.sh; never tracked.
       PROM_REMOTE_WRITE_TOKEN: ${PROM_REMOTE_WRITE_TOKEN}
@@ -310,8 +310,10 @@ services:
   grafana:
     image: grafana/grafana:${GRAFANA_VERSION:-13.2.3}
     ports:
-      - "3000:3000"
-    networks: [cluster]
+      - "127.0.0.1:3000:3000"
+    networks: [monitoring]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
     depends_on: [prometheus]
     volumes:
       - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
@@ -321,3 +323,5 @@ services:
 
 networks:
   cluster:
+  # Grafana only joins this network, so it can reach Prometheus but not charon or the clients.
+  monitoring:
