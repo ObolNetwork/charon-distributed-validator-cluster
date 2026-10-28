@@ -18,65 +18,65 @@
   #nethermind:
     # Disable nethermind
     #profiles: [disable]
-    # Bind nethermind internal ports to host ports
+    # Bind nethermind internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 8545:8545 # JSON-RPC
-      #- 8551:8551 # AUTH-RPC
-      #- 6060:6060 # Metrics
+      #- 127.0.0.1:8545:8545 # JSON-RPC
+      #- 127.0.0.1:8551:8551 # AUTH-RPC
+      #- 127.0.0.1:6060:6060 # Metrics
 
   #lighthouse:
     # Disable lighthouse
     #profiles: [disable]
-    # Bind lighthouse internal ports to host ports
+    # Bind lighthouse internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 5052:5052 # HTTP
-      #- 5054:5054 # Metrics
+      #- 127.0.0.1:5052:5052 # HTTP
+      #- 127.0.0.1:5054:5054 # Metrics
 
   #vc0-lighthouse:
     # Disable vc0-lighthouse
     #profiles: [disable]
-    # Bind vc0-lighthouse internal ports to host ports
+    # Bind vc0-lighthouse internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 5064:5064 # Metrics
+      #- 127.0.0.1:5064:5064 # Metrics
 
   #vc1-teku:
     # Disable teku
     #profiles: [disable]
-    # Bind teku internal ports to host ports
+    # Bind teku internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 8008:8008 # Metrics
+      #- 127.0.0.1:8008:8008 # Metrics
 
   #vc2-nimbus:
     # Disable vc2-nimbus
     #profiles: [disable]
-    # Bind vc2-nimbus internal ports to host ports
+    # Bind vc2-nimbus internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 8108:8108 # Metrics
+      #- 127.0.0.1:8108:8108 # Metrics
 
   #vc3-lodestar:
     # Disable vc3-lodestar
     #profiles: [disable]
-    # Bind vc3-lodestar internal ports to host ports
+    # Bind vc3-lodestar internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 5064:5064 # Metrics
+      #- 127.0.0.1:5064:5064 # Metrics
 
   #vc4-prysm:
     # Disable vc4-prysm
     #profiles: [disable]
-    # Bind vc4-prysm internal ports to host ports
+    # Bind vc4-prysm internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 8081:8081 # Metrics
+      #- 127.0.0.1:8081:8081 # Metrics
 
   #vc5-lodestar:
     # Disable vc5-lodestar
     #profiles: [disable]
-    # Bind vc5-lodestar internal ports to host ports
+    # Bind vc5-lodestar internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 5064:5064 # Metrics
+      #- 127.0.0.1:5064:5064 # Metrics
 
   #prometheus:
     # Disable prometheus
     #profiles: [disable]
-    # Bind prometheus internal ports to host ports
+    # Bind prometheus internal ports to host ports. Keep 127.0.0.1: Docker-published ports bypass ufw and other host firewalls.
     #ports:
-      #- 9090:9090 # Metrics
+      #- 127.0.0.1:9090:9090 # Metrics
