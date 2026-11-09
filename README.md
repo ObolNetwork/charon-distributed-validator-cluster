@@ -45,6 +45,8 @@ Grafana, Prometheus and the execution and beacon node APIs are only published on
 
 If you ran an earlier release with Grafana reachable from the internet, recreate its container to discard any changes made to it: `docker compose up -d --force-recreate grafana`.
 
+The Engine API secret shared by the execution and consensus clients is unique to each deployment. On first start, the `jwt-init` service writes a random secret to `jwt/jwt.hex`, and it never replaces an existing one. Older releases shipped the same `jwt/jwt.hex` to everyone, so `git pull` deletes that file and a new secret is generated. On the next `docker compose up -d`, Nethermind and Lighthouse are recreated and load the new secret together. If they keep running on the old secret, restart them together: `docker compose down && docker compose up -d`. If you start them without `jwt-init`, create the secret first: `openssl rand -hex 32 > jwt/jwt.hex`.
+
 ## Project Status
 
 See [dvt.obol.tech](https://dvt.obol.tech/) for the latest status of the Obol Network including which upstream consensus clients and which downstream validators are supported.

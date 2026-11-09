@@ -22,6 +22,32 @@ x-node-env: &node-env
   CHARON_BUILDER_API: ${BUILDER_API_ENABLED:-true}
 
 services:
+  #    _          _
+  #   (_)_      _| |_
+  #   | \ \ /\ / / __|
+  #   | |\ V  V /| |_
+  #  _/ | \_/\_/  \__|
+  # |__/
+
+  # Creates the Engine API secret shared by the execution and consensus clients, once per deployment.
+  # Runs before them and never replaces an existing jwt/jwt.hex.
+  jwt-init:
+    image: busybox:${BUSYBOX_VERSION:-1.37.0}
+    network_mode: none
+    volumes:
+      - ./jwt:/jwt
+    command:
+      - sh
+      - -ec
+      - |
+        if [ -s /jwt/jwt.hex ]; then echo "Using existing jwt/jwt.hex"; exit 0; fi
+        od -An -tx1 -v -N32 /dev/urandom | tr -d ' \n' > /jwt/jwt.hex.tmp
+        grep -qE '^[0-9a-f]{64}$$' /jwt/jwt.hex.tmp
+        # Teku and Nimbus run as non-root users, so the secret must be readable by all.
+        chmod 644 /jwt/jwt.hex.tmp
+        mv /jwt/jwt.hex.tmp /jwt/jwt.hex
+        echo "Created a new random jwt/jwt.hex"
+
   #             _   _                         _           _
   #  _ __   ___| |_| |__   ___ _ __ _ __ ___ (_)_ __   __| |
   # | '_ \ / _ \ __| '_ \ / _ \ '__| '_ ` _ \| | '_ \ / _` |
@@ -29,6 +55,12 @@ services:
   # |_| |_|\___|\__|_| |_|\___|_|  |_| |_| |_|_|_| |_|\__,_|
   nethermind:
     image: nethermind/nethermind:${NETHERMIND_VERSION:-2.1.0}
+    depends_on:
+      jwt-init:
+        condition: service_completed_successfully
+    labels:
+      # Changing this label recreates the client, so the EL and CL load jwt/jwt.hex together.
+      - jwt-secret=per-deployment
     restart: unless-stopped
     ports:
       - ${NETHERMIND_PORT_P2P:-30303}:30303/tcp # P2P TCP
@@ -63,6 +95,12 @@ services:
 
   lighthouse:
     image: sigp/lighthouse:${LIGHTHOUSE_VERSION:-v8.3.3}
+    depends_on:
+      jwt-init:
+        condition: service_completed_successfully
+    labels:
+      # Changing this label recreates the client, so the EL and CL load jwt/jwt.hex together.
+      - jwt-secret=per-deployment
     ports:
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/tcp # P2P TCP
       - ${LIGHTHOUSE_PORT_P2P:-9000}:9000/udp # P2P UDP
