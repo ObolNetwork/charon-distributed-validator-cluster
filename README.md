@@ -45,7 +45,12 @@ Grafana, Prometheus and the execution and beacon node APIs are only published on
 
 If you ran an earlier release with Grafana reachable from the internet, recreate its container to discard any changes made to it: `docker compose up -d --force-recreate grafana`.
 
-The Engine API secret shared by the execution and consensus clients is unique to each deployment. On first start, the `jwt-init` service generates a random secret in the `jwt` Docker volume, which only the execution and consensus clients mount, so it is not a file in this directory. Older releases shipped the same `jwt/jwt.hex` to every operator. After `git pull`, the next `docker compose up -d` recreates both clients with a new secret, and nothing else is needed. Start them together: a client still running from before the update cannot authenticate to one that has the new secret. If `git pull` stops because you changed `jwt/jwt.hex`, run `git checkout jwt/jwt.hex` and pull again. To use your own secret, for example with an execution client outside this stack, put it in `jwt/jwt.hex` as 64 hex characters (copy it aside before the `git checkout`), then run `docker compose up -d --force-recreate`. The secret that older releases shipped is ignored. To print the secret in use: `docker compose run --rm jwt-init cat /jwt/jwt.hex`.
+The Engine API secret shared by the execution and consensus clients is unique to each deployment. On first start, the `jwt-init` service generates a random secret in the `jwt` Docker volume, which only the execution and consensus clients mount, so it is not a file in this directory.
+
+- **Upgrading:** older releases shipped the same `jwt/jwt.hex` to every operator. After `git pull`, the next `docker compose up -d` recreates the execution and consensus clients with a new secret, and nothing else is needed. Start them together: a client still running from before the update cannot authenticate to one that has the new secret.
+- **If `git pull` stops because you changed `jwt/jwt.hex`,** run `git checkout jwt/jwt.hex` and pull again.
+- **To use your own secret,** for example with an execution client outside this stack, put it in `jwt/jwt.hex` as 64 hex characters (copy it aside before the `git checkout`), then run `docker compose up -d --force-recreate`. The secret that older releases shipped is ignored.
+- **To print the secret in use:** `docker compose run --rm jwt-init cat /jwt/jwt.hex`.
 
 ## Project Status
 
