@@ -20,3 +20,5 @@ nethermind/nethermind_db/
 docker-compose.override.yml
 nimbus/node*/
 .DS_Store
+# Your own Engine API secret, if you provide one. The jwt-init service in docker-compose.yml generates one otherwise.
+jwt/jwt.hex*
